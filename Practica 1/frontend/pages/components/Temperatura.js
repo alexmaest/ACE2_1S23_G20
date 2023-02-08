@@ -10,17 +10,17 @@ const Sketch = dynamic(() => import('react-p5').then((mod) => mod.default), {
 
 let cBack, cFront
 let movTemp = 0
-const sizeWith = 250
+const sizeWidth = 250
 const sizeHeight = 250
 
-const x = sizeWith / 2
+const x = sizeWidth / 2
 const y = sizeHeight / 1.3
 
 export default function Temperatura() {
   const setup = (p5, canvasParentRef) => {
     // use parent to render the canvas in this ref
     // (without that p5 will render the canvas outside of your component)
-    p5.createCanvas(sizeWith, sizeHeight).parent(canvasParentRef)
+    p5.createCanvas(sizeWidth, sizeHeight).parent(canvasParentRef)
   }
 
   const draw = (p5) => {
@@ -43,7 +43,7 @@ export default function Temperatura() {
     p5.fill(cFront)
     p5.ellipse(x, y, 55, 55)
 
-    movTemp >= 150 ? (movTemp = 0) : movTemp++
+    movTemp >= 78 ? movTemp - 1 : movTemp++
 
     // NOTE: Do not use setState in the draw function or in functions that are executed
     // in the draw function...

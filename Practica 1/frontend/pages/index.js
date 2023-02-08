@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import Barometro from './components/Barometro'
 import HumedadRelativa from './components/HumedadRelativa'
 import Temperatura from './components/Temperatura'
 
@@ -20,6 +21,7 @@ export default function Home() {
         <div className="flex justify-around p-12 m-8 rounded-xl bg-slate-900 shadow-xl">
           <Temperatura />
           <HumedadRelativa />
+          <Barometro />
         </div>
       </main>
     </>

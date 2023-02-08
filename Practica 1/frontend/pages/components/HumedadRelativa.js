@@ -5,22 +5,20 @@ const Sketch = dynamic(() => import('react-p5').then((mod) => mod.default), {
   ssr: false,
 })
 
-let cBack, cFront
-
-const sizeWith = 250
-const sizeHeight = 250
-
-const x = sizeWith / 2
-const y = sizeHeight / 2
-
-let radiusBack = 200
-let radiusFront = 50
-
 export default function HumedadRelativa() {
+  let cBack, cFront
+
+  const sizeWidth = 250
+  const sizeHeight = 250
+
+  const x = sizeWidth / 2
+  const y = sizeHeight / 2
+
+  let radiusBack = 200
+  let radiusFront = 50
+
   const setup = (p5, canvasParentRef) => {
-    // use parent to render the canvas in this ref
-    // (without that p5 will render the canvas outside of your component)
-    p5.createCanvas(sizeWith, sizeHeight).parent(canvasParentRef)
+    p5.createCanvas(sizeWidth, sizeHeight).parent(canvasParentRef)
   }
 
   const draw = (p5) => {
