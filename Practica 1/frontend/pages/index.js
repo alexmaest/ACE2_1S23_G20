@@ -3,6 +3,7 @@ import Barometro from './components/Barometro'
 import HumedadAbsoluta from './components/HumedadAbsoluta'
 import HumedadRelativa from './components/HumedadRelativa'
 import Temperatura from './components/Temperatura'
+import Viento from './components/Viento'
 
 export default function Home() {
   return (
@@ -26,6 +27,7 @@ export default function Home() {
         </div>
         <div className="flex justify-around p-12 m-8 rounded-xl bg-slate-900 shadow-xl">
           <HumedadAbsoluta />
+          <Viento />
         </div>
       </main>
     </>
