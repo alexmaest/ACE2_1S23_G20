@@ -1,5 +1,4 @@
 #include <math.h>
-#include <string.h>
 
 #include <Wire.h>//Incluye libreria de bus I2C
 #include <Adafruit_Sensor.h>//Incluye librerias para sensor BMP280
@@ -19,7 +18,9 @@ float tempF;
 float tempC2;
 float pression;
 float dewPoint;
-string data;
+float alpha;
+float ln;
+String data;
 
 DHT HT(2, Type);
 Adafruit_BMP280 bmp;
@@ -37,27 +38,31 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  float alpha;
-  float ln;
   humidity = HT.readHumidity();
   tempC = HT.readTemperature();
   tempF = HT.readTemperature(true);
   tempC2 = bmp.readTemperature();
   pression = (bmp.readPressure()/100);
-  ln = log(humidity) / log(e)
+  ln = log(humidity / 100.0) / log(e);
   alpha = ln + ((a * tempC) / (b + tempC));
   dewPoint = (b * alpha) / (a - alpha);
   // format data
   data = "";
   data += String(tempC);
-  data += ","
+  data += ",";
   data += String(humidity);
   data += ",";
   // TODO: humedad absoluta
+  data += "12.3";
+  data += ",";
   data += String(dewPoint);
   data += ",";
   // TODO: velocidad del viento
+  data += "15";
+  data += ",";
   // TODO: direccion del viento
+  data += "1";
+  data += ",";
   data += String(pression);
   Serial.println(data);
   delay(3000);

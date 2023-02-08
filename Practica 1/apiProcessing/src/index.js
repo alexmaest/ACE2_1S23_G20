@@ -13,6 +13,8 @@ const corsOptions = { origin: true, OptionsSuccessStatus: 200 }; // origin: true
 const usbPort = new SerialPort({ path: 'COM4', baudRate: 9600 });
 const parser = usbPort.pipe(new DelimiterParser({ delimiter: '\n' }));
 
+const directions = { 0: "N", 1: "E", 2: "S", 3: "O" };
+
 app.use(cors(corsOptions)); // se usa cors con las opciones que se definieron arriba
 app.use(express.json({ extended: true })); // se usa express.json para que el servidor entienda los datos que se envian en formato json y extended: true es para que el servidor entienda datos mas complejos;
 app.use(express.urlencoded({ extended: true })); // se usa express.urlencoded para que el servidor entienda los datos que se envian en formato urlencoded y extended: true es para que el servidor entienda datos mas complejos;
@@ -31,8 +33,18 @@ parser.on('open', () => {
 parser.on('data', (data) => {
   var decoder = new TextDecoder();
   var arr = new Uint8Array(data);
-  info = decoder.decode(arr);
-  console.log(info);
+  var info = decoder.decode(arr);
+  var info_array = info.split(',');
+  var res = {
+    "temp": number(info_array[0]),
+    "hum": number(info_array[1]),
+    "abs_hum": number(info_array[2]),
+    "dew_point": number(info_array[3]),
+    "vel": number(info_array[4]),
+    "dir": directions[number(info_array[5])],
+    "pres": number(info_array[6]),
+  };
+  console.log(res); //TODO: Guardar en la base de datos
 });
 
 parser.on('error', (err) => {
