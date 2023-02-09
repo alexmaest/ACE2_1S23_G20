@@ -4,6 +4,8 @@ import HumedadAbsoluta from './components/HumedadAbsoluta'
 import HumedadRelativa from './components/HumedadRelativa'
 import Temperatura from './components/Temperatura'
 import Viento from './components/Viento'
+import DireccionViento from './components/DireccionViento'
+import PuntoRocio from './components/PuntoRocio'
 
 export default function Home() {
   return (
@@ -28,6 +30,10 @@ export default function Home() {
         <div className="flex justify-around p-12 m-8 rounded-xl bg-slate-900 shadow-xl">
           <HumedadAbsoluta />
           <Viento />
+          {/* direction: 0 es norte, 1 oeste, 2 sur, 3 este. */}
+          <DireccionViento direction={2} />
+          {/* numbersOfDrops: 0 a 200*/}
+          <PuntoRocio numbersOfDrops={100} />
         </div>
       </main>
     </>
