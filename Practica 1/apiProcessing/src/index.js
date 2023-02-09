@@ -50,3 +50,17 @@ parser.on('data', (data) => {
 parser.on('error', (err) => {
   console.log(err);
 });
+
+//functin para enviar info en ruta /api/enviar
+function enviarInfo(json = {}) {
+  fetch('http://localhost:3001/api/enviar', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(json)
+  })
+    .then(res => res.json())
+    .then(data => console.log(data));
+}
+
