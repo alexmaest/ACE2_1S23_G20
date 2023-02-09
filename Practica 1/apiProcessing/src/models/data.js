@@ -10,6 +10,14 @@ const DatosSchema = Schema(
             type: Number,
             required: true
         },
+        abs_hum: {
+            type: Number,
+            required: true
+        },
+        dew_point: {
+            type: Number,
+            required: true
+        },
         vel: {
             type: Number,
             required: true
