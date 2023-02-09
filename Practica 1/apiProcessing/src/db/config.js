@@ -8,7 +8,7 @@ mongoose.set('strictQuery', true); // strictQuery sirve para que mongoose no per
 (async () => {
   try {
     const conn = await mongoose.connect(
-        `mongodb+srv://edinmv:${process.env.PASSWORD_MONGO}@cluster0.7zlwifm.mongodb.net/${process.env.DB_MONGO}?retryWrites=true&w=majority`
+        `mongodb+srv://davidpc:Guatemala2022@cluster0.7zlwifm.mongodb.net/dbmetereologica?retryWrites=true&w=majority&ssl=true`
         );
     console.log("Conectado a MongoDB en db", conn.connection.name);
   } catch (error) {
