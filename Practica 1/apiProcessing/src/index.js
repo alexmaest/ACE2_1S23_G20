@@ -4,6 +4,7 @@ const morgan = require('morgan'); // morgan sirve para ver las peticiones que se
 const SerialPort = require('serialport').SerialPort;
 const { DelimiterParser } = require('@serialport/parser-delimiter');
 require('./db/config.js'); // se importa el archivo de configuracion de la base de datos
+const fetch = require('node-fetch');
 
 const app = express();
 const port = 3001;
@@ -36,15 +37,16 @@ parser.on('data', (data) => {
   var info = decoder.decode(arr);
   var info_array = info.split(',');
   var res = {
-    "temp": number(info_array[0]),
-    "hum": number(info_array[1]),
-    "abs_hum": number(info_array[2]),
-    "dew_point": number(info_array[3]),
-    "vel": number(info_array[4]),
-    "dir": directions[number(info_array[5])],
-    "pres": number(info_array[6]),
+    "temp": Number(info_array[0]),
+    "hum": Number(info_array[1]),
+    "abs_hum": Number(info_array[2]),
+    "dew_point": Number(info_array[3]),
+    "vel": Number(info_array[4]),
+    "dir": directions[Number(info_array[5])],
+    "pre": Number(info_array[6])
   };
-  console.log(res); //TODO: Guardar en la base de datos
+  enviarInfo(res);
+  //console.log(res); //TODO: Guardar en la base de datos
 });
 
 parser.on('error', (err) => {
