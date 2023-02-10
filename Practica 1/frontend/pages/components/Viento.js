@@ -9,6 +9,8 @@ let t = 0
 
 const width = 250
 const height = 250
+const x = width / 2
+const y = height / 2
 
 export default function Viento() {
   const setup = (p5, canvasParentRef) => {
@@ -33,6 +35,11 @@ export default function Viento() {
       }
     }
     t = t + 0.014
+    //p5.fill('#1e293b')
+    //p5.rect(x - 80, y - 18, 150, 30, 20)
+    p5.textSize(20)
+    p5.fill('#fff')
+    p5.text(10 + ' km/h', 80, 130)
   }
 
   return (

@@ -33,19 +33,22 @@ export default function DireccionViento({ direction }) {
 
     let s = p5.map(direction, 0, 4, 0, p5.TWO_PI) + p5.HALF_PI
 
-    p5.stroke(255)
-    p5.strokeWeight(2)
+    p5.stroke('#dc2626')
+    p5.strokeWeight(4)
     p5.line(
       cx,
       cy,
       cx + p5.cos(s) * barometerRadius,
       cy + p5.sin(s) * barometerRadius
     )
+
+    p5.fill(255)
+    p5.noStroke()
     p5.textSize(20)
     p5.text('N', 115, 20)
     p5.text('E', 230, 130)
     p5.text('S', 120, 240)
-    p5.text('O', 10, 130)
+    p5.text('O', 5, 130)
   }
 
   return (

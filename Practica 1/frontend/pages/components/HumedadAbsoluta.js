@@ -7,13 +7,17 @@ const Sketch = dynamic(() => import('react-p5').then((mod) => mod.default), {
 const width = 250
 const height = 250
 
+const x = width / 2
+const y = height / 2
+
 let numParticles = 30
 let spring = 0.05
 let gravity = 0.01
 let friction = -0.9
 let particles = []
 
-export default function HumedadAbsoluta() {
+export default function HumedadAbsoluta({ cant = 5 }) {
+  numParticles = cant
   const setup = (p5, canvasParentRef) => {
     p5.createCanvas(width, height).parent(canvasParentRef)
     for (let i = 0; i < numParticles; i++) {
@@ -25,18 +29,23 @@ export default function HumedadAbsoluta() {
         particles
       )
     }
-    p5.noStroke()
-    p5.fill(255, 204)
   }
 
   const draw = (p5) => {
     //p5.stroke('#0c4a6e')
+    p5.noStroke()
+    p5.fill(255)
     p5.background('#1e293b')
     particles.forEach((particle) => {
       particle.collide()
       particle.move()
       particle.display(p5)
     })
+    p5.fill('#1e293b')
+    p5.rect(x - 80, y - 18, 150, 30, 20)
+    p5.textSize(20)
+    p5.fill('#fff')
+    p5.text(cant + ' Gr/m3', 80, 130)
   }
 
   return (

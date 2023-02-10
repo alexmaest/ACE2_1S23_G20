@@ -10,7 +10,7 @@ const height = 250
 let cx, cy, barometerRadius
 let clockDiameter
 
-export default function Barometro() {
+export default function Barometro({ pressure }) {
   const setup = (p5, canvasParentRef) => {
     p5.createCanvas(width, height).parent(canvasParentRef)
     p5.stroke(255)
@@ -31,7 +31,7 @@ export default function Barometro() {
     p5.fill(34, 197, 94)
     p5.ellipse(cx, cy, clockDiameter, clockDiameter)
 
-    let s = p5.map(0, 0, 1200, 0, p5.TWO_PI - 1) + p5.HALF_PI + 0.5
+    let s = p5.map(pressure, 0, 1200, 0, p5.TWO_PI - 1) + p5.HALF_PI + 0.5
 
     p5.stroke(255)
     p5.strokeWeight(2)
@@ -43,12 +43,19 @@ export default function Barometro() {
     )
     p5.textSize(15)
     // Draw the minute ticks
+    p5.noStroke()
+    p5.fill(255)
     for (let a = 0; a < 340; a += 40) {
       let angle = p5.radians(a) + p5.HALF_PI + 0.5
       let x = cx + p5.cos(angle) * barometerRadius
       let y = cy + p5.sin(angle) * barometerRadius
       p5.text(a, x - 10, y)
     }
+    p5.fill('#1e293b')
+    p5.rect(70, 50, 110, 30, 20)
+    p5.textSize(15)
+    p5.fill('#fff')
+    p5.text(1000 + ' Gr/m3', 85, 70)
   }
 
   return (

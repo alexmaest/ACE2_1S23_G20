@@ -31,6 +31,11 @@ export default function PuntoRocio({ numbersOfDrops }) {
       drops[i].show(p5)
       drops[i].fall(p5)
     }
+    //p5.fill('#1e293b')
+    //p5.rect(x - 80, y - 18, 150, 30, 20)
+    p5.textSize(20)
+    p5.fill('#fff')
+    p5.text(10 + ' Gr/kg', 80, 130)
   }
 
   return (

@@ -17,21 +17,23 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <div className="flex mb-12 p-3 bg-gray-900">
-          <h1 className="text-xl font-semibold text-center text-white">
+        <div className="flex p-2 bg-gray-900">
+          <h1 className="text-lg font-semibold text-center text-white">
             Grupo 20 ACE2
           </h1>
         </div>
         <div className="flex justify-around p-12 m-8 rounded-xl bg-slate-900 shadow-xl">
-          <Temperatura />
-          <HumedadRelativa />
-          <Barometro />
+          {/* temp: 0 a 50 */}
+          <Temperatura temp={35} />
+          {/* humidity: 0 a 200 */}
+          <HumedadRelativa porcentage={150} />
+          <Barometro pressure={500} />
         </div>
         <div className="flex justify-around p-12 m-8 rounded-xl bg-slate-900 shadow-xl">
-          <HumedadAbsoluta />
+          <HumedadAbsoluta cant={30} />
           <Viento />
           {/* direction: 0 es norte, 1 oeste, 2 sur, 3 este. */}
-          <DireccionViento direction={2} />
+          <DireccionViento direction={1} />
           {/* numbersOfDrops: 0 a 200*/}
           <PuntoRocio numbersOfDrops={100} />
         </div>
