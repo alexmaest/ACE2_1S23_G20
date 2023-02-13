@@ -1,10 +1,11 @@
-
 function temperaturaPage() {
-    return (
-        <div className='text-white'>
+  return (
+    <div className="flex-col items-center">
+      <div className="text-white">
         <h1>Grafica temperatura</h1>
-        </div>
-    );
+      </div>
+    </div>
+  )
 }
 
 export default temperaturaPage

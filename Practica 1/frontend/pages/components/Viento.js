@@ -50,7 +50,7 @@ export default function Viento({ velocidad }) {
     //p5.rect(x - 80, y - 18, 150, 30, 20)
     p5.textSize(20)
     p5.fill('#fff')
-    p5.text(10 + ' km/h', 80, 130)
+    p5.text(velocidad + ' km/h', 80, 130)
   }
 
   return (

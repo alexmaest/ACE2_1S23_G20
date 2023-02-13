@@ -9,10 +9,10 @@ import DireccionViento from './components/DireccionViento'
 import PuntoRocio from './components/PuntoRocio'
 
 export default function Home() {
-  const [temp, setTemp] = useState(0)
-  const [humidity, setHumidity] = useState(0)
+  const [temp, setTemp] = useState(12)
+  const [humidity, setHumidity] = useState(80)
   const [pressure, setPressure] = useState(0)
-  const [absHumidity, setAbsHumidity] = useState(0)
+  const [absHumidity, setAbsHumidity] = useState(100)
   const [windSpeed, setWindSpeed] = useState(0)
   const [windDirection, setWindDirection] = useState(0)
   const [dewPoint, setDewPoint] = useState(0)
@@ -28,7 +28,8 @@ export default function Home() {
         setWindDirection(dir)
         setDewPoint(dew_point)
       })
-    }, 5000)
+      console.log('actualizando datos')
+    }, 2000)
     return () => clearInterval(interval)
   }, [
     temp,
@@ -76,7 +77,7 @@ export default function Home() {
           {/* direction: 0 es norte, 1 oeste, 2 sur, 3 este. */}
           <DireccionViento direction={windDirection} />
           {/* numbersOfDrops: 0 a 200*/}
-          <PuntoRocio numbersOfDrops={dewPoint} />
+          <PuntoRocio intensity={dewPoint} />
         </div>
       </main>
     </>

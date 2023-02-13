@@ -55,7 +55,12 @@ export default function Temperatura({ temp }) {
     p5.textSize(20)
     p5.textAlign(p5.CENTER, p5.CENTER)
     p5.text(temp + '°C', x, y)
-    movTemp >= temperature ? movTemp : (movTemp += 1)
+
+    if (movTemp < temperature) {
+      movTemp += 1
+    } else {
+      movTemp = temperature
+    }
 
     // NOTE: Do not use setState in the draw function or in functions that are executed
     // in the draw function...

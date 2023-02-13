@@ -10,14 +10,17 @@ const height = 250
 const x = width / 2
 const y = height / 2
 
-let numParticles = 30
+let numParticles
 let spring = 0.05
-let gravity = 0.01
+let gravity = 0.09
 let friction = -0.9
 let particles = []
 
-export default function HumedadAbsoluta({ cant = 5 }) {
+export default function HumedadAbsoluta({ cant = 100 }) {
   numParticles = Math.floor(cant)
+  if (numParticles > 100) {
+    numParticles = 100
+  }
   const setup = (p5, canvasParentRef) => {
     p5.createCanvas(width, height).parent(canvasParentRef)
     for (let i = 0; i < numParticles; i++) {

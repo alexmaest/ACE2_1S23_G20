@@ -1,5 +1,4 @@
 import dynamic from 'next/dynamic'
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
 const Sketch = dynamic(() => import('react-p5').then((mod) => mod.default), {
@@ -10,10 +9,8 @@ const width = 250
 const height = 250
 
 let drops = []
-let numbersOfDrops_
-export default function PuntoRocio({ numbersOfDrops }) {
-  numbersOfDrops_ = Math.floor(numbersOfDrops)
-
+let numbersOfDrops_ = 100
+export default function PuntoRocio({ intensity }) {
   const setup = (p5, canvasParentRef) => {
     p5.createCanvas(width, height).parent(canvasParentRef)
     p5.noStroke()
@@ -27,13 +24,13 @@ export default function PuntoRocio({ numbersOfDrops }) {
     p5.background('#1e293b')
     for (let i = 0; i < drops.length; i++) {
       drops[i].show(p5)
-      drops[i].fall(p5)
+      drops[i].fall(p5, intensity)
     }
     //p5.fill('#1e293b')
     //p5.rect(x - 80, y - 18, 150, 30, 20)
     p5.textSize(20)
     p5.fill('#fff')
-    p5.text(10 + ' °C', 95, 130)
+    p5.text(intensity + ' °C', 95, 130)
   }
 
   return (
@@ -58,8 +55,8 @@ class Drop {
   show(p5) {
     p5.ellipse(this.x, this.y, p5.random(1, 5), p5.random(1, 5))
   }
-  fall(p5) {
-    this.yspeed = p5.random(5, 10)
+  fall(p5, intensity) {
+    this.yspeed = (p5.random(5, 10) * intensity) / 100
     this.gravity = 0.5
     this.y = this.y + this.yspeed * this.gravity
 

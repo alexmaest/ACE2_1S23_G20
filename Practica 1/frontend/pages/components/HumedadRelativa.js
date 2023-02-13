@@ -17,7 +17,7 @@ export default function HumedadRelativa({ porcentage }) {
   const y = sizeHeight / 2
 
   let radiusBack = 200
-  let radiusFront = 50
+  let radiusFront = 0
 
   const setup = (p5, canvasParentRef) => {
     p5.createCanvas(sizeWidth, sizeHeight).parent(canvasParentRef)
@@ -42,7 +42,7 @@ export default function HumedadRelativa({ porcentage }) {
     p5.textAlign(p5.CENTER, p5.CENTER)
     p5.text(porcentage_, x, -radiusFront / 2 + y + radiusBack / 2)
 
-    radiusFront >= porcentage_ ? radiusFront : radiusFront++
+    radiusFront <= porcentage_ * 2 ? (radiusFront += 1) : radiusFront
     // NOTE: Do not use setState in the draw function or in functions that are executed
     // in the draw function...
     // please use normal variables or class properties for these purposes
