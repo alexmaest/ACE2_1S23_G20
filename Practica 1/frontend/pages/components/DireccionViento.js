@@ -9,8 +9,23 @@ const height = 250
 
 let cx, cy, barometerRadius
 let clockDiameter
+let directionNumber = 0
 
 export default function DireccionViento({ direction }) {
+  switch (direction) {
+    case 'N':
+      directionNumber = 0
+      break
+    case 'O':
+      directionNumber = 1
+      break
+    case 'S':
+      directionNumber = 2
+      break
+    case 'E':
+      directionNumber = 3
+      break
+  }
   const setup = (p5, canvasParentRef) => {
     p5.createCanvas(width, height).parent(canvasParentRef)
     p5.stroke(255)
@@ -31,7 +46,7 @@ export default function DireccionViento({ direction }) {
     p5.fill(67, 56, 202)
     p5.ellipse(cx, cy, clockDiameter, clockDiameter)
 
-    let s = p5.map(direction, 0, 4, 0, p5.TWO_PI) + p5.HALF_PI
+    let s = p5.map(directionNumber, 0, 4, 0, p5.TWO_PI) + p5.HALF_PI
 
     p5.stroke('#dc2626')
     p5.strokeWeight(4)

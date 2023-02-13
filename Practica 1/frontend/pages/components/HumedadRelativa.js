@@ -7,6 +7,8 @@ const Sketch = dynamic(() => import('react-p5').then((mod) => mod.default), {
 
 export default function HumedadRelativa({ porcentage }) {
   let cBack, cFront
+  let porcentage_ = porcentage
+  console.log(porcentage_)
 
   const sizeWidth = 250
   const sizeHeight = 250
@@ -38,9 +40,9 @@ export default function HumedadRelativa({ porcentage }) {
     p5.fill('#fff')
     p5.textSize(18)
     p5.textAlign(p5.CENTER, p5.CENTER)
-    p5.text(porcentage, x, -radiusFront / 2 + y + radiusBack / 2)
+    p5.text(porcentage_, x, -radiusFront / 2 + y + radiusBack / 2)
 
-    radiusFront >= porcentage ? radiusFront : radiusFront++
+    radiusFront >= porcentage_ ? radiusFront : radiusFront++
     // NOTE: Do not use setState in the draw function or in functions that are executed
     // in the draw function...
     // please use normal variables or class properties for these purposes

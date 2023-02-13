@@ -17,7 +17,7 @@ let friction = -0.9
 let particles = []
 
 export default function HumedadAbsoluta({ cant = 5 }) {
-  numParticles = cant
+  numParticles = Math.floor(cant)
   const setup = (p5, canvasParentRef) => {
     p5.createCanvas(width, height).parent(canvasParentRef)
     for (let i = 0; i < numParticles; i++) {

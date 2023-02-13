@@ -12,7 +12,7 @@ const height = 250
 const x = width / 2
 const y = height / 2
 
-export default function Viento() {
+export default function Viento({ velocidad }) {
   const setup = (p5, canvasParentRef) => {
     p5.createCanvas(width, height).parent(canvasParentRef)
     p5.noStroke()
@@ -34,7 +34,18 @@ export default function Viento() {
         p5.ellipse(myX, myY, 2)
       }
     }
-    t = t + 0.014
+
+    // 0.010 - lento
+    // 0.015 - medio
+    // 0.020 - rapido
+    let velocidadAux =
+      velocidad > 0 && velocidad < 100
+        ? Number(`0.01${velocidad}`)
+        : velocidad == 0
+        ? 0.0
+        : 0.02
+
+    t = t + velocidadAux // Velocidad de la animación
     //p5.fill('#1e293b')
     //p5.rect(x - 80, y - 18, 150, 30, 20)
     p5.textSize(20)

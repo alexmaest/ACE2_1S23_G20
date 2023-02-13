@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Barometro from './components/Barometro'
 import HumedadAbsoluta from './components/HumedadAbsoluta'
@@ -8,6 +9,42 @@ import DireccionViento from './components/DireccionViento'
 import PuntoRocio from './components/PuntoRocio'
 
 export default function Home() {
+  const [temp, setTemp] = useState(0)
+  const [humidity, setHumidity] = useState(0)
+  const [pressure, setPressure] = useState(0)
+  const [absHumidity, setAbsHumidity] = useState(0)
+  const [windSpeed, setWindSpeed] = useState(0)
+  const [windDirection, setWindDirection] = useState(0)
+  const [dewPoint, setDewPoint] = useState(0)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      data().then(({ abs_hum, dew_point, dir, hum, pre, temp, vel }) => {
+        setTemp(temp)
+        setHumidity(hum)
+        setPressure(pre)
+        setAbsHumidity(abs_hum)
+        setWindSpeed(vel)
+        setWindDirection(dir)
+        setDewPoint(dew_point)
+      })
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [
+    temp,
+    humidity,
+    pressure,
+    absHumidity,
+    windSpeed,
+    windDirection,
+    dewPoint,
+  ])
+
+  const data = async () => {
+    const res = await fetch('http://localhost:3001/api')
+    const data = await res.json()
+    return data
+  }
   return (
     <>
       <Head>
@@ -24,18 +61,22 @@ export default function Home() {
         </div>
         <div className="flex justify-around p-12 m-8 rounded-xl bg-slate-900 shadow-xl">
           {/* temp: 0 a 50 */}
-          <Temperatura temp={35} />
-          {/* humidity: 0 a 200 */}
-          <HumedadRelativa porcentage={150} />
-          <Barometro pressure={500} />
+          <Temperatura temp={temp} />
+          {/* humidity: 0 a 200 divido 2*/}
+          <HumedadRelativa porcentage={humidity} />
+          {/* pressure: 225 a 825 hPa */}
+          {/* 300 a 1100 hpa * 0.7501 */}
+          <Barometro pressure={pressure} />
         </div>
         <div className="flex justify-around p-12 m-8 rounded-xl bg-slate-900 shadow-xl">
-          <HumedadAbsoluta cant={30} />
-          <Viento />
+          {/* cant: 0 a 99 */}
+          <HumedadAbsoluta cant={absHumidity} />
+          {/* velocidad: 0 a 100 km/h */}
+          <Viento velocidad={windSpeed} />
           {/* direction: 0 es norte, 1 oeste, 2 sur, 3 este. */}
-          <DireccionViento direction={1} />
+          <DireccionViento direction={windDirection} />
           {/* numbersOfDrops: 0 a 200*/}
-          <PuntoRocio numbersOfDrops={100} />
+          <PuntoRocio numbersOfDrops={dewPoint} />
         </div>
       </main>
     </>

@@ -10,17 +10,15 @@ const width = 250
 const height = 250
 
 let drops = []
-
+let numbersOfDrops_
 export default function PuntoRocio({ numbersOfDrops }) {
-  useEffect(() => {
-    console.log(numbersOfDrops)
-  }, [numbersOfDrops])
+  numbersOfDrops_ = Math.floor(numbersOfDrops)
 
   const setup = (p5, canvasParentRef) => {
     p5.createCanvas(width, height).parent(canvasParentRef)
     p5.noStroke()
     p5.fill(255)
-    for (let i = 0; i < numbersOfDrops; i++) {
+    for (let i = 0; i < numbersOfDrops_; i++) {
       drops[i] = new Drop(p5)
     }
   }
@@ -35,7 +33,7 @@ export default function PuntoRocio({ numbersOfDrops }) {
     //p5.rect(x - 80, y - 18, 150, 30, 20)
     p5.textSize(20)
     p5.fill('#fff')
-    p5.text(10 + ' Gr/kg', 80, 130)
+    p5.text(10 + ' °C', 95, 130)
   }
 
   return (
