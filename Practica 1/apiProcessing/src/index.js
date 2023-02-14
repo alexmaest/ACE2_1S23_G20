@@ -8,9 +8,9 @@ const fetch = require('node-fetch');
 
 const app = express();
 const port = 3001;
-
+//
 const corsOptions = { origin: true, OptionsSuccessStatus: 200 }; // origin: true permite el acceso desde cualquier origen y OptionsSuccessStatus: 200 es para que el navegador no muestre un error
-
+//
 const usbPort = new SerialPort({ path: 'COM4', baudRate: 9600 });
 const parser = usbPort.pipe(new DelimiterParser({ delimiter: '\n' }));
 
@@ -36,6 +36,10 @@ parser.on('data', (data) => {
   var arr = new Uint8Array(data);
   var info = decoder.decode(arr);
   var info_array = info.split(',');
+  //obtener dia mes y año
+  var date = new Date();
+
+
   var res = {
     "temp": Number(info_array[0]),
     "hum": Number(info_array[1]),
@@ -43,7 +47,8 @@ parser.on('data', (data) => {
     "dew_point": Number(info_array[3]),
     "vel": Number(info_array[4]),
     "dir": directions[Number(info_array[5])],
-    "pre": Number(info_array[6])
+    "pre": Number(info_array[6]),
+    "date": date
   };
   enviarInfo(res);
   //console.log(res); //TODO: Guardar en la base de datos

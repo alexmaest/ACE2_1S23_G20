@@ -30,6 +30,10 @@ const DatosSchema = Schema(
             type: Number,
             required: true
         },
+        date: {
+            type: Date,
+            required: true
+        }
     },
     {
         versionKey: false,
