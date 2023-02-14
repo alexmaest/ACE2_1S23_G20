@@ -1,6 +1,7 @@
 import SimpleGraphic from './components/SimpleGraphic'
 import { useEffect, useState } from 'react'
 import { getDewPoint } from './services/useReports'
+import Loader from './components/Loader'
 
 function puntoRocioPage() {
   const [dataDewPoint, setDataDewPoint] = useState([])
@@ -19,8 +20,8 @@ function puntoRocioPage() {
         </h1>
       </div>
       <div className="flex justify-center mt-10">
-        <div className=" bg-gray-900 rounded-lg ring-2 ring-indigo-500 drop-shadow-2xl">
-          {dataDewPoint.length > 0 && (
+        {dataDewPoint.length > 0 && (
+          <div className=" bg-gray-900 rounded-lg ring-2 ring-indigo-500 drop-shadow-2xl">
             <SimpleGraphic
               title="Punto Rocío a lo largo del tiempo"
               xLabel="datos obtenidos"
@@ -28,8 +29,9 @@ function puntoRocioPage() {
               dias={dataDewPoint.length}
               grados={dataDewPoint}
             />
-          )}
-        </div>
+          </div>
+        )}
+        {dataDewPoint.length == 0 && <Loader />}
       </div>
     </>
   )

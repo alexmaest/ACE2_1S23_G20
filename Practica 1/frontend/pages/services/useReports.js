@@ -1,11 +1,19 @@
-async function getData() {
-  const res = await fetch('http://localhost:3001/api/consulta2')
+async function getData(dates) {
+  let res = await fetch('http://localhost:3001/api/consulta2', {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(dates),
+  })
   const data = await res.json()
   return data
 }
 
-async function getTemperature() {
-  const data = await getData()
+async function getTemperature(dates) {
+  const data = await getData(dates)
+  console.log({ data })
   return data?.map((item) => item.temp)
 }
 

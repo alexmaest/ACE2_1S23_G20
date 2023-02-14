@@ -1,6 +1,7 @@
 import SimpleGraphic from './components/SimpleGraphic'
 import { useEffect, useState } from 'react'
 import { getHumidity } from './services/useReports'
+import Loader from './components/Loader'
 
 function humedadRelativaPage() {
   const [dataHumedadRelativa, setDataHumedadRelativa] = useState([])
@@ -19,8 +20,8 @@ function humedadRelativaPage() {
         </h1>
       </div>
       <div className="flex justify-center mt-10">
-        <div className=" bg-gray-900 rounded-lg ring-2 ring-indigo-500 drop-shadow-2xl">
-          {dataHumedadRelativa.length > 0 && (
+        {dataHumedadRelativa.length > 0 && (
+          <div className=" bg-gray-900 rounded-lg ring-2 ring-indigo-500 drop-shadow-2xl">
             <SimpleGraphic
               title="Humedad relativa a lo largo del tiempo"
               xLabel="datos obtenidos"
@@ -28,8 +29,9 @@ function humedadRelativaPage() {
               dias={dataHumedadRelativa.length}
               grados={dataHumedadRelativa}
             />
-          )}
-        </div>
+          </div>
+        )}
+        {dataHumedadRelativa.length == 0 && <Loader />}
       </div>
     </>
   )

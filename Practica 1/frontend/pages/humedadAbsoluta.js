@@ -1,6 +1,7 @@
 import SimpleGraphic from './components/SimpleGraphic'
 import { useEffect, useState } from 'react'
 import { getAbsHumidity } from './services/useReports'
+import Loader from './components/Loader'
 
 function humedadAbsolutaPage() {
   const [dataAbsHumidity, setDataAbsHumidity] = useState([])
@@ -19,8 +20,8 @@ function humedadAbsolutaPage() {
         </h1>
       </div>
       <div className="flex justify-center mt-10">
-        <div className=" bg-gray-900 rounded-lg ring-2 ring-indigo-500 drop-shadow-2xl">
-          {dataAbsHumidity.length > 0 && (
+        {dataAbsHumidity.length > 0 && (
+          <div className=" bg-gray-900 rounded-lg ring-2 ring-indigo-500 drop-shadow-2xl">
             <SimpleGraphic
               title="Humedad absoluta a lo largo del tiempo"
               xLabel="datos obtenidos"
@@ -28,8 +29,9 @@ function humedadAbsolutaPage() {
               dias={dataAbsHumidity.length}
               grados={dataAbsHumidity}
             />
-          )}
-        </div>
+          </div>
+        )}
+        {dataAbsHumidity.length == 0 && <Loader />}
       </div>
     </>
   )
