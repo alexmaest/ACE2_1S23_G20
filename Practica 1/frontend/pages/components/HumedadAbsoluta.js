@@ -1,4 +1,5 @@
 import dynamic from 'next/dynamic'
+import Link from 'next/link'
 
 const Sketch = dynamic(() => import('react-p5').then((mod) => mod.default), {
   ssr: false,
@@ -52,14 +53,16 @@ export default function HumedadAbsoluta({ cant = 100 }) {
   }
 
   return (
-    <div className="w-64 flex-row content-center">
-      <div className="text-white bg-cyan-800 text-center mb-2 rounded mx-10">
-        Humedad Absoluta
+    <Link href="/humedadAbsoluta">
+      <div className="w-64 flex-row content-center">
+        <div className="text-white text-center mb-4 ring-2 ring-indigo-600 mx-10 rounded">
+          Humedad Absoluta
+        </div>
+        <div className="mx-[3px]">
+          <Sketch setup={setup} draw={draw} />
+        </div>
       </div>
-      <div className="mx-[3px]">
-        <Sketch setup={setup} draw={draw} />
-      </div>
-    </div>
+    </Link>
   )
 }
 

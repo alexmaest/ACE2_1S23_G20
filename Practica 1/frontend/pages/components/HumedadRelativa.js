@@ -50,10 +50,10 @@ export default function HumedadRelativa({ porcentage }) {
 
   return (
     <div className="w-64 flex-row content-center">
-      <div className="text-white bg-cyan-800 text-center mb-2 rounded mx-10">
+      <div className="text-white text-center mb-4 ring-2 ring-indigo-600 mx-10 rounded">
         Humedad Relativa
       </div>
-      <Link href="/temperatura">
+      <Link href="/humedadRelativa">
         <div className="mx-[3px]">
           <Sketch setup={setup} draw={draw} />
         </div>

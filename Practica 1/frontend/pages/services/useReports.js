@@ -26,7 +26,7 @@ async function getWindSpeed() {
 
 async function getPressure() {
   const data = await getData()
-  return data?.map((item) => item.pre)
+  return data?.map((item) => item.pre * 0.750062)
 }
 
 async function getDewPoint() {

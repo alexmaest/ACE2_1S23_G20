@@ -1,13 +1,13 @@
 import SimpleGraphic from './components/SimpleGraphic'
 import { useEffect, useState } from 'react'
-import { getTemperature } from './services/useReports'
+import { getWindSpeed } from './services/useReports'
 
-function temperaturaPage() {
-  const [dataTemperatura, setDataTemperatura] = useState([])
+function velocidadVientoPage() {
+  const [dataWindSpeed, setDataWindSpeed] = useState([])
 
   useEffect(() => {
-    getTemperature().then((data) => {
-      setDataTemperatura(data)
+    getWindSpeed().then((data) => {
+      setDataWindSpeed(data)
     })
   }, [])
 
@@ -15,18 +15,18 @@ function temperaturaPage() {
     <>
       <div className="flex p-2 bg-gray-900">
         <h1 className="text font-semibold text-center text-white">
-          Grupo 20 ACE2 - Temperatura
+          Grupo 20 ACE2 - Velocidad del viento
         </h1>
       </div>
       <div className="flex justify-center mt-10">
         <div className=" bg-gray-900 rounded-lg ring-2 ring-indigo-500 drop-shadow-2xl">
-          {dataTemperatura.length > 0 && (
+          {dataWindSpeed.length > 0 && (
             <SimpleGraphic
-              title="Temperatura a lo largo del tiempo"
+              title="Velocidad viento a lo largo del tiempo"
               xLabel="datos obtenidos"
-              yLabel="temperatura °C"
-              dias={dataTemperatura.length}
-              grados={dataTemperatura}
+              yLabel="velocidad km/h"
+              dias={dataWindSpeed.length}
+              grados={dataWindSpeed}
             />
           )}
         </div>
@@ -35,4 +35,4 @@ function temperaturaPage() {
   )
 }
 
-export default temperaturaPage
+export default velocidadVientoPage

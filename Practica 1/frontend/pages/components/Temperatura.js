@@ -52,7 +52,7 @@ export default function Temperatura({ temp }) {
     p5.ellipse(x, y, 55, 55)
     //Colocar texto de temperatura
     p5.fill('#fff')
-    p5.textSize(20)
+    p5.textSize(15)
     p5.textAlign(p5.CENTER, p5.CENTER)
     p5.text(temp + '°C', x, y)
 
@@ -69,7 +69,7 @@ export default function Temperatura({ temp }) {
 
   return (
     <div className="w-64 flex-row content-center">
-      <div className="text-white bg-cyan-800 text-center mb-2 rounded mx-10">
+      <div className="text-white text-center mb-4 ring-2 ring-indigo-600 mx-10 rounded">
         Temperatura externa
       </div>
       <Link href="/temperatura">
