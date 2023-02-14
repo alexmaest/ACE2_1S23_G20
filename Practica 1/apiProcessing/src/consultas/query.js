@@ -41,6 +41,7 @@ exports.consulta2 = async (req, res) => {
         if (req.body.fechaInicio) {
             const partesFecha = req.body.fechaInicio.split('/');
             fechaInicio = new Date(partesFecha[2], partesFecha[1] - 1, partesFecha[0]);
+            fechaInicio.setHours(0, 0, 0, 0);
         } else {
             // Si no se proporcionó fecha de inicio, establece la fecha de hoy
             fechaInicio = new Date();
@@ -51,6 +52,8 @@ exports.consulta2 = async (req, res) => {
         if (req.body.fechaFin) {
             const partesFecha = req.body.fechaFin.split('/');
             fechaFin = new Date(partesFecha[2], partesFecha[1] - 1, partesFecha[0]);
+            fechaFin.setHours(17, 59, 59, 999);
+            console.log("fechas js: ",fechaInicio,fechaFin);
         } else {
             // Si no se proporcionó fecha de fin, establece la fecha de hoy
             fechaFin = new Date();
