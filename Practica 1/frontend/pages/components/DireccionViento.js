@@ -1,4 +1,5 @@
 import dynamic from 'next/dynamic'
+import Link from 'next/link'
 
 const Sketch = dynamic(() => import('react-p5').then((mod) => mod.default), {
   ssr: false,
@@ -71,9 +72,11 @@ export default function DireccionViento({ direction }) {
       <div className="text-white text-center mb-4 ring-2 ring-indigo-600 mx-10 rounded">
         Dirección del Viento
       </div>
-      <div className="mx-[3px]">
-        <Sketch setup={setup} draw={draw} />
-      </div>
+      <Link href="/windDirection">
+        <div className="mx-[3px]">
+          <Sketch setup={setup} draw={draw} />
+        </div>
+      </Link>
     </div>
   )
 }
