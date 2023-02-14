@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic'
-import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { getWindDirection } from './services/useReports'
+import Loader from './components/Loader'
 
 const Sketch = dynamic(() => import('react-p5').then((mod) => mod.default), {
   ssr: false,
@@ -87,10 +87,13 @@ const windDirection = () => {
           Grupo 20 ACE2 - Velocidad del viento
         </h1>
       </div>
-      <div className="w-full h-full content-center">
-        <div className="flex justify-center content-center mx-[3px]">
-          <Sketch setup={setup} draw={draw} />
-        </div>
+      <div className="flex justify-center mt-10 w-full h-full content-center">
+        {windDirections.length > 0 && (
+          <div className="flex justify-center content-center mx-[3px]">
+            <Sketch setup={setup} draw={draw} />
+          </div>
+        )}
+        {windDirections.length == 0 && <Loader />}
       </div>
     </>
   )

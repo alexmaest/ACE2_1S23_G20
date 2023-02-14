@@ -1,5 +1,6 @@
 import dynamic from 'next/dynamic'
 import { GPoint, GPlot } from '@/grafica/grafica'
+import Calendar from './Calendar'
 
 // importamos react-p5 en client-side
 // por defecto NextJs usa SSR (Server Side Rendering)
@@ -46,6 +47,7 @@ export default function SimpleGraphic({ title, xLabel, yLabel, dias, grados }) {
       <div className="w-full flex-row content-center p-2">
         <div className="mx-[3px]">
           <Sketch setup={setup} draw={draw} />
+          <Calendar />
         </div>
       </div>
     </>

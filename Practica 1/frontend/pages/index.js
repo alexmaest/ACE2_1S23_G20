@@ -17,7 +17,7 @@ export default function Home() {
   const [windDirection, setWindDirection] = useState(0)
   const [dewPoint, setDewPoint] = useState(0)
 
-  useEffect(() => {
+  /*   useEffect(() => {
     const interval = setInterval(() => {
       data().then(({ abs_hum, dew_point, dir, hum, pre, temp, vel }) => {
         setTemp(temp)
@@ -39,7 +39,7 @@ export default function Home() {
     windSpeed,
     windDirection,
     dewPoint,
-  ])
+  ]) */
 
   const data = async () => {
     const res = await fetch('http://localhost:3001/api')
