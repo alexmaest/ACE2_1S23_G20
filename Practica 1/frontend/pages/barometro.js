@@ -3,11 +3,13 @@ import { useEffect, useState } from 'react'
 import { getPressure } from './services/useReports'
 import Loader from './components/Loader'
 
-function barometroPage() {
+function barometroPage({ dates }) {
   const [dataPressure, setDataPressure] = useState([])
 
   useEffect(() => {
-    getPressure().then((data) => {
+    if (dates.fechaInicio === '31/12/1969' || dates.fechaFin === '31/12/1969')
+      return
+    getPressure(dates).then((data) => {
       setDataPressure(data)
     })
   }, [])
@@ -35,6 +37,17 @@ function barometroPage() {
       </div>
     </>
   )
+}
+
+export async function getServerSideProps(context) {
+  return {
+    props: {
+      dates: {
+        fechaInicio: context.query.fechaInicio,
+        fechaFin: context.query.fechaFin,
+      },
+    },
+  }
 }
 
 export default barometroPage

@@ -3,11 +3,13 @@ import { useEffect, useState } from 'react'
 import { getWindSpeed } from './services/useReports'
 import Loader from './components/Loader'
 
-function velocidadVientoPage() {
+function velocidadVientoPage({ dates }) {
   const [dataWindSpeed, setDataWindSpeed] = useState([])
 
   useEffect(() => {
-    getWindSpeed().then((data) => {
+    if (dates.fechaInicio === '31/12/1969' || dates.fechaFin === '31/12/1969')
+      return
+    getWindSpeed(dates).then((data) => {
       setDataWindSpeed(data)
     })
   }, [])
@@ -35,6 +37,17 @@ function velocidadVientoPage() {
       </div>
     </>
   )
+}
+
+export async function getServerSideProps(context) {
+  return {
+    props: {
+      dates: {
+        fechaInicio: context.query.fechaInicio,
+        fechaFin: context.query.fechaFin,
+      },
+    },
+  }
 }
 
 export default velocidadVientoPage

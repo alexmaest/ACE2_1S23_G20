@@ -3,11 +3,13 @@ import { useEffect, useState } from 'react'
 import { getDewPoint } from './services/useReports'
 import Loader from './components/Loader'
 
-function puntoRocioPage() {
+function puntoRocioPage({ dates }) {
   const [dataDewPoint, setDataDewPoint] = useState([])
 
   useEffect(() => {
-    getDewPoint().then((data) => {
+    if (dates.fechaInicio === '31/12/1969' || dates.fechaFin === '31/12/1969')
+      return
+    getDewPoint(dates).then((data) => {
       setDataDewPoint(data)
     })
   }, [])
@@ -35,6 +37,17 @@ function puntoRocioPage() {
       </div>
     </>
   )
+}
+
+export async function getServerSideProps(context) {
+  return {
+    props: {
+      dates: {
+        fechaInicio: context.query.fechaInicio,
+        fechaFin: context.query.fechaFin,
+      },
+    },
+  }
 }
 
 export default puntoRocioPage

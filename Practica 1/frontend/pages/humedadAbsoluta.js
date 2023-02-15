@@ -3,11 +3,13 @@ import { useEffect, useState } from 'react'
 import { getAbsHumidity } from './services/useReports'
 import Loader from './components/Loader'
 
-function humedadAbsolutaPage() {
+function humedadAbsolutaPage({ dates }) {
   const [dataAbsHumidity, setDataAbsHumidity] = useState([])
 
   useEffect(() => {
-    getAbsHumidity().then((data) => {
+    if (dates.fechaInicio === '31/12/1969' || dates.fechaFin === '31/12/1969')
+      return
+    getAbsHumidity(dates).then((data) => {
       setDataAbsHumidity(data)
     })
   }, [])
@@ -35,6 +37,17 @@ function humedadAbsolutaPage() {
       </div>
     </>
   )
+}
+
+export async function getServerSideProps(context) {
+  return {
+    props: {
+      dates: {
+        fechaInicio: context.query.fechaInicio,
+        fechaFin: context.query.fechaFin,
+      },
+    },
+  }
 }
 
 export default humedadAbsolutaPage

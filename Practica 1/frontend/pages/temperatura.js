@@ -3,18 +3,13 @@ import { useEffect, useState } from 'react'
 import { getTemperature } from './services/useReports'
 import Loader from './components/Loader'
 
-function temperaturaPage() {
+function temperaturaPage({ dates }) {
   const [dataTemperatura, setDataTemperatura] = useState([])
-  const [date, setDate] = useState({
-    fechaInicio: '13/02/2023',
-    fechaFin: '16/02/2023',
-  })
 
   useEffect(() => {
-    getTemperature({
-      fechaInicio: '12/02/2023',
-      fechaFin: '15/02/2023',
-    }).then((data) => {
+    if (dates.fechaInicio === '31/12/1969' || dates.fechaFin === '31/12/1969')
+      return
+    getTemperature(dates).then((data) => {
       setDataTemperatura(data)
     })
   }, [])
@@ -42,6 +37,17 @@ function temperaturaPage() {
       </div>
     </>
   )
+}
+
+export async function getServerSideProps(context) {
+  return {
+    props: {
+      dates: {
+        fechaInicio: context.query.fechaInicio,
+        fechaFin: context.query.fechaFin,
+      },
+    },
+  }
 }
 
 export default temperaturaPage

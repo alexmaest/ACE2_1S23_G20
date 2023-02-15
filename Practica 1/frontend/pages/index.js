@@ -9,15 +9,15 @@ import DireccionViento from './components/DireccionViento'
 import PuntoRocio from './components/PuntoRocio'
 
 export default function Home() {
-  const [temp, setTemp] = useState(12)
-  const [humidity, setHumidity] = useState(80)
+  const [temp, setTemp] = useState(0)
+  const [humidity, setHumidity] = useState(0)
   const [pressure, setPressure] = useState(0)
-  const [absHumidity, setAbsHumidity] = useState(100)
+  const [absHumidity, setAbsHumidity] = useState(0)
   const [windSpeed, setWindSpeed] = useState(0)
   const [windDirection, setWindDirection] = useState(0)
   const [dewPoint, setDewPoint] = useState(0)
 
-  /*   useEffect(() => {
+  useEffect(() => {
     const interval = setInterval(() => {
       data().then(({ abs_hum, dew_point, dir, hum, pre, temp, vel }) => {
         setTemp(temp)
@@ -29,7 +29,7 @@ export default function Home() {
         setDewPoint(dew_point)
       })
       console.log('actualizando datos')
-    }, 2000)
+    }, 3000)
     return () => clearInterval(interval)
   }, [
     temp,
@@ -39,7 +39,7 @@ export default function Home() {
     windSpeed,
     windDirection,
     dewPoint,
-  ]) */
+  ])
 
   const data = async () => {
     const res = await fetch('http://localhost:3001/api')

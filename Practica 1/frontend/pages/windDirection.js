@@ -10,11 +10,13 @@ const Sketch = dynamic(() => import('react-p5').then((mod) => mod.default), {
 const width = 720
 const height = 400
 
-const windDirection = () => {
+const windDirection = ({ dates }) => {
   const [windDirections, setWindDirections] = useState([])
 
   useEffect(() => {
-    getWindDirection().then((data) => {
+    if (dates.fechaInicio === '31/12/1969' || dates.fechaFin === '31/12/1969')
+      return
+    getWindDirection(dates).then((data) => {
       setWindDirections(data)
     })
   }, [])
@@ -97,6 +99,17 @@ const windDirection = () => {
       </div>
     </>
   )
+}
+
+export async function getServerSideProps(context) {
+  return {
+    props: {
+      dates: {
+        fechaInicio: context.query.fechaInicio,
+        fechaFin: context.query.fechaFin,
+      },
+    },
+  }
 }
 
 export default windDirection

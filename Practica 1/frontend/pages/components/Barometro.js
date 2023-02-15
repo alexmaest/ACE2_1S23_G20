@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
+import Datepicker from 'react-tailwindcss-datepicker'
 
 const Sketch = dynamic(() => import('react-p5').then((mod) => mod.default), {
   ssr: false,
@@ -13,6 +15,26 @@ let clockDiameter
 let pressure_ = 225
 
 export default function Barometro({ pressure }) {
+  const [value, setValue] = useState({
+    startDate: new Date(),
+    endDate: new Date(),
+  })
+  const [date, setDate] = useState({
+    fechaInicio: new Date().toLocaleDateString('en-GB'),
+    fechaFin: new Date().toLocaleDateString('en-GB'),
+  })
+
+  const handleValueChange = (newValue) => {
+    setValue(newValue)
+    setDate({
+      fechaInicio:
+        newValue.startDate instanceof Date
+          ? newValue.startDate.toLocaleDateString('en-GB')
+          : new Date(newValue.startDate).toLocaleDateString('en-GB'),
+      fechaFin: new Date(newValue.endDate).toLocaleDateString('en-GB'),
+    })
+  }
+
   pressure_ = pressure * 0.75
   const setup = (p5, canvasParentRef) => {
     p5.createCanvas(width, height).parent(canvasParentRef)
@@ -92,15 +114,29 @@ export default function Barometro({ pressure }) {
   }
 
   return (
-    <Link href="/barometro">
-      <div className="w-64 flex-row content-center">
-        <div className="text-white text-center mb-4 ring-2 ring-indigo-600 mx-10 rounded">
-          Barometro
-        </div>
-        <div className="mx-[3px]">
-          <Sketch setup={setup} draw={draw} />
-        </div>
+    <div className="w-64 flex-row content-center">
+      <div className="text-white text-center mb-4 ring-2 ring-indigo-600 mx-10 rounded">
+        Barometro
       </div>
-    </Link>
+      <div className="mx-[3px]">
+        <Link
+          href={{
+            pathname: '/barometro',
+            query: {
+              fechaInicio: date.fechaInicio,
+              fechaFin: date.fechaFin,
+            },
+          }}
+          as={`/barometro/${date.fechaInicio}-${date.fechaFin}`}
+        >
+          <Sketch setup={setup} draw={draw} />
+        </Link>
+        <Datepicker
+          primaryColor="indigo"
+          value={value}
+          onChange={handleValueChange}
+        />
+      </div>
+    </div>
   )
 }
