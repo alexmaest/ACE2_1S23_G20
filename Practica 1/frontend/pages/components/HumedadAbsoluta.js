@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
+import Datepicker from 'react-tailwindcss-datepicker'
 
 const Sketch = dynamic(() => import('react-p5').then((mod) => mod.default), {
   ssr: false,
@@ -18,6 +20,26 @@ let friction = -0.9
 let particles = []
 
 export default function HumedadAbsoluta({ cant = 100 }) {
+  const [value, setValue] = useState({
+    startDate: new Date(),
+    endDate: new Date(),
+  })
+  const [date, setDate] = useState({
+    fechaInicio: new Date().toLocaleDateString('en-GB'),
+    fechaFin: new Date().toLocaleDateString('en-GB'),
+  })
+
+  const handleValueChange = (newValue) => {
+    setValue(newValue)
+    setDate({
+      fechaInicio:
+        newValue.startDate instanceof Date
+          ? newValue.startDate.toLocaleDateString('en-GB')
+          : new Date(newValue.startDate).toLocaleDateString('en-GB'),
+      fechaFin: new Date(newValue.endDate).toLocaleDateString('en-GB'),
+    })
+  }
+
   numParticles = Math.floor(cant)
   if (numParticles > 100) {
     numParticles = 100
@@ -53,16 +75,30 @@ export default function HumedadAbsoluta({ cant = 100 }) {
   }
 
   return (
-    <Link href="/humedadAbsoluta">
-      <div className="w-64 flex-row content-center">
-        <div className="text-white text-center mb-4 ring-2 ring-indigo-600 mx-10 rounded">
-          Humedad Absoluta
-        </div>
-        <div className="mx-[3px]">
-          <Sketch setup={setup} draw={draw} />
-        </div>
+    <div className="w-64 flex-row content-center">
+      <div className="text-white text-center mb-4 ring-2 ring-indigo-600 mx-10 rounded">
+        Humedad absoluta
       </div>
-    </Link>
+      <div className="mx-[3px]">
+        <Link
+          href={{
+            pathname: '/humedadAbsoluta',
+            query: {
+              fechaInicio: date.fechaInicio,
+              fechaFin: date.fechaFin,
+            },
+          }}
+          as={`/humedadAbsoluta/${date.fechaInicio}-${date.fechaFin}`}
+        >
+          <Sketch setup={setup} draw={draw} />
+        </Link>
+        <Datepicker
+          primaryColor="indigo"
+          value={value}
+          onChange={handleValueChange}
+        />
+      </div>
+    </div>
   )
 }
 
