@@ -26,7 +26,7 @@ function humedadRelativaPage({ dates }) {
           <div className=" bg-gray-900 rounded-lg ring-2 ring-indigo-500 drop-shadow-2xl">
             <SimpleGraphic
               title="Humedad relativa a lo largo del tiempo"
-              xLabel="datos obtenidos"
+              xLabel={`datos desde ${dates.fechaInicio} hasta ${dates.fechaFin}`}
               yLabel="porcentaje %"
               dias={dataHumedadRelativa.length}
               grados={dataHumedadRelativa}

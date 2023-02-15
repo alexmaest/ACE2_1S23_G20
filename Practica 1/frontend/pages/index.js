@@ -12,8 +12,8 @@ export default function Home() {
   const [temp, setTemp] = useState(0)
   const [humidity, setHumidity] = useState(0)
   const [pressure, setPressure] = useState(0)
-  const [absHumidity, setAbsHumidity] = useState(0)
-  const [windSpeed, setWindSpeed] = useState(0)
+  const [absHumidity, setAbsHumidity] = useState(100)
+  const [windSpeed, setWindSpeed] = useState(10)
   const [windDirection, setWindDirection] = useState(0)
   const [dewPoint, setDewPoint] = useState(0)
 
@@ -31,15 +31,7 @@ export default function Home() {
       console.log('actualizando datos')
     }, 3000)
     return () => clearInterval(interval)
-  }, [
-    temp,
-    humidity,
-    pressure,
-    absHumidity,
-    windSpeed,
-    windDirection,
-    dewPoint,
-  ])
+  }, [])
 
   const data = async () => {
     const res = await fetch('http://localhost:3001/api')

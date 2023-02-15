@@ -26,7 +26,7 @@ function humedadAbsolutaPage({ dates }) {
           <div className=" bg-gray-900 rounded-lg ring-2 ring-indigo-500 drop-shadow-2xl">
             <SimpleGraphic
               title="Humedad absoluta a lo largo del tiempo"
-              xLabel="datos obtenidos"
+              xLabel={`datos desde ${dates.fechaInicio} hasta ${dates.fechaFin}`}
               yLabel="humedad absoluta g/m³"
               dias={dataAbsHumidity.length}
               grados={dataAbsHumidity}

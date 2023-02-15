@@ -60,9 +60,16 @@ export default function Viento({ velocidad }) {
     // 0.010 - lento
     // 0.015 - medio
     // 0.020 - rapido
-    let velocidadAux =
+    /*     let velocidadAux =
       velocidad > 0 && velocidad < 100
         ? Number(`0.01${velocidad}`)
+        : velocidad == 0
+        ? 0.0
+        : 0.02 */
+
+    let velocidadAux =
+      velocidad > 0 && velocidad < 100
+        ? velocidad / 1500
         : velocidad == 0
         ? 0.0
         : 0.02
