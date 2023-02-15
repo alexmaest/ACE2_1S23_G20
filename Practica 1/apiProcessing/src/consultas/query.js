@@ -22,7 +22,7 @@ exports.consulta2 = async (req, res) => {
         let params = Object.fromEntries(new URLSearchParams(req.query));
         // Verifica si se proporcionó fecha de inicio
         if (params.fechaInicio !== "") {
-            const partesFecha = req.body.fechaInicio.split('/');
+            const partesFecha = params.fechaInicio.split('/');
             fechaInicio = new Date(partesFecha[2], partesFecha[1] - 1, partesFecha[0]);
             fechaInicio.setHours(0, 0, 0, 0);
         } else {
@@ -33,7 +33,7 @@ exports.consulta2 = async (req, res) => {
 
         // Verifica si se proporcionó fecha de fin
         if (params.fechaFin !== "") {
-            const partesFecha = req.body.fechaFin.split('/');
+            const partesFecha = params.fechaFin.split('/');
             fechaFin = new Date(partesFecha[2], partesFecha[1] - 1, partesFecha[0]);
             fechaFin.setHours(17, 59, 59, 999);
         } else {

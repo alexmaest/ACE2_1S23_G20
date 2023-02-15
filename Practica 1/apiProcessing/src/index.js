@@ -53,7 +53,6 @@ parser.on('data', (data) => {
     "date": dateEnUTC
   };
   enviarInfo(res);
-  //console.log(res); //TODO: Guardar en la base de datos
 });
 
 parser.on('error', (err) => {

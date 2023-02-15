@@ -1,6 +1,7 @@
 async function getData(dates) {
   const res = await fetch('http://localhost:3001/api/consulta2' + "?" + new URLSearchParams({
-    dates
+    fechaInicio: dates.fechaInicio,
+    fechaFin: dates.fechaFin
   }), {
     method: 'GET',
     headers: {
