@@ -38,6 +38,8 @@ parser.on('data', (data) => {
   var info_array = info.split(',');
   //obtener dia mes y año
   var date = new Date();
+  date.setHours(date.getHours() - 6);//para formato UTC-6 guatemala
+  var dateEnUTC = date.toUTCString();
 
 
   var res = {
@@ -48,7 +50,7 @@ parser.on('data', (data) => {
     "vel": Number(info_array[4]),
     "dir": directions[Number(info_array[5])],
     "pre": Number(info_array[6]),
-    "date": date
+    "date": dateEnUTC
   };
   enviarInfo(res);
   //console.log(res); //TODO: Guardar en la base de datos
@@ -70,4 +72,7 @@ function enviarInfo(json = {}) {
     .then(res => res.json())
     .then(data => console.log(data));
 }
+
+
+
 
