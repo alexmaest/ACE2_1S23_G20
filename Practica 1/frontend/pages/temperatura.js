@@ -2,22 +2,37 @@ import SimpleGraphic from './components/SimpleGraphic'
 import { useEffect, useState } from 'react'
 import { getTemperature } from './services/useReports'
 import Loader from './components/Loader'
+import Datepicker from 'react-tailwindcss-datepicker'
 
 function temperaturaPage() {
   const [dataTemperatura, setDataTemperatura] = useState([])
+  const [value, setValue] = useState({
+    startDate: new Date(),
+    endDate: new Date().setMonth(1),
+  })
   const [date, setDate] = useState({
-    fechaInicio: '13/02/2023',
-    fechaFin: '16/02/2023',
+    fechaInicio: '12/02/2023',
+    fechaFin: '14/02/2023',
   })
 
   useEffect(() => {
-    getTemperature({
-      fechaInicio: '12/02/2023',
-      fechaFin: '15/02/2023',
-    }).then((data) => {
+    if (date.fechaInicio === '31/12/1969' || date.fechaFin === '31/12/1969')
+      return
+    getTemperature(date).then((data) => {
       setDataTemperatura(data)
     })
-  }, [])
+  }, [date])
+
+  const handleValueChange = (newValue) => {
+    setValue(newValue)
+    setDate({
+      fechaInicio:
+        newValue.startDate instanceof Date
+          ? newValue.startDate.toLocaleDateString('en-GB')
+          : new Date(newValue.startDate).toLocaleDateString('en-GB'),
+      fechaFin: new Date(newValue.endDate).toLocaleDateString('en-GB'),
+    })
+  }
 
   return (
     <>
@@ -35,6 +50,11 @@ function temperaturaPage() {
               yLabel="temperatura °C"
               dias={dataTemperatura.length}
               grados={dataTemperatura}
+            />
+            <Datepicker
+              primaryColor="indigo"
+              value={value}
+              onChange={handleValueChange}
             />
           </div>
         )}
