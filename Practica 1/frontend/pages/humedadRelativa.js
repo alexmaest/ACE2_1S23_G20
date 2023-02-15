@@ -2,6 +2,7 @@ import SimpleGraphic from './components/SimpleGraphic'
 import { useEffect, useState } from 'react'
 import { getHumidity } from './services/useReports'
 import Loader from './components/Loader'
+import Warning from './components/Warning'
 
 function humedadRelativaPage({ dates }) {
   const [dataHumedadRelativa, setDataHumedadRelativa] = useState([])
@@ -22,18 +23,20 @@ function humedadRelativaPage({ dates }) {
         </h1>
       </div>
       <div className="flex justify-center mt-10">
-        {dataHumedadRelativa.length > 0 && (
-          <div className=" bg-gray-900 rounded-lg ring-2 ring-indigo-500 drop-shadow-2xl">
-            <SimpleGraphic
-              title="Humedad relativa a lo largo del tiempo"
-              xLabel={`datos desde ${dates.fechaInicio} hasta ${dates.fechaFin}`}
-              yLabel="porcentaje %"
-              dias={dataHumedadRelativa.length}
-              grados={dataHumedadRelativa}
-            />
-          </div>
-        )}
+        {dataHumedadRelativa.length > 0 &&
+          dataHumedadRelativa[0] !== 'nodata' && (
+            <div className=" bg-gray-900 rounded-lg ring-2 ring-indigo-500 drop-shadow-2xl">
+              <SimpleGraphic
+                title="Humedad relativa a lo largo del tiempo"
+                xLabel={`datos desde ${dates.fechaInicio} hasta ${dates.fechaFin}`}
+                yLabel="porcentaje %"
+                dias={dataHumedadRelativa.length}
+                grados={dataHumedadRelativa}
+              />
+            </div>
+          )}
         {dataHumedadRelativa.length == 0 && <Loader />}
+        {dataHumedadRelativa[0] == 'nodata' && <Warning />}
       </div>
     </>
   )

@@ -22,7 +22,7 @@ async function getTemperature(dates) {
   if (data instanceof Array) {
     return data?.map((item) => item.temp) || []
   }
-  return []
+  return ['nodata']
 }
 
 async function getHumidity(dates) {
@@ -30,7 +30,7 @@ async function getHumidity(dates) {
   if (data instanceof Array) {
     return data?.map((item) => item.hum) || []
   }
-  return []
+  return ['nodata']
 }
 
 async function getWindDirection(dates) {
@@ -38,7 +38,7 @@ async function getWindDirection(dates) {
   if (data instanceof Array) {
     return data?.map((item) => item.dir) || []
   }
-  return []
+  return ['nodata']
 }
 
 async function getWindSpeed(dates) {
@@ -46,7 +46,7 @@ async function getWindSpeed(dates) {
   if (data instanceof Array) {
     return data?.map((item) => item.vel) || []
   }
-  return []
+  return ['nodata']
 }
 
 async function getPressure(dates) {
@@ -54,7 +54,7 @@ async function getPressure(dates) {
   if (data instanceof Array) {
     return data?.map((item) => item.pre * 0.750062) || []
   }
-  return []
+  return ['nodata']
 }
 
 async function getDewPoint(dates) {
@@ -62,7 +62,7 @@ async function getDewPoint(dates) {
   if (data instanceof Array) {
     return data?.map((item) => item.dew_point) || []
   }
-  return []
+  return ['nodata']
 }
 
 async function getAbsHumidity(dates) {
@@ -70,7 +70,7 @@ async function getAbsHumidity(dates) {
   if (data instanceof Array) {
     return data?.map((item) => item.abs_hum) || []
   }
-  return []
+  return ['nodata']
 }
 
 export {

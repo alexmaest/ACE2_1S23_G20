@@ -2,6 +2,7 @@ import SimpleGraphic from './components/SimpleGraphic'
 import { useEffect, useState } from 'react'
 import { getPressure } from './services/useReports'
 import Loader from './components/Loader'
+import Warning from './components/Warning'
 
 function barometroPage({ dates }) {
   const [dataPressure, setDataPressure] = useState([])
@@ -22,7 +23,7 @@ function barometroPage({ dates }) {
         </h1>
       </div>
       <div className="flex justify-center mt-10">
-        {dataPressure.length > 0 && (
+        {dataPressure.length > 0 && dataPressure[0] !== 'nodata' && (
           <div className=" bg-gray-900 rounded-lg ring-2 ring-indigo-500 drop-shadow-2xl">
             <SimpleGraphic
               title="Presión barométrica a lo largo del tiempo"
@@ -34,6 +35,7 @@ function barometroPage({ dates }) {
           </div>
         )}
         {dataPressure.length == 0 && <Loader />}
+        {dataPressure[0] == 'nodata' && <Warning />}
       </div>
     </>
   )

@@ -2,6 +2,7 @@ import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
 import { getWindDirection } from './services/useReports'
 import Loader from './components/Loader'
+import Warning from './components/Warning'
 
 const Sketch = dynamic(() => import('react-p5').then((mod) => mod.default), {
   ssr: false,
@@ -90,12 +91,13 @@ const windDirection = ({ dates }) => {
         </h1>
       </div>
       <div className="flex justify-center mt-10 w-full h-full content-center">
-        {windDirections.length > 0 && (
+        {windDirections.length > 0 && windDirections[0] !== 'nodata' && (
           <div className="flex justify-center content-center mx-[3px]">
             <Sketch setup={setup} draw={draw} />
           </div>
         )}
         {windDirections.length == 0 && <Loader />}
+        {windDirections[0] == 'nodata' && <Warning />}
       </div>
     </>
   )
