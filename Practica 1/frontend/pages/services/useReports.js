@@ -1,11 +1,11 @@
 async function getData(dates) {
-  let res = await fetch('http://localhost:3001/api/consulta2', {
-    method: 'POST',
-    mode: 'cors',
+  const res = await fetch('http://localhost:3001/api/consulta2' + "?" + new URLSearchParams({
+    dates
+  }), {
+    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(dates),
+    }
   })
   const data = await res.json()
   return data
