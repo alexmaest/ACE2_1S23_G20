@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
+import Datepicker from 'react-tailwindcss-datepicker'
 
 // importamos react-p5 en client-side
 // por defecto NextJs usa SSR (Server Side Rendering)
@@ -19,8 +21,29 @@ const x = sizeWidth / 2
 const y = sizeHeight / 1.3
 
 export default function Temperatura({ temp }) {
+  const [value, setValue] = useState({
+    startDate: new Date(),
+    endDate: new Date(),
+  })
+  const [date, setDate] = useState({
+    fechaInicio: new Date().toLocaleDateString('en-GB'),
+    fechaFin: new Date().toLocaleDateString('en-GB'),
+  })
+
+  const handleValueChange = (newValue) => {
+    setValue(newValue)
+    setDate({
+      fechaInicio:
+        newValue.startDate instanceof Date
+          ? newValue.startDate.toLocaleDateString('en-GB')
+          : new Date(newValue.startDate).toLocaleDateString('en-GB'),
+      fechaFin: new Date(newValue.endDate).toLocaleDateString('en-GB'),
+    })
+  }
+
   temperature = temp
   temp <= 10 ? (temperature *= 8) : (temperature *= 4)
+
   const setup = (p5, canvasParentRef) => {
     // use parent to render the canvas in this ref
     // (without that p5 will render the canvas outside of your component)
@@ -72,11 +95,25 @@ export default function Temperatura({ temp }) {
       <div className="text-white text-center mb-4 ring-2 ring-indigo-600 mx-10 rounded">
         Temperatura externa
       </div>
-      <Link href="/temperatura">
-        <div className="mx-[3px]">
+      <div className="mx-[3px]">
+        <Link
+          href={{
+            pathname: '/temperatura',
+            query: {
+              fechaInicio: date.fechaInicio,
+              fechaFin: date.fechaFin,
+            },
+          }}
+          as={`/temperatura/${date.fechaInicio}-${date.fechaFin}`}
+        >
           <Sketch setup={setup} draw={draw} />
-        </div>
-      </Link>
+        </Link>
+        <Datepicker
+          primaryColor="indigo"
+          value={value}
+          onChange={handleValueChange}
+        />
+      </div>
     </div>
   )
 }

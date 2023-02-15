@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
+import Datepicker from 'react-tailwindcss-datepicker'
 
 const Sketch = dynamic(() => import('react-p5').then((mod) => mod.default), {
   ssr: false,
@@ -13,6 +15,26 @@ let clockDiameter
 let directionNumber = 0
 
 export default function DireccionViento({ direction }) {
+  const [value, setValue] = useState({
+    startDate: new Date(),
+    endDate: new Date(),
+  })
+  const [date, setDate] = useState({
+    fechaInicio: new Date().toLocaleDateString('en-GB'),
+    fechaFin: new Date().toLocaleDateString('en-GB'),
+  })
+
+  const handleValueChange = (newValue) => {
+    setValue(newValue)
+    setDate({
+      fechaInicio:
+        newValue.startDate instanceof Date
+          ? newValue.startDate.toLocaleDateString('en-GB')
+          : new Date(newValue.startDate).toLocaleDateString('en-GB'),
+      fechaFin: new Date(newValue.endDate).toLocaleDateString('en-GB'),
+    })
+  }
+
   switch (direction) {
     case 'N':
       directionNumber = 0
@@ -70,13 +92,27 @@ export default function DireccionViento({ direction }) {
   return (
     <div className="w-64 flex-row content-center">
       <div className="text-white text-center mb-4 ring-2 ring-indigo-600 mx-10 rounded">
-        Dirección del Viento
+        Direccion del viento
       </div>
-      <Link href="/windDirection">
-        <div className="mx-[3px]">
+      <div className="mx-[3px]">
+        <Link
+          href={{
+            pathname: '/windDirection',
+            query: {
+              fechaInicio: date.fechaInicio,
+              fechaFin: date.fechaFin,
+            },
+          }}
+          as={`/windDirection/${date.fechaInicio}-${date.fechaFin}`}
+        >
           <Sketch setup={setup} draw={draw} />
-        </div>
-      </Link>
+        </Link>
+        <Datepicker
+          primaryColor="indigo"
+          value={value}
+          onChange={handleValueChange}
+        />
+      </div>
     </div>
   )
 }

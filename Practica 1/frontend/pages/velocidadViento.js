@@ -2,37 +2,17 @@ import SimpleGraphic from './components/SimpleGraphic'
 import { useEffect, useState } from 'react'
 import { getWindSpeed } from './services/useReports'
 import Loader from './components/Loader'
-import Datepicker from 'react-tailwindcss-datepicker'
 
-function velocidadVientoPage() {
+function velocidadVientoPage({ dates }) {
   const [dataWindSpeed, setDataWindSpeed] = useState([])
-  const [value, setValue] = useState({
-    startDate: new Date(),
-    endDate: new Date().setMonth(1),
-  })
-  const [date, setDate] = useState({
-    fechaInicio: '12/02/2023',
-    fechaFin: '14/02/2023',
-  })
 
   useEffect(() => {
-    if (date.fechaInicio === '31/12/1969' || date.fechaFin === '31/12/1969')
+    if (dates.fechaInicio === '31/12/1969' || dates.fechaFin === '31/12/1969')
       return
-    getWindSpeed(date).then((data) => {
+    getWindSpeed(dates).then((data) => {
       setDataWindSpeed(data)
     })
-  }, [date])
-
-  const handleValueChange = (newValue) => {
-    setValue(newValue)
-    setDate({
-      fechaInicio:
-        newValue.startDate instanceof Date
-          ? newValue.startDate.toLocaleDateString('en-GB')
-          : new Date(newValue.startDate).toLocaleDateString('en-GB'),
-      fechaFin: new Date(newValue.endDate).toLocaleDateString('en-GB'),
-    })
-  }
+  }, [])
 
   return (
     <>
@@ -51,17 +31,23 @@ function velocidadVientoPage() {
               dias={dataWindSpeed.length}
               grados={dataWindSpeed}
             />
-            <Datepicker
-              primaryColor="indigo"
-              value={value}
-              onChange={handleValueChange}
-            />
           </div>
         )}
         {dataWindSpeed.length == 0 && <Loader />}
       </div>
     </>
   )
+}
+
+export async function getServerSideProps(context) {
+  return {
+    props: {
+      dates: {
+        fechaInicio: context.query.fechaInicio,
+        fechaFin: context.query.fechaFin,
+      },
+    },
+  }
 }
 
 export default velocidadVientoPage
