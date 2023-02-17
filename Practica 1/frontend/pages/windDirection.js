@@ -25,7 +25,7 @@ const windDirection = ({ dates }) => {
   var north = windDirections.filter((item) => item == 'N').length
   var east = windDirections.filter((item) => item == 'E').length
   var south = windDirections.filter((item) => item == 'S').length
-  var west = windDirections.filter((item) => item == 'W').length
+  var west = windDirections.filter((item) => item == 'O').length
 
   var total = north + east + south + west
 
