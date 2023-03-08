@@ -1,0 +1,27 @@
+<html>
+<body>
+
+    Ingresa (name,value) separados por -<br>
+    <label>lista</label> 
+    <input type="text" name="number" id="num">
+    <label>nombre eje x</label> 
+    <input type="text" name="number" id="ejex">
+    <label>nombre eje y</label>  
+    <input type="text" name="number" id="ejey">
+    <label>titulo grafica</label> 
+    <input type="text" name="number" id="titulo">
+    <br>
+
+    <input type="button" value="submit" name="submit" onclick="draw()">
+    <input type="button" value="Clear" name="Clear" onclick="reset()"><br><br>
+    
+
+    <div>
+        <canvas id="myCanvas" style="background: white; position: relative; left: 130px;">
+        </canvas>
+        <legend for="myCanvas"></legend>
+    </div>
+    
+    <script type="text/javascript" src="script.js"></script>
+</body>
+</html>
