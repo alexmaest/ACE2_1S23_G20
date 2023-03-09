@@ -8,8 +8,8 @@ var myBarchart;
 var ctx;
 
 var myCanvas = document.getElementById("myCanvas");
-myCanvas.width = 550;   //ancho del marco canvas
-myCanvas.height = 550;  // =alto del marco canvas
+myCanvas.width = window.innerWidth * 0.95;   //ancho del marco canvas   550
+myCanvas.height = window.innerHeight * 0.85;  // =alto del marco canvas   550
 
 var ctx = myCanvas.getContext("2d");
 
@@ -26,23 +26,37 @@ window.onresize = function () {
   //3 datos
   //n="rojo,1-azul,2-verde,3"
   //5 datos
-  var n="rojo,10-azul,20-verde,30-rosa,80-aqua,200"
+  var n = "rojo,10-azul,20-verde,30-rosa,80-aqua,200"
   //25 datos
   //n="rojo,10-azul,20-verde,30-rosa,80-aqua,200-rojo1,10-azul1,20-verde1,30-rosa1,80-aqua1,200-rojo2,10-azul2,20-verde2,30-rosa2,80-aqua2,200-rojo3,10-azul3,20-verde3,30-rosa3,80-aqua3,200-rojo4,10-azul4,20-verde4,30-rosa4,80-aqua4,200"
   //50 datos
-  //n="rojo,10-azul,20-verde,30-rosa,80-aqua,200-rojo1,10-azul1,20-verde1,30-rosa1,80-aqua1,200-rojo2,10-azul2,20-verde2,30-rosa2,80-aqua2,200-rojo3,10-azul3,20-verde3,30-rosa3,80-aqua3,200-rojo4,10-azul4,20-verde4,30-rosa4,80-aqua4,200-rojo5,10-azul5,20-verde5,30-rosa5,80-aqua5,200-rojo6,10-azul6,20-verde6,30-rosa6,80-aqua6,200-rojo7,10-azul7,20-verde7,30-rosa7,80-aqua7,200-rojo8,10-azul8,20-verde8,30-rosa8,80-aqua8,200-rojo9,10-azul9,20-verde9,30-rosa9,80-aqua9,200"
-  
+  n = "rojo,10-azul,20-verde,30-rosa,80-aqua,200-rojo1,10-azul1,20-verde1,30-rosa1,80-aqua1,200-rojo2,10-azul2,20-verde2,30-rosa2,80-aqua2,200-rojo3,10-azul3,20-verde3,30-rosa3,80-aqua3,200-rojo4,10-azul4,20-verde4,30-rosa4,80-aqua4,200-rojo5,10-azul5,20-verde5,30-rosa5,80-aqua5,200-rojo6,10-azul6,20-verde6,30-rosa6,80-aqua6,200-rojo7,10-azul7,20-verde7,30-rosa7,80-aqua7,200-rojo8,10-azul8,20-verde8,30-rosa8,80-aqua8,200-rojo9,10-azul9,20-verde9,30-rosa9,80-aqua9,200"
+
   var param = "penalizacion de pomodoro"
   var paramY = "segundos(s)"
-  var paramX =  "pomodoros(p)"
+  var paramX = "pomodoros(p)"
 
-  draw(param,paramY,paramX,n)
+  var n2 = document.getElementById("num").value;
+
+  draw(param, paramY, paramX, n2)
 }
 
 function resizeCanvas() {
-  myCanvas.width = window.innerWidth*0.75
-  myCanvas.height = window.innerHeight*0.75
-  
+  myCanvas.width = window.innerWidth * 0.95
+  myCanvas.height = window.innerHeight * 0.85
+
+}
+
+function SUMMIT() {
+  resizeCanvas()
+
+  var param = "penalizacion de pomodoro"
+  var paramY = "segundos(s)"
+  var paramX = "pomodoros(p)"
+
+  var n2 = document.getElementById("num").value;
+
+  draw(param, paramY, paramX, n2)
 }
 
 
@@ -82,12 +96,32 @@ class BarChart {
 
     //creamos la lista que identifica a c/u de las barras del grafico
     this.ul = document.createElement("ul");
+    this.ul2 = document.createElement("ul");
+    this.ul3 = document.createElement("ul");
+
+    this.ul4 = document.createElement("ul");
+    this.ul5 = document.createElement("ul");
+    this.ul6 = document.createElement("ul");
+
+    this.ul7 = document.createElement("ul");
+    this.ul8 = document.createElement("ul");
+    this.ul9 = document.createElement("ul");
 
     //this.ul.className="social-icons"
 
 
     //identificador de esta lista de c/u de las barras en el grafico
     this.ul.id = "legends"
+    this.ul2.id = "legends2"
+    this.ul3.id = "legends3"
+
+    this.ul4.id = "legends4"
+    this.ul5.id = "legends5"
+    this.ul6.id = "legends6"
+
+    this.ul7.id = "legends7"
+    this.ul8.id = "legends8"
+    this.ul9.id = "legends9"
   }
 
   //inician los metodos de esta clase (metodos graficos)
@@ -122,7 +156,7 @@ class BarChart {
       this.ctx.fillStyle = "red";
       this.ctx.textBaseline = "bottom";
       this.ctx.font = "bold 10px Arial";
-      this.ctx.fillText(gridValue, 0, gridY + 4);
+      this.ctx.fillText(Math.round(gridValue), 0, gridY + 4);
       this.ctx.restore();
       gridValue += this.options.gridStep;
     }
@@ -163,7 +197,7 @@ class BarChart {
     if (this.titleOptions.align == "right") {
       xPos = this.canvas.width - 10;
     }
-    this.ctx.fillText(this.options.seriesName, xPos+45, 18);
+    this.ctx.fillText(this.options.seriesName, xPos + 45, 18);
     this.ctx.restore();
   }
   drawLabelY() {//dibuja el titulo del eje y
@@ -227,12 +261,49 @@ class BarChart {
     //identificador de esta lista de c/u de las barras en el grafico
 
     legend.append(this.ul);
+    legend.append(this.ul2);
+    legend.append(this.ul3);
+
+    legend.append(this.ul4);
+    legend.append(this.ul5);
+    legend.append(this.ul6);
+
+    legend.append(this.ul7);
+    legend.append(this.ul8);
+    legend.append(this.ul9);
+
+    var ulActual = this.ul
 
     //obtengo los valores de data
     var valores = Object.values(this.options.data)
     var contador = 0//contador para recorrer ese array de valores 
 
+    
+    var contador2 = 1//contador para pomodoros
+    var contador3 = 1//contador para ciclos de pomodoro 
+
     for (let ctg of Object.keys(this.options.data)) {
+
+      //esto es con el fin de no irse a +x infinito xd
+      if (25 % contador == 0 && contador == 25) {
+        ulActual = this.ul2
+      } else if (50 % contador == 0 && contador == 50) {
+        ulActual = this.ul3
+      } else if (75 % contador == 0 && contador == 75) {
+        ulActual = this.ul4
+      } else if (100 % contador == 0 && contador == 100) {
+        ulActual = this.ul5
+      } else if (125 % contador == 0 && contador == 125) { 
+        ulActual = this.ul6
+
+      }else if (150 % contador == 0 && contador == 150) { 
+        ulActual = this.ul7
+      }else if (175 % contador == 0 && contador == 175) { 
+        ulActual = this.ul8
+      }else if (200 % contador == 0 && contador == 200) { // 50 ciclos de pomodoros totales los que aguanta
+        ulActual = this.ul9
+      }
+
       let li = document.createElement("li");
       li.style.listStyle = "none";
 
@@ -242,14 +313,27 @@ class BarChart {
         "20px solid " + this.colors[pIndex % this.colors.length];
       li.style.padding = "-2px";
 
-      li.textContent =""+ctg + ":" + valores[contador]+"";
+      if (contador % 4 == 0) {
+        li.textContent = "Pomodoro"+contador2+" Ciclo"+contador3+ ") " + ctg + ":" + valores[contador] + "";
+        
+        contador3++
+      }else{
+        li.textContent = ""+ ctg + ":" + valores[contador] + "";
+      }
 
+      if(5%contador3==0 && contador3==5){
+        contador3=1
+        contador2++
+      }
+
+    
       contador++
-      this.ul.append(li);
+      
+      ulActual.append(li);
 
       //podeeer
-      this.ul.style.position = "relative"
-      this.ul.style.left = "5px"//margen izq
+      ulActual.style.position = "relative"
+      ulActual.style.left = "5px"//margen izq
 
       pIndex++;
     }
@@ -286,8 +370,7 @@ var myBarchart = new BarChart({
   },
 
   //en colors puede ir bien una lista larga por default
-  colors: ["#000000","#FA0F0F", "#FA8C0F", "#FACC0F", "#ECFA0F","#A5FA0F","#61FA0F","#0FFA7D","#0FFAD3","#0FFAFA","#0FC5FA","#0F96FA","#0F5DFA","#0F0FFA","#5D0FFA","#9D0FFA","#DA0FFA","#FA0FE1","#FA0FAF","#FA0F5D","#B20000","#B24600","#B28F00","#AAB200","#59B200","#00B20B","#00B27C","#00B2B2","#009AB2","#0069B2","#003BB2","#2000B2","#6F00B2","#AD00B2","#999898"],
-  titleOptions: {
+  colors: ["#00B0FF","#002AFF","#7B00B9","#AE00FF"     ,"#FF8787","#FF0000","#CB0000","#8B0000"     ,"#6DFF88","#00FF2F","#75F100","#58B500"    ,"#FEFF67","#FDFF00","#E2C500","#B39C00"], titleOptions: {
     align: "center",
     fill: "black",
     font: {
@@ -316,6 +399,12 @@ function reset() {
   var leyendas = document.getElementById('legends');
   leyendas.innerHTML = "";
 
+  for (let index = 2; index <= 9; index++) {
+    leyendas = document.getElementById('legends'+index);
+    leyendas.innerHTML = "";
+    
+  }
+
 }
 
 //=================================================================================================================================
@@ -324,18 +413,18 @@ function reset() {
 //=================================================================================================================================
 
 
-function draw(tituloBarra,ejeYname,ejeXname,listaDatos) {
+function draw(tituloBarra, ejeYname, ejeXname, listaDatos) {
 
 
   //options es el atributo que nos importa con este modificamos lo que le enviamos
   //en el constructor del BarChart
   myBarchart.options.seriesName = tituloBarra
   myBarchart.options.seriesNameY = ejeYname
-  myBarchart.options.seriesNameX =  ejeXname
+  myBarchart.options.seriesNameX = ejeXname
 
   //borro el grafico anterior para graficar el nuevo
   reset()
-  
+
   var values = listaDatos.split('-');//caracter de separacion
 
   //creo el array
@@ -379,10 +468,6 @@ const convertArrayToObject = (array, key) => {
     };
   }, initialValue);
 };
-
-//de array a objeto
-//https://dev.to/afewminutesofcode/how-to-convert-an-array-into-an-object-in-javascript-25a4#:~:text=To%20convert%20an%20array%20into%20an%20object%20we%20will%20create,key%20we%20have%20passed%20in.
-
 
 
 
