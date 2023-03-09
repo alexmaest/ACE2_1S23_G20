@@ -1,7 +1,20 @@
-import Navbar from '@/components/Navbar'
-import Head from 'next/head'
+import { useEffect } from "react";
 
-export default function Home () {
+import Navbar from "@/components/Navbar";
+import useAuth from "@/hooks/useAuth";
+import Head from "next/head";
+import { useRouter } from "next/router";
+
+export default function Home() {
+  const router = useRouter();
+  const { auth } = useAuth();
+
+  useEffect(() => {
+    if (!auth.username) {
+      router.push("/login");
+    }
+  }, [auth]);
+
   return (
     <>
       <Head>
@@ -11,27 +24,39 @@ export default function Home () {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
-      <main className='bg-bgred h-screen'>
-        <section className='flex flex-col'>
-          <div className='flex items-center justify-center'>
-            <div className='flex flex-col mt-11 drop-shadow-xl md:flex-row'>
-              <div className='mx-4'>
-              <h1 className='text-xl text-center font-bold text-white underline decoration-green-300 mb-4'>Pomodoro</h1>
-              <input type='number' defaultValue={25} className='w-auto text-center text-2xl font-bold text-green-800 bg-gray-100 rounded-lg' />
+      <main className="bg-bgred h-screen">
+        <section className="flex flex-col">
+          <div className="flex items-center justify-center">
+            <div className="flex flex-col mt-11 drop-shadow-xl md:flex-row">
+              <div className="mx-4">
+                <h1 className="text-xl text-center font-bold text-white underline decoration-green-300 mb-4">
+                  Pomodoro
+                </h1>
+                <input
+                  type="number"
+                  defaultValue={25}
+                  className="w-auto text-center text-2xl font-bold text-green-800 bg-gray-100 rounded-lg"
+                />
               </div>
-              <div className='mx-4'>
-              <h1 className='text-xl text-center font-bold text-white underline decoration-green-300 mb-4'>Descanso</h1>
-              <input type='number' defaultValue={5} className='w-auto text-center text-2xl font-bold text-green-800 bg-gray-100 rounded-lg' />
+              <div className="mx-4">
+                <h1 className="text-xl text-center font-bold text-white underline decoration-green-300 mb-4">
+                  Descanso
+                </h1>
+                <input
+                  type="number"
+                  defaultValue={5}
+                  className="w-auto text-center text-2xl font-bold text-green-800 bg-gray-100 rounded-lg"
+                />
               </div>
             </div>
           </div>
-          <div className='flex items-center justify-center mt-10'>
-            <button className='bg-green-400 w-48 h-12 font-bold text-white ring-2 ring-green-700 rounded'>
+          <div className="flex items-center justify-center mt-10">
+            <button className="bg-green-400 w-48 h-12 font-bold text-white ring-2 ring-green-700 rounded">
               Enviar
             </button>
           </div>
         </section>
       </main>
     </>
-  )
+  );
 }
