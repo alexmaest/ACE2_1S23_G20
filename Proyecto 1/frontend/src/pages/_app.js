@@ -1,7 +1,8 @@
-import Head from 'next/head'
-import '@/styles/globals.css'
+import Head from "next/head";
+import "@/styles/globals.css";
+import { AuthProvider } from "@/context/AuthProvider";
 
-export default function App ({ Component, pageProps }) {
+export default function App({ Component, pageProps }) {
   return (
     <>
       <Head>
@@ -31,7 +32,9 @@ export default function App ({ Component, pageProps }) {
         <link rel="apple-touch-icon" href="/apple-icon.png"></link>
         <meta name="theme-color" content="#317EFB" />
       </Head>
-      <Component {...pageProps} />
+      <AuthProvider>
+        <Component {...pageProps} />
+      </AuthProvider>
     </>
-  )
+  );
 }
