@@ -7,15 +7,16 @@
   body {
     margin: 50px auto;
     font-family: "Khand";
-    font-size: 1.2em;
+    font-size: 1.2em; /*ojo*/
     text-align: left;
     background-color: rgb(178, 181, 181);
   }
   
   ul {
     padding-top: 20px;
+    /*    */
     display: flex;
-    gap: 0.5rem;
+    gap: 0.5rem;  /*ojo*/
   }
   
   li {

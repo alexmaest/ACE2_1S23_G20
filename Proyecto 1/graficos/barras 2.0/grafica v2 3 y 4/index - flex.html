@@ -1,0 +1,41 @@
+<html>
+
+<head>
+    <title>YYY</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+
+    Ingresa (name,value) separados por -<br>
+    <label>lista</label> 
+    <input type="text" name="number" id="num">
+    <label>nombre eje x</label> 
+    <input type="text" name="number" id="ejex">
+    <label>nombre eje y</label>  
+    <input type="text" name="number" id="ejey">
+    <label>titulo grafica</label> 
+    <input type="text" name="number" id="titulo">
+    <br>
+
+
+    <input type="button" value="submit" name="submit" onclick="SUMMIT()">
+    <input type="button" value="Clear" name="Clear" onclick="reset()"><br><br>
+    
+
+
+    <section class="home">
+        <div class="in-flex">
+
+            <canvas id="myCanvas" style="background: white; position: relative; left: 0px;">
+            </canvas>
+            <legend for="myCanvas"></legend>
+
+            <script type="text/javascript" src="script.js"></script>
+
+        </div>
+    </section>
+</body>
+
+</html>
