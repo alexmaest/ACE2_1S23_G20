@@ -27,7 +27,9 @@ void loop() {
       int httpCode = http.POST(data);//Hace un POST con node
       if (httpCode > 0) {//Si se realiza con exito obtiene la respuesta
         String payload = http.getString();
-        //Serial.println("Response: " + payload);//Imprime la respuesta
+        if(payload != ""){
+          Serial.println(payload);//Devuelve el tiempo configurado en la app
+        }
       } else {
         //Serial.println("Error on HTTP request");//Error en la respuesta
       }
