@@ -203,13 +203,13 @@ void resetPomodoro()
   estadoBotonReset = digitalRead(reset);
   while (estadoBotonReset != LOW)
   {
-    animacionPomodoroNoIniciado();
+     animacioCicloPomodoroFinalizado();
     estadoBotonReset = digitalRead(reset);
   }
   // lastestadoBotonReset = LOW;
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("Pomodoro");
+  lcd.print("Fin Pomodoro");
   lcd.setCursor(0, 1);
   lcd.print("Reset");
   delayMillis(1000);
@@ -301,6 +301,19 @@ void animacionPomodoroNoIniciado()
   delayMillis(500);
   lcd.clear();
   delayMillis(500);
+}
+
+void animacioCicloPomodoroFinalizado(){
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Ciclo Finalizado");
+  lcd.setCursor(0, 1);
+  //mensaje pulse reset
+  lcd.print("Pulse reset");
+  delayMillis(500);
+  lcd.clear();
+  delayMillis(500);
+
 }
 
 void delayMillis(int tiempo)
