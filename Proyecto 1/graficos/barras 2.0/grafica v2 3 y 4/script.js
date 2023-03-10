@@ -95,7 +95,7 @@ function drawBar(
   this.ctx.rotate(-0.5 * Math.PI);
 
   this.ctx.fillStyle = "red";
-  this.ctx.font = "bold 12px serif"
+  this.ctx.font = "12px serif"//"bold 12px serif"
   this.ctx.fillText(value, 0, 0);
 
   this.ctx.restore();

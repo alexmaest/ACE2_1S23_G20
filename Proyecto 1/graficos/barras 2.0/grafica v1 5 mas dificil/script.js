@@ -76,12 +76,31 @@ function drawBar(
   upperLeftCornerY,
   width,
   height,
-  color
+  color, value, puntoX
 ) {
   ctx.save();
   ctx.fillStyle = color;
   ctx.fillRect(upperLeftCornerX, upperLeftCornerY, width, height);
   ctx.restore();
+
+
+
+  // ctx.fillStyle = color;
+  // ctx.fillRect(upperLeftCornerX, upperLeftCornerY, width, height);
+  ctx.restore();
+
+  //--------new
+  this.ctx.save();
+  this.ctx.translate(upperLeftCornerX+9, puntoX-5);
+  this.ctx.rotate(-0.5 * Math.PI);
+
+  this.ctx.fillStyle = "181818";
+  this.ctx.font = "12px serif" //"bold 12px serif"
+  this.ctx.fillText(value, 0, 0);
+
+  this.ctx.restore();
+
+  
 }
 
 //analizado
@@ -138,9 +157,9 @@ class BarChart {
       drawLine(//barra horizontal del eje x
         this.ctx,
         17,
-        gridY,
+        gridY-10,
         this.canvas.width,
-        gridY,
+        gridY-10,
         this.options.gridColor
       );
       drawLine(//barra vertical del eje y
@@ -161,6 +180,7 @@ class BarChart {
       gridValue += this.options.gridStep;
     }
   }
+  //ok
   //2
   drawBars() {// dibuja todas las barras del canvas se auto-ajusta
     var canvasActualHeight = this.canvas.height - this.options.padding * 2;
@@ -169,18 +189,23 @@ class BarChart {
     var numberOfBars = Object.keys(this.options.data).length;
     var barSize = canvasActualWidth / numberOfBars;
     var values = Object.values(this.options.data);
+
+    var array = Object.keys(this.options.data)
+    var contador = 0
     for (let val of values) {
       var barHeight = Math.round((canvasActualHeight * val) / this.maxValue);
       //console.log(barHeight);
       drawBar(
         this.ctx,
-        this.options.padding + barIndex * barSize,
-        this.canvas.height - barHeight - this.options.padding,
+        this.options.padding + barIndex * barSize-10,
+        this.canvas.height - barHeight - this.options.padding-10,
         barSize,
         barHeight,
-        this.colors[barIndex % this.colors.length]
+        this.colors[barIndex % this.colors.length], array[contador],  //new  le envio valor a mostrar en la barra
+        this.canvas.height - 15
       );
       barIndex++;
+      contador++
     }
   }
   //3
@@ -229,7 +254,7 @@ class BarChart {
     if (this.titleOptions.align == "right") {
       xPos = this.canvas.width - 10;
     }
-    this.ctx.fillText(this.options.seriesNameX, this.canvas.width - 65, this.canvas.height - 10);
+    this.ctx.fillText(this.options.seriesNameX, this.canvas.width - 65, this.canvas.height - 1);
     this.ctx.restore();
   }
   drawLabel2() {//dibuja el #muestras del grafico

@@ -76,12 +76,31 @@ function drawBar(
   upperLeftCornerY,
   width,
   height,
-  color
+  color, value, puntoX
 ) {
   ctx.save();
   ctx.fillStyle = color;
   ctx.fillRect(upperLeftCornerX, upperLeftCornerY, width, height);
   ctx.restore();
+
+
+
+  // ctx.fillStyle = color;
+  // ctx.fillRect(upperLeftCornerX, upperLeftCornerY, width, height);
+  ctx.restore();
+
+  //--------new
+  this.ctx.save();
+  this.ctx.translate(upperLeftCornerX+9, puntoX-5);
+  this.ctx.rotate(-0.5 * Math.PI);
+
+  this.ctx.fillStyle = "#181818";
+  this.ctx.font = "12px serif" //"bold 12px serif"
+  this.ctx.fillText(value, 0, 0);
+
+  this.ctx.restore();
+
+  
 }
 
 //analizado
@@ -169,6 +188,9 @@ class BarChart {
     var numberOfBars = Object.keys(this.options.data).length;
     var barSize = canvasActualWidth / numberOfBars;
     var values = Object.values(this.options.data);
+
+    var array = Object.keys(this.options.data)
+    var contador = 0
     for (let val of values) {
       var barHeight = Math.round((canvasActualHeight * val) / this.maxValue);
       //console.log(barHeight);
@@ -178,9 +200,11 @@ class BarChart {
         this.canvas.height - barHeight - this.options.padding,
         barSize,
         barHeight,
-        this.colors[barIndex % this.colors.length]
+        this.colors[barIndex % this.colors.length], array[contador],  //new  le envio valor a mostrar en la barra
+        this.canvas.height - 15
       );
       barIndex++;
+      contador++
     }
   }
   //3
@@ -229,7 +253,7 @@ class BarChart {
     if (this.titleOptions.align == "right") {
       xPos = this.canvas.width - 10;
     }
-    this.ctx.fillText(this.options.seriesNameX, this.canvas.width - 65, this.canvas.height - 10);
+    this.ctx.fillText(this.options.seriesNameX, this.canvas.width - 65, this.canvas.height - 1);
     this.ctx.restore();
   }
   drawLabel2() {//dibuja el #muestras del grafico
@@ -363,7 +387,7 @@ var myBarchart = new BarChart({
   },
 
   //en colors puede ir bien una lista larga por default
-  colors: ["#000000", "#FA0F0F", "#FA8C0F", "#FACC0F", "#ECFA0F", "#A5FA0F", "#61FA0F", "#0FFA7D", "#0FFAD3", "#0FFAFA", "#0FC5FA", "#0F96FA", "#0F5DFA", "#0F0FFA", "#5D0FFA", "#9D0FFA", "#DA0FFA", "#FA0FE1", "#FA0FAF", "#FA0F5D", "#B20000", "#B24600", "#B28F00", "#AAB200", "#59B200", "#00B20B", "#00B27C", "#00B2B2", "#009AB2", "#0069B2", "#003BB2", "#2000B2", "#6F00B2", "#AD00B2", "#999898"],
+  colors: ["#D8D8D8", "#FA0F0F", "#FA8C0F", "#FACC0F", "#ECFA0F", "#A5FA0F", "#61FA0F", "#0FFA7D", "#0FFAD3", "#0FFAFA", "#0FC5FA", "#0F96FA", "#0F5DFA", "#0F0FFA", "#5D0FFA", "#9D0FFA", "#DA0FFA", "#FA0FE1", "#FA0FAF", "#FA0F5D", "#B20000", "#B24600", "#B28F00", "#AAB200", "#59B200", "#00B20B", "#00B27C", "#00B2B2", "#009AB2", "#0069B2", "#003BB2", "#2000B2", "#6F00B2", "#AD00B2", "#999898"],
   titleOptions: {
     align: "center",
     fill: "black",
