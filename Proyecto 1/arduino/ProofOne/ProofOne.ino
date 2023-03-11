@@ -332,29 +332,25 @@ void delayMillis(int tiempo)
 // finaliza pomodoro
 void buzzerFinPomodoro()
 {
-  for (int i = 0; i < 2; i++)
+  int notas[] = {659, 659, 0, 659, 0, 494, 659, 0, 784}; //Definir frecuencias de notas
+  int duracion[] = {200, 200, 200, 200, 200, 200, 200, 200, 400}; //Duración en milisegundos de cada nota
+  for (int i = 0; i < 9; i++)
   {
-    for (int j = 0; j < 3; j++)
-    {
-      tone(BOCINA, 1000, 150);
-      delayMillis(200);
-    }
-    delayMillis(400);
+    tone(BOCINA, notas[i], duracion[i]);
+    delayMillis(duracion[i] * 1.3);
   }
 }
 
 // finaliza descanso
 void buzzerFinDescanso()
 {
-  for (int i = 0; i < 2; i++)
-  {
-    for (int j = 0; j < 3; j++)
+  int notas[] = {261, 294, 329, 349, 392, 440, 494}; //Definir frecuencias de notas
+  int duracion[] = {100,100,200,200,100,100,300}; //Duración en milisegundos de cada nota
+    for (int i = 0; i < 7; i++)
     {
-      tone(BOCINA, 2000, 150);
-      delayMillis(200);
+      tone(BOCINA, notas[i], duracion[i]);
+      delayMillis(duracion[i]*1.2);
     }
-    delayMillis(400);
-  }
 }
 
 // aviso que restan 10 segundos
