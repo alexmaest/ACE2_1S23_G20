@@ -57,6 +57,13 @@ void loop()
     // Se inicia el pomodoro cuando la persona se sienta
     Serial.println("S");
     pomodoroIniciado = true;
+    //en dado caso se encienda el pomodoro y la persona ya esta sentada
+    if(tiempoTrabajo == 0){
+      //como el tiempo aun no se configuro
+      //lee el potenciometro para
+      //posterior inciar el pomodoro
+      noIniciado();
+    }
     iniciaPomodoro();
   }
   if (digitalRead(sensor) == 1)
