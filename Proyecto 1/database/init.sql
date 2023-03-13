@@ -54,7 +54,7 @@ CREATE TABLE history (
     is_penalized BOOLEAN NOT NULL,
     current_time_h DATETIME NOT NULL,
     PRIMARY KEY (history_id),
-    FOREIGN KEY (task_id) REFERENCES usuario(user_id)
+    FOREIGN KEY (task_id) REFERENCES task(task_id)
 ) ENGINE=INNODB;
 
 -- Procedure to insert in history
@@ -66,7 +66,7 @@ BEGIN
     DECLARE _is_penalized BOOLEAN;
 
     SELECT task_type INTO _task_type FROM task WHERE task_id = _task_id;
-    SET current_time_h = NOW();
+    SET _current_time_h = NOW();
 
     IF _task_type = 'trabajo' THEN
         SET _is_penalized = NOT _is_seated;
