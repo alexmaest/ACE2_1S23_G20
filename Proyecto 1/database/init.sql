@@ -19,8 +19,8 @@ CREATE TABLE pomodoro (
     user_id INT NOT NULL,
     work_time INT NOT NULL,
     rest_time INT NOT NULL,
-    start_time DATETIME NOT NULL,
-    end_time DATETIME NOT NULL,
+    start_time DATETIME,
+    end_time DATETIME,
     PRIMARY KEY (pomodoro_id),
     FOREIGN KEY (user_id) REFERENCES usuario(user_id)
 ) ENGINE=INNODB;
@@ -52,9 +52,9 @@ CREATE TABLE history (
     task_id INT NOT NULL,
     is_seated BOOLEAN NOT NULL,
     is_penalized BOOLEAN NOT NULL,
-    current_time DATETIME NOT NULL,
+    current_time_h DATETIME NOT NULL,
     PRIMARY KEY (history_id),
-    FOREIGN KEY (task_id) REFERENCES usuario(task_id),
+    FOREIGN KEY (task_id) REFERENCES usuario(user_id)
 ) ENGINE=INNODB;
 
 -- Procedure to insert in history
@@ -62,11 +62,11 @@ DELIMITER $$
 CREATE PROCEDURE insert_history(IN _task_id INT, IN _is_seated BOOLEAN)
 BEGIN
     DECLARE _task_type VARCHAR(10);
-    DECLARE _current_time DATETIME;
+    DECLARE _current_time_h DATETIME;
     DECLARE _is_penalized BOOLEAN;
 
     SELECT task_type INTO _task_type FROM task WHERE task_id = _task_id;
-    SET current_time = NOW();
+    SET current_time_h = NOW();
 
     IF _task_type = 'trabajo' THEN
         SET _is_penalized = NOT _is_seated;
@@ -74,8 +74,8 @@ BEGIN
         SET _is_penalized = _is_seated;
     END IF;
 
-    INSERT INTO history (task_id, is_seated, is_penalized, current_time)
-    VALUES (_task_id, _is_seated, _is_penalized, _current_time);
+    INSERT INTO history (task_id, is_seated, is_penalized, current_time_h)
+    VALUES (_task_id, _is_seated, _is_penalized, _current_time_h);
 
 END$$
 DELIMITER ;
