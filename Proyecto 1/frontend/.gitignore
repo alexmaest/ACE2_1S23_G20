@@ -34,4 +34,4 @@ yarn-error.log*
 # dotenv
 .env
 
-./public/icons/sw.js.map
+/public/sw.js.map
