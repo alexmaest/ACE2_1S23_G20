@@ -43,7 +43,7 @@ const server = http.createServer((req, res) => {
 });
 
 // Configurar el puerto y dirección IP del servidor
-const port = 3000;
+const port = 3556;
 const ip = '0.0.0.0';
 
 // Iniciar el servidor
