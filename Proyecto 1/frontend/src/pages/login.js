@@ -1,56 +1,35 @@
-import { useState, useRef, useEffect } from 'react'
-import Navbar from '../components/Navbar'
-import Head from 'next/head'
-import Link from 'next/link'
+import { useState, useRef, useEffect } from "react";
+import Navbar from "../components/Navbar";
+import Head from "next/head";
+import Link from "next/link";
+import { signIn } from "next-auth/react";
 
-export default function Login () {
-  const userRef = useRef()
-  const errorRef = useRef()
+export default function Login() {
+  const userRef = useRef();
+  const errorRef = useRef();
 
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-
-  useEffect(() => {
-    console.log('RENDERIZANDOSE')
-    userRef.current.focus()
-  }, [])
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    setError('')
-  }, [username, password])
+    userRef.current.focus();
+  }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
+  useEffect(() => {
+    setError("");
+  }, [username, password]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     // Autenticar usuario
-    fetch('http://localhost:3555/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        username,
-        password
-      })
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          return res.json()
-        } else {
-          console.log('Credenciales incorrectas')
-        }
-      })
-      .then((data) => {
-        if (data) {
-          console.log({ token: data.token })
-          localStorage.setItem('account', JSON.stringify(data.token))
-          window.location.href = '/'
-        } else {
-          setError('Credenciales incorrectas')
-          userRef.current.focus()
-        }
-      })
-  }
+    const result = await signIn("credentials", {
+      username: username,
+      password: password,
+      redirect: true,
+      callbackUrl: "/",
+    });
+  };
 
   return (
     <>
@@ -65,7 +44,7 @@ export default function Login () {
         >
           <p
             ref={errorRef}
-            className={error ? 'bg-red-400 border-red-900' : 'hidden'}
+            className={error ? "bg-red-400 border-red-900" : "hidden"}
             aria-live="assertive"
           >
             {error}
@@ -106,7 +85,7 @@ export default function Login () {
             Iniciar sesión
           </button>
           <p className="text-gray-500 text-sm mt-4">
-            ¿No tienes una cuenta?{' '}
+            ¿No tienes una cuenta?{" "}
             <Link className="text-blue-500" href="/registro">
               Regístrate
             </Link>
@@ -114,5 +93,5 @@ export default function Login () {
         </form>
       </div>
     </>
-  )
+  );
 }
