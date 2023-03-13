@@ -1,5 +1,6 @@
 //supuestamente con la grafica
 
+var tituloBarra0="eje x vs eje y", ejeYname0="pomodoro", ejeXname0="tiempo(s)", listaDatos0="rojo,1-azul,2-verde,3"
 
 //inicio   ==================================================================
 
@@ -22,23 +23,17 @@ document.body.style.margin = "0px"
 window.onresize = function () {
   resizeCanvas()
 
-  // ENTRADA SINTAXIS================================================================================================================
-  //3 datos
-  //n="rojo,1-azul,2-verde,3"
-  //5 datos
-  var n = "rojo,10-azul,20-verde,30-rosa,80-aqua,200"
-  //25 datos
-  //n="rojo,10-azul,20-verde,30-rosa,80-aqua,200-rojo1,10-azul1,20-verde1,30-rosa1,80-aqua1,200-rojo2,10-azul2,20-verde2,30-rosa2,80-aqua2,200-rojo3,10-azul3,20-verde3,30-rosa3,80-aqua3,200-rojo4,10-azul4,20-verde4,30-rosa4,80-aqua4,200"
-  //50 datos
-  n = "rojo,10-azul,20-verde,30-rosa,80-aqua,200-rojo1,10-azul1,20-verde1,30-rosa1,80-aqua1,200-rojo2,10-azul2,20-verde2,30-rosa2,80-aqua2,200-rojo3,10-azul3,20-verde3,30-rosa3,80-aqua3,200-rojo4,10-azul4,20-verde4,30-rosa4,80-aqua4,200-rojo5,10-azul5,20-verde5,30-rosa5,80-aqua5,200-rojo6,10-azul6,20-verde6,30-rosa6,80-aqua6,200-rojo7,10-azul7,20-verde7,30-rosa7,80-aqua7,200-rojo8,10-azul8,20-verde8,30-rosa8,80-aqua8,200-rojo9,10-azul9,20-verde9,30-rosa9,80-aqua9,200"
 
-  var param = "penalizacion de pomodoro"
-  var paramY = "segundos(s)"
-  var paramX = "pomodoros(p)"
+  //var tituloBarra0, ejeYname0, ejeXname0, listaDatos0
 
-  var n2 = document.getElementById("num").value;
+  /*
+  var param = tituloBarra0
+  var paramY = ejeYname0
+  var paramX = ejeXname0
 
-  draw(param, paramY, paramX, n2)
+  var n2 = document.getElementById("num").value;*/
+
+  draw(tituloBarra0, ejeYname0, ejeXname0, listaDatos0)
 }
 
 function resizeCanvas() {
@@ -438,7 +433,14 @@ function reset() {
 //=================================================================================================================================
 
 
+
 function draw(tituloBarra, ejeYname, ejeXname, listaDatos) {
+
+  //los params se los paso a las var globales para cuando se llame a la funcion window.resize sea la misma a la ingresada
+  tituloBarra0 = tituloBarra
+  ejeYname0 = ejeYname
+  ejeXname0 = ejeXname
+  listaDatos0 = listaDatos
 
 
   //options es el atributo que nos importa con este modificamos lo que le enviamos
