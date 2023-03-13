@@ -1,8 +1,8 @@
-import Head from "next/head";
-import "@/styles/globals.css";
-import { AuthProvider } from "@/context/AuthProvider";
+import Head from 'next/head'
+import '@/styles/globals.css'
+import { AuthProvider } from '@/context/AuthProvider'
 
-export default function App({ Component, pageProps }) {
+export default function App ({ Component, pageProps }) {
   return (
     <>
       <Head>
@@ -36,5 +36,5 @@ export default function App({ Component, pageProps }) {
         <Component {...pageProps} />
       </AuthProvider>
     </>
-  );
+  )
 }

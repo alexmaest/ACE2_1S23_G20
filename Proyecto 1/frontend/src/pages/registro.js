@@ -1,34 +1,53 @@
-import { useState, useRef, useEffect } from "react";
-import Navbar from "../components/Navbar";
-import Head from "next/head";
-import Link from "next/link";
+import { useState, useRef, useEffect } from 'react'
+import Navbar from '../components/Navbar'
+import Head from 'next/head'
+import Link from 'next/link'
 
-export default function Register() {
-  const userRef = useRef();
-  const errorRef = useRef();
+export default function Register () {
+  const userRef = useRef()
+  const errorRef = useRef()
 
-  const [username, setUsername] = useState("");
-  const [fullname, setFullname] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('')
+  const [fullname, setFullname] = useState('')
+  const [password, setPassword] = useState('')
 
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    userRef.current.focus();
-  }, []);
+  const [error, setError] = useState('')
 
   useEffect(() => {
-    setError("");
-  }, [username, fullname, password]);
+    userRef.current.focus()
+  }, [])
+
+  useEffect(() => {
+    setError('')
+  }, [username, fullname, password])
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     // Autenticar usuario
-    if (username === "" || fullname === "" || password === "") {
-      setError("Todos los campos son obligatorios");
-      return;
+    if (username === '' || fullname === '' || password === '') {
+      setError('Todos los campos son obligatorios')
     }
-  };
+
+    fetch('http://localhost:3555/api/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username,
+        fullname,
+        password
+      })
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          setError(data.error)
+        } else {
+          window.location.href = '/login'
+        }
+      })
+  }
 
   return (
     <>
@@ -43,7 +62,7 @@ export default function Register() {
         >
           <p
             ref={errorRef}
-            className={error ? "bg-red-400 border-red-900" : "hidden"}
+            className={error ? 'bg-red-400 border-red-900' : 'hidden'}
             aria-live="assertive"
           >
             {error}
@@ -97,7 +116,7 @@ export default function Register() {
             Registrarse
           </button>
           <p className="text-gray-500 text-sm mt-4">
-            ¿Ya tienes una cuenta?{" "}
+            ¿Ya tienes una cuenta?{' '}
             <Link className="text-blue-500" href="/login">
               Inicia sesión
             </Link>
@@ -105,5 +124,5 @@ export default function Register() {
         </form>
       </div>
     </>
-  );
+  )
 }

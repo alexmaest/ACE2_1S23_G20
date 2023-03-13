@@ -1,19 +1,17 @@
-import { useEffect } from "react";
+import { useEffect } from 'react'
+import Navbar from '@/components/Navbar'
+import useAuth from '@/hooks/useAuth'
+import Head from 'next/head'
+import { useRouter } from 'next/router'
 
-import Navbar from "@/components/Navbar";
-import useAuth from "@/hooks/useAuth";
-import Head from "next/head";
-import { useRouter } from "next/router";
-
-export default function Home() {
-  const router = useRouter();
-  const { auth } = useAuth();
+function Home () {
+  const router = useRouter()
+  const { auth } = useAuth()
 
   useEffect(() => {
-    if (!auth.username) {
-      router.push("/login");
-    }
-  }, [auth]);
+    console.log('La primera vez recibe un objeto vacío, luego recibe el objeto con los datos del usuario')
+    console.log({ auth })
+  }, [auth])
 
   return (
     <>
@@ -57,6 +55,6 @@ export default function Home() {
           </div>
         </section>
       </main>
-    </>
-  );
+      </>
+  )
 }
