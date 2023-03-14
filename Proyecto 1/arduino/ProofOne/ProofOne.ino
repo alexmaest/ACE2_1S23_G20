@@ -35,6 +35,16 @@ bool lastestadoBotonReset = HIGH;
 // bandera para saber si se ha iniciado el pomodoro
 bool pomodoroIniciado = false;
 
+// PARA ENVIAR DATOS A LA APP
+//C=ciclo
+//T=tiempo de trabajo
+//D=tiempo de descanso
+//S=sentado
+//N=no sentado
+//Ejemplos:
+// C0--N = en este caso no se ha iniciado el pomodoro y por ello no se ha configurado el tiempo de trabajo/descanso y la persona no esta sentada
+// C1T25D5S = en este caso el pomodoro 1 tiene 25 minutos de trabajo y 5 minutos de descanso y la persona esta sentada
+
 void setup()
 {
   Serial.begin(115200);
@@ -51,28 +61,33 @@ void loop()
     while (digitalRead(sensor) == 1) // persona no esta sentada
     {
       // Se muestra los números 25 y 5 de forma intermitente en la pantalla LCD hasta que la persona se siente
-      Serial.println("N");
+      //Serial.println("N");
+      Serial.println("C0--N");
       noIniciado();
     }
     // Se inicia el pomodoro cuando la persona se sienta
-    Serial.println("S");
+    //Serial.println("S");
+    Serial.println("C0--S");
     pomodoroIniciado = true;
-    //en dado caso se encienda el pomodoro y la persona ya esta sentada
-    if(tiempoTrabajo == 0){
-      //como el tiempo aun no se configuro
-      //lee el potenciometro para
-      //posterior inciar el pomodoro
+    // en dado caso se encienda el pomodoro y la persona ya esta sentada
+    if (tiempoTrabajo == 0)
+    {
+      // como el tiempo aun no se configuro
+      // lee el potenciometro para
+      // posterior inciar el pomodoro
       noIniciado();
     }
     iniciaPomodoro();
   }
   if (digitalRead(sensor) == 1)
   {
-    Serial.println("N");
+    Serial.println("C0--N");
+    //Serial.println("N");
   }
   else
   {
-    Serial.println("S");
+    //Serial.println("S");
+    Serial.println("C0--S");
   }
 }
 
@@ -113,16 +128,24 @@ void iniciaPomodoro()
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print("Se levanto");
-      Serial.println("N");
+      //Serial.println("N");
+      //mandar minutos y segundos restantes
+      Serial.println("C" + String(noPomodoro) + "T" + String(tiempoTrabajo) + ":" + String(segundos) + "S");
       delayMillis(500);
     }
     else
     {
-      Serial.println("S");
+      //Serial.println("S");
+      Serial.println("C" + String(noPomodoro) + "T" + String(tiempoTrabajo) + ":" + String(segundos) + "S");
     }
     if (tiempoTrabajo == 0 && segundos == 10)
     {
       buzzer10Segundos();
+    }
+    if (digitalRead(reset) == LOW)
+    {
+      resetInesperado();
+      break;
     }
   }
   if (tiempoTrabajo == 0 && segundos == 0)
@@ -134,10 +157,15 @@ void iniciaPomodoro()
 // Función para finalizar el pomodoro
 void finalizarPomodoro()
 {
-  tiempoTrabajo = (tiempoTrabajoApp != 0) ? tiempoTrabajoApp : ((tiempoTrabajoDimmer != 0) ? tiempoTrabajoDimmer : tiempoTrabajoDefault);
+  tiempoTrabajo = (tiempoTrabajoDimmer != 0) ? tiempoTrabajoDimmer : tiempoTrabajoDefault;
   segundos = 0;
   buzzerFinPomodoro();
-  iniciarDescanso();
+  if (digitalRead(reset) == LOW)
+  {
+    resetInesperado();
+  }else{
+    iniciarDescanso();
+  }
 }
 
 void iniciarDescanso()
@@ -169,16 +197,23 @@ void iniciarDescanso()
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print("Se sento");
-      Serial.println("S");
+      //Serial.println("S");
+      Serial.println("C" + String(noPomodoro) + "D" + String(tiempoDescanso) + ":" + String(segundos) + "S");
       delayMillis(500);
     }
     else
     {
-      Serial.println("N");
+      //Serial.println("N");
+      Serial.println("C" + String(noPomodoro) + "D" + String(tiempoDescanso) + ":" + String(segundos) + "N");
     }
     if (tiempoDescanso == 0 && segundos == 10)
     {
       buzzer10Segundos();
+    }
+    if (digitalRead(reset) == LOW)
+    {
+      resetInesperado();
+      break;
     }
   }
   if (tiempoDescanso == 0 && segundos == 0)
@@ -193,9 +228,12 @@ void finalizarDescanso()
   segundos = 0;
   buzzerFinDescanso();
   noPomodoro++;
-  if(noPomodoro > 4) //(noPomodoro > 1)
+  if (noPomodoro > 4) //(noPomodoro > 1)
   {
     resetPomodoro();
+  }
+  else if(digitalRead(reset) == LOW){
+    resetInesperado();
   }
   else
   {
@@ -210,7 +248,7 @@ void resetPomodoro()
   estadoBotonReset = digitalRead(reset);
   while (estadoBotonReset != LOW)
   {
-     animacioCicloPomodoroFinalizado();
+    animacioCicloPomodoroFinalizado();
     estadoBotonReset = digitalRead(reset);
   }
   // lastestadoBotonReset = LOW;
@@ -238,6 +276,22 @@ void duracionPomodoro()
   tiempoTrabajo = tiempoTrabajoDimmer;
 }
 
+void resetInesperado()
+{
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(" -- RESET -- ");
+  delayMillis(1000);
+  tiempoTrabajo = tiempoTrabajoDefault;
+  tiempoDescanso = tiempoDescansoDefault;
+  tiempoTrabajoApp = 0;
+  tiempoDescansoApp = 0;
+  tiempoTrabajoDimmer = 0;
+  segundos = 0;
+  noPomodoro = 1;
+  pomodoroIniciado = false;
+}
+
 // metodo que lee la entrada serial
 // la cadena que se debe enviar desde el frontend es asi:
 // TtiempoTrabajoDtiempoDescanso;
@@ -248,22 +302,10 @@ void leeApp()
   {
     delayMillis(300);
     char c = Serial.read();
-    if (c == 'T')
+    if (c == 'D')
     {
       int aux = 0; // variable auxiliar para construir el número
-      tiempoTrabajoApp = 0;
       tiempoDescansoApp = 0;
-      // recorrer para ir guardando el tiempo de trabajo hasta que encuentre 'D'
-      while (c != 'D')
-      {
-        c = Serial.read();
-        if (isdigit(c))
-        {
-          aux = aux * 10 + (c - '0'); // construir el número con cada dígito
-        }
-      }
-      tiempoTrabajoApp = aux; // sumar el número completo a la variable
-      aux = 0;
       // recorrer para ir guardando el tiempo de descanso hasta que encuentre ';'
       while (c != ';')
       {
@@ -283,15 +325,11 @@ void noIniciado()
 {
   animacionPomodoroNoIniciado();
   leeApp(); // duda si se lee desde el app, entonces el dimmer ya no debe funcionar
-  if (tiempoTrabajoApp != 0 && tiempoDescansoApp != 0)
+  if (tiempoDescansoApp != 0)
   {
-    tiempoTrabajo = tiempoTrabajoApp;
     tiempoDescanso = tiempoDescansoApp;
   }
-  else
-  {
-    duracionPomodoro();
-  }
+  duracionPomodoro();
 }
 
 /*************************************************
@@ -310,17 +348,17 @@ void animacionPomodoroNoIniciado()
   delayMillis(500);
 }
 
-void animacioCicloPomodoroFinalizado(){
+void animacioCicloPomodoroFinalizado()
+{
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Ciclo Finalizado");
   lcd.setCursor(0, 1);
-  //mensaje pulse reset
+  // mensaje pulse reset
   lcd.print("Pulse reset");
   delayMillis(500);
   lcd.clear();
   delayMillis(500);
-
 }
 
 void delayMillis(int tiempo)
@@ -339,8 +377,8 @@ void delayMillis(int tiempo)
 // finaliza pomodoro
 void buzzerFinPomodoro()
 {
-  int notas[] = {659, 659, 0, 659, 0, 494, 659, 0, 784}; //Definir frecuencias de notas
-  int duracion[] = {200, 200, 200, 200, 200, 200, 200, 200, 400}; //Duración en milisegundos de cada nota
+  int notas[] = {659, 659, 0, 659, 0, 494, 659, 0, 784};          // Definir frecuencias de notas
+  int duracion[] = {200, 200, 200, 200, 200, 200, 200, 200, 400}; // Duración en milisegundos de cada nota
   for (int i = 0; i < 9; i++)
   {
     tone(BOCINA, notas[i], duracion[i]);
@@ -351,13 +389,13 @@ void buzzerFinPomodoro()
 // finaliza descanso
 void buzzerFinDescanso()
 {
-  int notas[] = {261, 294, 329, 349, 392, 440, 494}; //Definir frecuencias de notas
-  int duracion[] = {100,100,200,200,100,100,300}; //Duración en milisegundos de cada nota
-    for (int i = 0; i < 7; i++)
-    {
-      tone(BOCINA, notas[i], duracion[i]);
-      delayMillis(duracion[i]*1.2);
-    }
+  int notas[] = {261, 294, 329, 349, 392, 440, 494};    // Definir frecuencias de notas
+  int duracion[] = {100, 100, 200, 200, 100, 100, 300}; // Duración en milisegundos de cada nota
+  for (int i = 0; i < 7; i++)
+  {
+    tone(BOCINA, notas[i], duracion[i]);
+    delayMillis(duracion[i] * 1.2);
+  }
 }
 
 // aviso que restan 10 segundos
