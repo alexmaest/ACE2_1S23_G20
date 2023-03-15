@@ -3,8 +3,57 @@
 #define SENSOR 9
 #define RESET 10
 
+//FIGURAS PANTALLA
+byte Bell[] = {
+  B00100,
+  B01110,
+  B01110,
+  B01110,
+  B11111,
+  B00000,
+  B00100,
+  B00000
+};
+
+byte Lock[8] = {
+0b01110,
+0b10001,
+0b10001,
+0b11111,
+0b11011,
+0b11011,
+0b11111,
+0b00000
+};
+
+byte depie[] = {
+  0x04,
+  0x15,
+  0x0E,
+  0x04,
+  0x0A,
+  0x0A,
+  0x0A,
+  0x00
+};
+byte sentado[] = {
+  0x08,
+  0x08,
+  0x08,
+  0x08,
+  0x0F,
+  0x09,
+  0x09,
+  0x00
+};
+
+
+
+
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7); // Determina los pines para la pantalla
-float vOut;                          // Almacena el valor del potenciometro
+int vOut;                          // Almacena el valor del potenciometro
+int tdefdimmer=0;
+bool dimerActivo = false;
 
 // pines a utilizar
 const int bocina = 8; // Bocina
@@ -16,7 +65,7 @@ const int tiempoTrabajoDefault = 25; // unidades de 1 minuto
 const int tiempoDescansoDefault = 5; // unidades de 1 minuto
 
 // Variables que toma el pomodoro para trabajo y descanso
-int tiempoTrabajo = 0;
+int tiempoTrabajo = tiempoTrabajoDefault;
 int tiempoDescanso = tiempoDescansoDefault;
 
 // Variables para contar el tiempo
@@ -52,16 +101,22 @@ void setup()
   lcd.clear();
   // se configura el pin del botón como entrada y la resistencia pull-up interna
   pinMode(reset, INPUT_PULLUP);
+  lcd.createChar(0, depie);
+  lcd.createChar(1,sentado);
+  lcd.createChar(2,Lock);
+  lcd.createChar(3,Bell);
 }
 
 void loop()
 {
   if (pomodoroIniciado == false)
   {
+    vOut = analogRead(A0);
+    tdefdimmer = map(vOut, 50, 1000, 1, 45);
     while (digitalRead(sensor) == 1) // persona no esta sentada
     {
       // Se muestra los números 25 y 5 de forma intermitente en la pantalla LCD hasta que la persona se siente
-      Serial.println("N");
+      //Serial.println("N");
       //Serial.println("C0--N");
       noIniciado();
     }
@@ -77,6 +132,7 @@ void loop()
       // posterior inciar el pomodoro
       noIniciado();
     }
+    enviarTiempoPomodoro();
     iniciaPomodoro();
   }
 }
@@ -126,18 +182,19 @@ void iniciaPomodoro()
       tiempodepie++;
       lcd.clear();
       lcd.setCursor(0, 0);
-      lcd.print("Se levanto");
+      lcd.write(byte(0));
+      lcd.print(" Se levanto");
       //Serial.println("N");
       //mandar minutos y segundos restantes
       //Serial.println("C" + String(noPomodoro) + "T" + String(tiempoTrabajo) + ":" + String(segundos) + "S");
-      delayMillis(200);
+      delayMillis(300);
     }
     else
     {
       //Serial.println("S");
       if (tiempodepie > 0)
       {
-        Serial.println("M" + String(minutoselevanto) + "S" + String(segundoselevanto) + "C"+ String(noPomodoro)+"T"+String(tiempodepie)+";");
+        Serial.println(String(minutoselevanto) + "$" + String(segundoselevanto) + "$"+ String(noPomodoro)+"$T$"+String(tiempodepie));
         tiempodepie = 0;
         minutoselevanto = 0;
         segundoselevanto = 0;
@@ -163,8 +220,11 @@ void iniciaPomodoro()
 // Función para finalizar el pomodoro
 void finalizarPomodoro()
 {
-  tiempoTrabajo = (tiempoTrabajoDimmer != 0) ? tiempoTrabajoDimmer : tiempoTrabajoDefault;
+  tiempoTrabajo = (dimerActivo == true) ? tiempoTrabajoDimmer : tiempoTrabajoDefault;
   segundos = 0;
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.write(byte(3));
   buzzerFinPomodoro();
   if (digitalRead(reset) == LOW)
   {
@@ -213,16 +273,17 @@ void iniciarDescanso()
       tiemposentado++;
       lcd.clear();
       lcd.setCursor(0, 0);
-      lcd.print("Se sento");
+      lcd.write(byte(1));
+      lcd.print(" Se sento");
       //Serial.println("S");
       //Serial.println("C" + String(noPomodoro) + "D" + String(tiempoDescanso) + ":" + String(segundos) + "S");
-      delayMillis(200);
+      delayMillis(300);
     }
     else
     {
       if (tiemposentado > 0)
       {
-        Serial.println("M" + String(minutoenqsento) + "S" + String(segundoenqsento) + "C"+ String(noPomodoro)+"D"+String(tiemposentado)+";");
+        Serial.println(String(minutoenqsento) + "$" + String(segundoenqsento) + "$"+ String(noPomodoro)+"$D$"+String(tiemposentado));
         tiemposentado = 0;
         minutoenqsento = 0;
         segundoenqsento = 0;
@@ -250,6 +311,9 @@ void finalizarDescanso()
 {
   tiempoDescanso = (tiempoDescansoApp != 0) ? tiempoDescansoApp : tiempoDescansoDefault;
   segundos = 0;
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.write(byte(3));
   buzzerFinDescanso();
   noPomodoro++;
   if (noPomodoro > 4) //(noPomodoro > 1)
@@ -282,6 +346,7 @@ void resetPomodoro()
   lcd.setCursor(0, 1);
   lcd.print("Reset");
   delayMillis(1000);
+  dimerActivo = false;
   tiempoTrabajo = tiempoTrabajoDefault;
   tiempoDescanso = tiempoDescansoDefault;
   tiempoTrabajoApp = 0;
@@ -296,8 +361,11 @@ void resetPomodoro()
 void duracionPomodoro()
 {
   int valorPotenciometro = analogRead(A0);
-  tiempoTrabajoDimmer = map(valorPotenciometro, 0, 1039, 1, 45);
-  tiempoTrabajo = tiempoTrabajoDimmer;
+  tiempoTrabajoDimmer = map(valorPotenciometro, 50, 1000, 1, 45);
+  if (tiempoTrabajoDimmer != tdefdimmer || dimerActivo == true){
+    dimerActivo = true;
+    tiempoTrabajo = tiempoTrabajoDimmer;
+  }
 }
 
 void resetInesperado()
@@ -306,6 +374,7 @@ void resetInesperado()
   lcd.setCursor(0, 0);
   lcd.print(" -- RESET -- ");
   delayMillis(1000);
+  dimerActivo = false;
   tiempoTrabajo = tiempoTrabajoDefault;
   tiempoDescanso = tiempoDescansoDefault;
   tiempoTrabajoApp = 0;
@@ -356,6 +425,10 @@ void noIniciado()
   duracionPomodoro();
 }
 
+void enviarTiempoPomodoro(){
+  Serial.println(String(tiempoTrabajo)+"$"+String(tiempoDescanso));
+}
+
 /*************************************************
  *********** FUNCIONES DISPLAY LCD  **************
  *************************************************/
@@ -376,7 +449,8 @@ void animacioCicloPomodoroFinalizado()
 {
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("Ciclo Finalizado");
+  lcd.write(byte(2));
+  lcd.print(" Ciclo Finalizado");
   lcd.setCursor(0, 1);
   // mensaje pulse reset
   lcd.print("Pulse reset");
