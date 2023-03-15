@@ -137,7 +137,7 @@ void iniciaPomodoro()
       //Serial.println("S");
       if (tiempodepie > 0)
       {
-        Serial.println("M" + String(minutoselevanto) + "S" + String(segundoselevanto) + "C"+ String(noPomodoro)+"T"+String(tiempodepie));
+        Serial.println("M" + String(minutoselevanto) + "S" + String(segundoselevanto) + "C"+ String(noPomodoro)+"T"+String(tiempodepie)+";");
         tiempodepie = 0;
         minutoselevanto = 0;
         segundoselevanto = 0;
@@ -222,7 +222,7 @@ void iniciarDescanso()
     {
       if (tiemposentado > 0)
       {
-        Serial.println("M" + String(minutoenqsento) + "S" + String(segundoenqsento) + "C"+ String(noPomodoro)+"D"+String(tiemposentado));
+        Serial.println("M" + String(minutoenqsento) + "S" + String(segundoenqsento) + "C"+ String(noPomodoro)+"D"+String(tiemposentado)+";");
         tiemposentado = 0;
         minutoenqsento = 0;
         segundoenqsento = 0;
