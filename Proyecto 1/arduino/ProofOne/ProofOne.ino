@@ -61,13 +61,13 @@ void loop()
     while (digitalRead(sensor) == 1) // persona no esta sentada
     {
       // Se muestra los números 25 y 5 de forma intermitente en la pantalla LCD hasta que la persona se siente
-      //Serial.println("N");
-      Serial.println("C0--N");
+      Serial.println("N");
+      //Serial.println("C0--N");
       noIniciado();
     }
     // Se inicia el pomodoro cuando la persona se sienta
     //Serial.println("S");
-    Serial.println("C0--S");
+    //Serial.println("C0--S");
     pomodoroIniciado = true;
     // en dado caso se encienda el pomodoro y la persona ya esta sentada
     if (tiempoTrabajo == 0)
@@ -78,16 +78,6 @@ void loop()
       noIniciado();
     }
     iniciaPomodoro();
-  }
-  if (digitalRead(sensor) == 1)
-  {
-    Serial.println("C0--N");
-    //Serial.println("N");
-  }
-  else
-  {
-    //Serial.println("S");
-    Serial.println("C0--S");
   }
 }
 
@@ -104,7 +94,10 @@ void iniciaPomodoro()
   lcd.print("INICIA POMODORO:");
   lcd.setCursor(0, 1);
   lcd.print(String(noPomodoro));
-  delayMillis(2000);
+  int tiempodepie = 0;//para registrar los segundos que la persona se levanta de la silla
+  int minutoselevanto = 0;//para guardar el minuto en que se levanto
+  int segundoselevanto = 0;
+  delayMillis(1000);
   while (tiempoTrabajo > 0 || segundos > 0)
   {
     lcd.clear();
@@ -125,18 +118,31 @@ void iniciaPomodoro()
     if (digitalRead(sensor) == 1) // si usuario se levanta de silla
     {
       // penalizaciones
+      if (tiempodepie == 0)
+      {
+        minutoselevanto = tiempoTrabajo;
+        segundoselevanto = (segundos!=59) ? (segundos+1) : segundos;
+      }
+      tiempodepie++;
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print("Se levanto");
       //Serial.println("N");
       //mandar minutos y segundos restantes
-      Serial.println("C" + String(noPomodoro) + "T" + String(tiempoTrabajo) + ":" + String(segundos) + "S");
-      delayMillis(500);
+      //Serial.println("C" + String(noPomodoro) + "T" + String(tiempoTrabajo) + ":" + String(segundos) + "S");
+      delayMillis(200);
     }
     else
     {
       //Serial.println("S");
-      Serial.println("C" + String(noPomodoro) + "T" + String(tiempoTrabajo) + ":" + String(segundos) + "S");
+      if (tiempodepie > 0)
+      {
+        Serial.println("M" + String(minutoselevanto) + "S" + String(segundoselevanto) + "C"+ String(noPomodoro)+"T"+String(tiempodepie));
+        tiempodepie = 0;
+        minutoselevanto = 0;
+        segundoselevanto = 0;
+      }
+      //Serial.println("C" + String(noPomodoro) + "T" + String(tiempoTrabajo) + ":" + String(segundos) + "S");
     }
     if (tiempoTrabajo == 0 && segundos == 10)
     {
@@ -173,7 +179,12 @@ void iniciarDescanso()
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Inicia Descanso");
-  delayMillis(1000);
+  lcd.setCursor(0, 1);
+  lcd.print(String(noPomodoro));
+  int tiemposentado = 0;//para registrar los segundos que la persona se sento en la silla
+  int minutoenqsento = 0;//para guardar el minuto en que se sento
+  int segundoenqsento = 0;
+  delayMillis(2000);
   while (tiempoDescanso > 0 || segundos > 0)
   {
     lcd.clear();
@@ -194,17 +205,30 @@ void iniciarDescanso()
     if (digitalRead(sensor) == 0) // si usuario se sienta en silla
     {
       // penalizaciones
+      if (tiemposentado == 0)
+      {
+        minutoenqsento = tiempoDescanso;
+        segundoenqsento = (segundos!=59) ? (segundos+1) : segundos;
+      }
+      tiemposentado++;
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print("Se sento");
       //Serial.println("S");
-      Serial.println("C" + String(noPomodoro) + "D" + String(tiempoDescanso) + ":" + String(segundos) + "S");
-      delayMillis(500);
+      //Serial.println("C" + String(noPomodoro) + "D" + String(tiempoDescanso) + ":" + String(segundos) + "S");
+      delayMillis(200);
     }
     else
     {
+      if (tiemposentado > 0)
+      {
+        Serial.println("M" + String(minutoenqsento) + "S" + String(segundoenqsento) + "C"+ String(noPomodoro)+"D"+String(tiemposentado));
+        tiemposentado = 0;
+        minutoenqsento = 0;
+        segundoenqsento = 0;
+      }
       //Serial.println("N");
-      Serial.println("C" + String(noPomodoro) + "D" + String(tiempoDescanso) + ":" + String(segundos) + "N");
+      //Serial.println("C" + String(noPomodoro) + "D" + String(tiempoDescanso) + ":" + String(segundos) + "N");
     }
     if (tiempoDescanso == 0 && segundos == 10)
     {
