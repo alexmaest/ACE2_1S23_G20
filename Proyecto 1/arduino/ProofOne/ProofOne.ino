@@ -61,7 +61,7 @@ void loop()
     while (digitalRead(sensor) == 1) // persona no esta sentada
     {
       // Se muestra los números 25 y 5 de forma intermitente en la pantalla LCD hasta que la persona se siente
-      Serial.println("N");
+      //Serial.println("N");
       //Serial.println("C0--N");
       noIniciado();
     }
