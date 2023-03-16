@@ -573,7 +573,7 @@ void enviar_penalizaciones(Info* p) {
       p_str += String(p->p);
     }
     if (!ultimo_elemento) {
-      p_str += "\n";
+      p_str += "*";
     }
     p = p->next;
   }
