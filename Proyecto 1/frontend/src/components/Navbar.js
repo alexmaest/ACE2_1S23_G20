@@ -1,10 +1,10 @@
-import { data } from "autoprefixer";
-import { Navbar } from "flowbite-react";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { data } from 'autoprefixer'
+import { Navbar } from 'flowbite-react'
+import { signIn, signOut, useSession } from 'next-auth/react'
 
-export default function NavBar() {
+export default function NavBar () {
   // v4:
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSession()
 
   return (
     <Navbar fluid={true} rounded={false} className="bg-red-500">
@@ -19,20 +19,22 @@ export default function NavBar() {
           Inicio
         </Navbar.Link>
         <Navbar.Link href="/penalizaciones">Penalizaciones</Navbar.Link>
-        {session?.user ? (
+        {session?.user
+          ? (
           <>
-            <p className="text-white">{session.user.name}</p>
+            <p>{session.user.name}</p>
             <button className="text-red-500" onClick={() => signOut()}>
               Sign Out
             </button>
           </>
-        ) : (
+            )
+          : (
           <>
             <button onClick={() => signIn()}>Sign In</button>
             <Navbar.Link href="/registro">Registro</Navbar.Link>
           </>
-        )}
+            )}
       </Navbar.Collapse>
     </Navbar>
-  );
+  )
 }

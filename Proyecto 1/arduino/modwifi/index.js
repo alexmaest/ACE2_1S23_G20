@@ -1,6 +1,5 @@
 const http = require('http');
-var state = ''; // Guarda el ultimo estado del sensor
-var time = 'T35D10;'; // Variable donde se almacena el tiempo a configurar
+var time = 'D45;'; // Variable donde se almacena el tiempo a configurar
 
 const server = http.createServer((req, res) => {
   // Configurar el encabezado de respuesta HTTP
@@ -16,34 +15,24 @@ const server = http.createServer((req, res) => {
     });
 
     req.on('end', () => {
-      if (state == '') { // Limpia las respuestas
-        if (body == 'S\r') {
-          state = 'S';
-        } else {
-          state = 'N';
-        }
-      } else {
-        if (state != body && body != '\r' && body != '') {
-          state = body;
-        }
+      let _body = body.replace("\n", "");
+      let __body = _body.replace("\r", "");
+      if(__body != ''){
+        console.log(__body); // Valor enviado sobre penalizacion
       }
-      console.log(state); // Valor actual del sensor(S/N)
-      if(time != ''){ // Solo envía algo si tienen contenido
-        console.log(time);
-        res.end(time); // Responde con el tiempo a configurar
-      }else{
-        res.end(''); // Responde con tiempo vacio
-      }
-      time = ''; // Vacia el tiempo
     });
-  } else {
-    res.statusCode = 200;
-    res.end('Servidor funcionando correctamente');
+  }else if (req.method === 'GET') {
+    if(time != ''){
+      res.end(time); // Responde con el tiempo a configurar
+      time = '';
+    }else{
+      res.end(' '); // Responde con el tiempo a configurar
+    }
   }
 });
 
 // Configurar el puerto y dirección IP del servidor
-const port = 3000;
+const port = 3556;
 const ip = '0.0.0.0';
 
 // Iniciar el servidor

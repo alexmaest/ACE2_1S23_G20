@@ -21,6 +21,7 @@ CREATE TABLE pomodoro (
     rest_time INT NOT NULL,
     start_time DATETIME,
     end_time DATETIME,
+    ciclo INT NOT NULL,
     PRIMARY KEY (pomodoro_id),
     FOREIGN KEY (user_id) REFERENCES usuario(user_id)
 ) ENGINE=INNODB;

@@ -117,7 +117,7 @@ export default function Register () {
           </button>
           <p className="text-gray-500 text-sm mt-4">
             ¿Ya tienes una cuenta?{' '}
-            <Link className="text-blue-500" href="/login">
+            <Link className="text-blue-500" href="/">
               Inicia sesión
             </Link>
           </p>

@@ -1,8 +1,30 @@
-import Navbar from "@/components/Navbar";
-import Head from "next/head";
-import { useRouter } from "next/router";
+import Navbar from '@/components/Navbar'
+import Head from 'next/head'
+import { useState } from 'react'
 
-export default function Home() {
+export default function Home () {
+  const [rest, setRest] = useState(5)
+
+  const handlerRest = (e) => {
+    setRest(Number.parseInt(e.target.value))
+  }
+
+  const handlerSend = () => {
+    fetch('http://localhost:3555/api/sendRest', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        rest
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+      })
+  }
+
   return (
     <>
       <Head>
@@ -16,6 +38,7 @@ export default function Home() {
         <section className="flex flex-col">
           <div className="flex items-center justify-center">
             <div className="flex flex-col mt-11 drop-shadow-xl md:flex-row">
+              { /*
               <div className="mx-4">
                 <h1 className="text-xl text-center font-bold text-white underline decoration-green-300 mb-4">
                   Pomodoro
@@ -26,25 +49,30 @@ export default function Home() {
                   className="w-auto text-center text-2xl font-bold text-green-800 bg-gray-100 rounded-lg"
                 />
               </div>
+              */ }
               <div className="mx-4">
                 <h1 className="text-xl text-center font-bold text-white underline decoration-green-300 mb-4">
                   Descanso
                 </h1>
                 <input
                   type="number"
-                  defaultValue={5}
-                  className="w-auto text-center text-2xl font-bold text-green-800 bg-gray-100 rounded-lg"
+                  defaultValue={rest}
+                  className="text-center text-2xl font-bold text-green-800 bg-gray-100 rounded-lg w-full appearance-none"
+                  onChange={handlerRest}
+                  min={0}
+                  max={60}
                 />
               </div>
             </div>
           </div>
           <div className="flex items-center justify-center mt-10">
-            <button className="bg-green-400 w-48 h-12 font-bold text-white ring-2 ring-green-700 rounded">
+            <button className="bg-green-400 w-48 h-12 font-bold text-white ring-2 ring-green-700 rounded"
+              onClick={handlerSend}>
               Enviar
             </button>
           </div>
         </section>
       </main>
     </>
-  );
+  )
 }
