@@ -71,12 +71,25 @@ function drawBar(
   upperLeftCornerY,
   width,
   height,
-  color
+  color,valorBarra
 ) {
   ctx.save();
   ctx.fillStyle = color;
   ctx.fillRect(upperLeftCornerX, upperLeftCornerY, width, height);
   ctx.restore();
+
+  //---------new name de barra inclinado
+  //nombre de barra
+  ctx.save();
+  ctx.translate( upperLeftCornerX+5,  upperLeftCornerY );
+  ctx.rotate(-( Math.PI / 4) );
+  this.ctx.font = "bold 12px serif" //"bold 12px serif"
+  ctx.fillStyle='blue';
+  ctx.textAlign = "left";
+  ctx.fillText( valorBarra, 0, 0 );
+  ctx.restore();
+
+
 }
 
 //analizado
@@ -151,7 +164,7 @@ class BarChart {
       this.ctx.fillStyle = "red";
       this.ctx.textBaseline = "bottom";
       this.ctx.font = "bold 10px Arial";
-      this.ctx.fillText(Math.round(gridValue), 0, gridY + 4);
+      this.ctx.fillText(Math.round(gridValue), 0, gridY - 4);
       this.ctx.restore();
       gridValue += this.options.gridStep;
     }
@@ -173,7 +186,7 @@ class BarChart {
         this.canvas.height - barHeight - this.options.padding,
         barSize,
         barHeight,
-        this.colors[barIndex % this.colors.length]
+        this.colors[barIndex % this.colors.length],val
       );
       barIndex++;
     }
@@ -444,6 +457,9 @@ function draw(tituloBarra, ejeYname, ejeXname, listaDatos) {
 
   //defino el valor por linea hasta el max
   myBarchart.options.gridStep = myBarchart.maxValue / values.length
+
+  //********************** defino un valor max para que asi se mire mejor la grafica
+  myBarchart.maxValue = 20+Math.max(...Object.values(myBarchart.options.data));
 
 
   //----------------------------------------------------------------
