@@ -71,14 +71,12 @@ function drawBar(
   upperLeftCornerY,
   width,
   height,
-  color, value, puntoX
+  color, value, puntoX,valorBarra
 ) {
   ctx.save();
   ctx.fillStyle = color;
   ctx.fillRect(upperLeftCornerX, upperLeftCornerY, width, height);
   ctx.restore();
-
-
 
   // ctx.fillStyle = color;
   // ctx.fillRect(upperLeftCornerX, upperLeftCornerY, width, height);
@@ -92,8 +90,19 @@ function drawBar(
   this.ctx.fillStyle = "181818";
   this.ctx.font = "12px serif" //"bold 12px serif"
   this.ctx.fillText(value, 0, 0);
-
   this.ctx.restore();
+
+
+  //---------new name de barra inclinado
+  //nombre de barra
+  ctx.save();
+  ctx.translate( upperLeftCornerX+5,  upperLeftCornerY );
+  ctx.rotate(-( Math.PI / 4) );
+  this.ctx.font = "bold 12px serif" //"bold 12px serif"
+  ctx.fillStyle='blue';
+  ctx.textAlign = "left";
+  ctx.fillText( valorBarra, 0, 0 );
+  ctx.restore();
 
   
 }
@@ -170,7 +179,7 @@ class BarChart {
       this.ctx.fillStyle = "red";
       this.ctx.textBaseline = "bottom";
       this.ctx.font = "bold 10px Arial";
-      this.ctx.fillText(Math.round(gridValue), 0, gridY + 4);
+      this.ctx.fillText(Math.round(gridValue), 0, gridY-4);
       this.ctx.restore();
       gridValue += this.options.gridStep;
     }
@@ -197,8 +206,22 @@ class BarChart {
         barSize,
         barHeight,
         this.colors[barIndex % this.colors.length], array[contador],  //new  le envio valor a mostrar en la barra
-        this.canvas.height - 15
+        this.canvas.height - 15,val
       );
+
+      // barra roja final de pomodoro========================================     //ojo posibles bugs
+      if(contador%4==0 && contador!=0){
+        drawLine(
+          this.ctx,
+          this.options.padding + barIndex * barSize-13,
+          this.options.padding,
+          this.options.padding + barIndex * barSize-13,          
+          this.ctx.canvas.clientHeight-25,
+          "red"
+        );
+        
+      }
+
       barIndex++;
       contador++
     }
@@ -477,6 +500,9 @@ function draw(tituloBarra, ejeYname, ejeXname, listaDatos) {
   //defino el valor por linea hasta el max
   myBarchart.options.gridStep = myBarchart.maxValue / values.length
 
+
+  //********************** defino un valor max para que asi se mire mejor la grafica
+  myBarchart.maxValue = 20+Math.max(...Object.values(myBarchart.options.data));
 
   //----------------------------------------------------------------
   // se manda a dibujar todo el objeto(grafico de barras)
