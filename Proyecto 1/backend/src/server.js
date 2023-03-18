@@ -5,6 +5,7 @@ import { registerUser, loginUser } from './hooks/useQuerys.js'
 
 let _rest = ''
 let _pomoData = ''
+let _userId
 
 const app = express()
 
@@ -36,12 +37,16 @@ app.post('/api/login', async (req, res) => {
   const _loginUser = await loginUser(username, password)
 
   if (_loginUser.length > 0) {
+    _userId = _loginUser[0].user_id
+
     return res.status(200).send({
       id: _loginUser[0].user_id,
       name: _loginUser[0].username,
       fullname: _loginUser[0].fullname
     })
   }
+
+  console.log(_userId)
 
   return res.status(400).send({ message: 'Invalid password or username' })
 })
