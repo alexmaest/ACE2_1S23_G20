@@ -3,12 +3,12 @@ import Navbar from '../components/Navbar'
 import Head from 'next/head'
 import Link from 'next/link'
 
-export default function Register () {
+export default function Register() {
   const userRef = useRef()
   const errorRef = useRef()
 
   const [username, setUsername] = useState('')
-  const [fullname, setFullname] = useState('')
+  const [fullName, setFullName] = useState('')
   const [password, setPassword] = useState('')
 
   const [error, setError] = useState('')
@@ -19,12 +19,12 @@ export default function Register () {
 
   useEffect(() => {
     setError('')
-  }, [username, fullname, password])
+  }, [username, fullName, password])
 
   const handleSubmit = (e) => {
     e.preventDefault()
     // Autenticar usuario
-    if (username === '' || fullname === '' || password === '') {
+    if (username === '' || fullName === '' || password === '') {
       setError('Todos los campos son obligatorios')
     }
 
@@ -35,7 +35,7 @@ export default function Register () {
       },
       body: JSON.stringify({
         username,
-        fullname,
+        fullName,
         password
       })
     })
@@ -90,10 +90,10 @@ export default function Register () {
             <input
               className="border w-full p-2 rounded-lg"
               type="text"
-              id="fullname"
+              id="fullName"
               autoComplete="off"
-              onChange={(e) => setFullname(e.target.value)}
-              value={fullname}
+              onChange={(e) => setFullName(e.target.value)}
+              value={fullName}
               required
             />
           </div>

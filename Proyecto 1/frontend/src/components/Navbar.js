@@ -2,8 +2,7 @@ import { data } from 'autoprefixer'
 import { Navbar } from 'flowbite-react'
 import { signIn, signOut, useSession } from 'next-auth/react'
 
-export default function NavBar () {
-  // v4:
+export default function NavBar() {
   const { data: session, status } = useSession()
 
   return (
@@ -21,19 +20,19 @@ export default function NavBar () {
         <Navbar.Link href="/penalizaciones">Penalizaciones</Navbar.Link>
         {session?.user
           ? (
-          <>
-            <p>{session.user.name}</p>
-            <button className="text-red-500" onClick={() => signOut()}>
-              Sign Out
-            </button>
-          </>
-            )
+            <>
+              <p>{session.user.name}</p>
+              <button className="text-red-500" onClick={() => signOut()}>
+                Sign Out
+              </button>
+            </>
+          )
           : (
-          <>
-            <button onClick={() => signIn()}>Sign In</button>
-            <Navbar.Link href="/registro">Registro</Navbar.Link>
-          </>
-            )}
+            <>
+              <button onClick={() => signIn()}>Sign In</button>
+              <Navbar.Link href="/registro">Registro</Navbar.Link>
+            </>
+          )}
       </Navbar.Collapse>
     </Navbar>
   )

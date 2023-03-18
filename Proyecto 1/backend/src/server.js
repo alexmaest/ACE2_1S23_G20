@@ -1,11 +1,11 @@
 import express from 'express'
 import cors from 'cors'
 import body from 'body-parser'
-import { registerUser, loginUser } from './hooks/useQuerys.js'
+import { registerUser, loginUser } from './hooks/useQueries.js'
 
-let _rest = ''
-let _pomoData = ''
-let _userId
+var _rest = ''
+var _pomoData = ''
+var _userId
 
 const app = express()
 
@@ -20,9 +20,9 @@ app.get('/', (req, res) => {
 })
 
 app.post('/api/register', async (req, res) => {
-  const { username, fullname, password } = req.body
+  const { username, fullName, password } = req.body
 
-  const _registerUser = await registerUser(username, fullname, password)
+  const _registerUser = await registerUser(username, fullName, password)
 
   if (_registerUser.length > 0) {
     return res.status(400).send({ message: 'User already exists' })
@@ -37,22 +37,20 @@ app.post('/api/login', async (req, res) => {
   const _loginUser = await loginUser(username, password)
 
   if (_loginUser.length > 0) {
-    _userId = _loginUser[0].user_id
-
+    _userId = _loginUser[0].idUsuario
     return res.status(200).send({
-      id: _loginUser[0].user_id,
-      name: _loginUser[0].username,
-      fullname: _loginUser[0].fullname
+      id: _loginUser[0].idUsuario,
+      name: _loginUser[0].userName,
+      fullName: _loginUser[0].fullName
     })
   }
-
-  console.log(_userId)
 
   return res.status(400).send({ message: 'Invalid password or username' })
 })
 
 app.post('/api/sendRest', async (req, res) => {
   const { rest } = req.body
+  console.log(_userId)
   _rest = `D${rest}`
   res.status(200).send({ message: 'Rest saved' })
 })
@@ -78,8 +76,8 @@ app.get('/api/getPomoData', async (req, res) => {
     })
 })
 
-app.post('/api/penality', async (req, res) => {
-  // TODO: Add penality to user
+app.post('/api/penalty', async (req, res) => {
+  // TODO: Add penalty to user
 
 })
 

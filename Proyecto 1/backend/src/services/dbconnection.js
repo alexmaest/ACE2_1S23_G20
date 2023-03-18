@@ -4,7 +4,7 @@ const pool = mysql.createPool({
   host: 'dbp1.cbfly0lletjb.us-east-2.rds.amazonaws.com',
   user: 'admin',
   password: 'Guatemala2023',
-  database: 'proyecto1_ace1_db',
+  database: 'pomodoroDB',
   connectionLimit: 10,
   waitForConnections: true,
   queueLimit: 0,
