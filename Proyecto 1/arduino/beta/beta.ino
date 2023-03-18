@@ -3,6 +3,18 @@
 #define SENSOR 9
 #define RESET 10
 
+//struct de penalizaciones
+struct Info {
+  int m;
+  int s;
+  int c;
+  int p;
+  int tipo; //1 trabajo 2 descanso
+  Info* next;
+};
+
+Info* penal  = NULL;
+
 //FIGURAS PANTALLA
 byte Bell[] = {
   B00100,
@@ -16,14 +28,14 @@ byte Bell[] = {
 };
 
 byte Lock[8] = {
-0b01110,
-0b10001,
-0b10001,
-0b11111,
-0b11011,
-0b11011,
-0b11111,
-0b00000
+  0b01110,
+  0b10001,
+  0b10001,
+  0b11111,
+  0b11011,
+  0b11011,
+  0b11111,
+  0b00000
 };
 
 byte depie[] = {
@@ -52,7 +64,7 @@ byte sentado[] = {
 
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7); // Determina los pines para la pantalla
 int vOut;                          // Almacena el valor del potenciometro
-int tdefdimmer=0;
+int tdefdimmer = 0;
 bool dimerActivo = false;
 
 // pines a utilizar
@@ -61,8 +73,8 @@ const int sensor = 9; // Pin del sensor cuando la persona se sienta
 const int reset = 10; // Boton de reinicio
 
 // Variables de tiempo de trabajo y descanso default
-const int tiempoTrabajoDefault = 25; // unidades de 1 minuto
-const int tiempoDescansoDefault = 5; // unidades de 1 minuto
+const int tiempoTrabajoDefault = 1; // unidades de 1 minuto
+const int tiempoDescansoDefault = 1; // unidades de 1 minuto
 
 // Variables que toma el pomodoro para trabajo y descanso
 int tiempoTrabajo = tiempoTrabajoDefault;
@@ -102,9 +114,9 @@ void setup()
   // se configura el pin del botón como entrada y la resistencia pull-up interna
   pinMode(reset, INPUT_PULLUP);
   lcd.createChar(0, depie);
-  lcd.createChar(1,sentado);
-  lcd.createChar(2,Lock);
-  lcd.createChar(3,Bell);
+  lcd.createChar(1, sentado);
+  lcd.createChar(2, Lock);
+  lcd.createChar(3, Bell);
 }
 
 void loop()
@@ -177,7 +189,8 @@ void iniciaPomodoro()
       if (tiempodepie == 0)
       {
         minutoselevanto = tiempoTrabajo;
-        segundoselevanto = (segundos!=59) ? (segundos+1) : segundos;
+        segundoselevanto = (segundos != 59) ? (segundos + 1) : segundos;
+        Serial.println("T$N;");
       }
       tiempodepie++;
       lcd.clear();
@@ -194,7 +207,9 @@ void iniciaPomodoro()
       //Serial.println("S");
       if (tiempodepie > 0)
       {
-        Serial.println(String(minutoselevanto) + "$" + String(segundoselevanto) + "$"+ String(noPomodoro)+"$T$"+String(tiempodepie));
+        //Serial.println(String(minutoselevanto) + "$" + String(segundoselevanto) + "$"+ String(noPomodoro)+"$T$"+String(tiempodepie));
+        Serial.println("T$S;");
+        add_data(minutoselevanto, segundoselevanto, noPomodoro, tiempodepie, 1);
         tiempodepie = 0;
         minutoselevanto = 0;
         segundoselevanto = 0;
@@ -221,6 +236,7 @@ void iniciaPomodoro()
 void finalizarPomodoro()
 {
   tiempoTrabajo = (dimerActivo == true) ? tiempoTrabajoDimmer : tiempoTrabajoDefault;
+
   segundos = 0;
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -229,7 +245,7 @@ void finalizarPomodoro()
   if (digitalRead(reset) == LOW)
   {
     resetInesperado();
-  }else{
+  } else {
     iniciarDescanso();
   }
 }
@@ -268,7 +284,8 @@ void iniciarDescanso()
       if (tiemposentado == 0)
       {
         minutoenqsento = tiempoDescanso;
-        segundoenqsento = (segundos!=59) ? (segundos+1) : segundos;
+        segundoenqsento = (segundos != 59) ? (segundos + 1) : segundos;
+        Serial.println("D$S;");
       }
       tiemposentado++;
       lcd.clear();
@@ -283,7 +300,9 @@ void iniciarDescanso()
     {
       if (tiemposentado > 0)
       {
-        Serial.println(String(minutoenqsento) + "$" + String(segundoenqsento) + "$"+ String(noPomodoro)+"$D$"+String(tiemposentado));
+        //Serial.println(String(minutoenqsento) + "$" + String(segundoenqsento) + "$" + String(noPomodoro) + "$D$" + String(tiemposentado));
+        Serial.println("D$N;");
+        add_data(minutoenqsento, segundoenqsento, noPomodoro, tiemposentado, 2);
         tiemposentado = 0;
         minutoenqsento = 0;
         segundoenqsento = 0;
@@ -311,16 +330,13 @@ void finalizarDescanso()
 {
   tiempoDescanso = (tiempoDescansoApp != 0) ? tiempoDescansoApp : tiempoDescansoDefault;
   segundos = 0;
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.write(byte(3));
   buzzerFinDescanso();
   noPomodoro++;
-  if (noPomodoro > 4) //(noPomodoro > 1)
+  if (noPomodoro > 1) //(noPomodoro > 1)
   {
     resetPomodoro();
   }
-  else if(digitalRead(reset) == LOW){
+  else if (digitalRead(reset) == LOW) {
     resetInesperado();
   }
   else
@@ -333,6 +349,7 @@ void finalizarDescanso()
 void resetPomodoro()
 {
   // se lee el estado del botón
+  enviar_penalizaciones(penal);
   estadoBotonReset = digitalRead(reset);
   while (estadoBotonReset != LOW)
   {
@@ -362,7 +379,7 @@ void duracionPomodoro()
 {
   int valorPotenciometro = analogRead(A0);
   tiempoTrabajoDimmer = map(valorPotenciometro, 50, 1000, 1, 45);
-  if (tiempoTrabajoDimmer != tdefdimmer || dimerActivo == true){
+  if (tiempoTrabajoDimmer != tdefdimmer || dimerActivo == true) {
     dimerActivo = true;
     tiempoTrabajo = tiempoTrabajoDimmer;
   }
@@ -374,6 +391,7 @@ void resetInesperado()
   lcd.setCursor(0, 0);
   lcd.print(" -- RESET -- ");
   delayMillis(1000);
+  enviar_penalizaciones(penal);
   dimerActivo = false;
   tiempoTrabajo = tiempoTrabajoDefault;
   tiempoDescanso = tiempoDescansoDefault;
@@ -425,8 +443,8 @@ void noIniciado()
   duracionPomodoro();
 }
 
-void enviarTiempoPomodoro(){
-  Serial.println(String(tiempoTrabajo)+"$"+String(tiempoDescanso));
+void enviarTiempoPomodoro() {
+  Serial.println(String(tiempoTrabajo) + "$" + String(tiempoDescanso)+";");
 }
 
 /*************************************************
@@ -503,5 +521,70 @@ void buzzer10Segundos()
   {
     tone(BOCINA, 1000, 100);
     delayMillis(200);
+  }
+}
+
+
+
+
+
+void add_data(int m1, int s2, int c3, int p4, int tipo) {
+  Info* new_data = new Info;
+  new_data->m = m1;
+  new_data->s = s2;
+  new_data->c = c3;
+  new_data->p = p4;
+  new_data->tipo = tipo;
+  new_data->next = NULL;
+
+  if (penal == NULL) {
+    penal = new_data;
+  } else {
+    Info* current_data = penal;
+    while (current_data->next != NULL) {
+      current_data = current_data->next;
+    }
+    current_data->next = new_data;
+  }
+}
+
+void enviar_penalizaciones(Info* p) {
+  String p_str = "";
+  bool ultimo_elemento = false;
+  while (p != NULL) {
+    if (p->next == NULL) {
+      ultimo_elemento = true;
+    }
+    if (p->tipo == 1) {
+      p_str += String(p->m);
+      p_str += "$";
+      p_str += String(p->s);
+      p_str += "$";
+      p_str += String(p->c);
+      p_str += "$T$";
+      p_str += String(p->p);
+    } else {
+      p_str += String(p->m);
+      p_str += "$";
+      p_str += String(p->s);
+      p_str += "$";
+      p_str += String(p->c);
+      p_str += "$D$";
+      p_str += String(p->p);
+    }
+    if (!ultimo_elemento) {
+      p_str += "*";
+    }
+    p = p->next;
+  }
+  p_str += ";";
+  Serial.println(p_str);
+}
+
+void limpiar_penalizaciones(Info* p) {
+  while (p != NULL) {
+    Info* temp = p;
+    p = p->next;
+    delete temp;
   }
 }
