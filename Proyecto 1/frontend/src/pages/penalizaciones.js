@@ -10,17 +10,22 @@ const DynamicComponentWithNoSSR = dynamic(
   { ssr: false }
 )
 
+
+//datos default
+var tituloBarra0 = 'penalizacion de pomodoro'; var ejeYname0 = 'pomodoro'; var ejeXname0 = 'tiempo(s)'; var listaDatos0 = 'rojo,1-azul,2-verde,3'
+
+//grafico de barras creacion propia
+var myBarchart;
+
+
+
 export default function Penalizaciones() {
 
 
   //para que pueda usar el canvas en react
   const canvasRef = useRef(null);
 
-  //datos default
-  var tituloBarra0 = 'penalizacion de pomodoro'; var ejeYname0 = 'pomodoro'; var ejeXname0 = 'tiempo(s)'; var listaDatos0 = 'rojo,1-azul,2-verde,3'
-
-  //grafico de barras creacion propia
-  var myBarchart;
+  
 
 
   // este se encarga de dibujar el grafico de barras----------------------
@@ -39,13 +44,13 @@ export default function Penalizaciones() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // esto dibujare cambio las variables anteriores 
-    tituloBarra0 = 'penalizacion de pomodoro'; ejeYname0 = 'tiempo(s)'; ejeXname0 = 'penalizacion'; 
+    tituloBarra0 = 'porcentaje de cumplimiento de los 4 pomodoros'; ejeYname0 = 'porcentaje(%)'; ejeXname0 = 'ciclos pomodoro'; 
     
     
     // lo primordial
-    listaDatos0 = 'pararse,10-sentarse,2'
+    //listaDatos0 = 'pararse,10-sentarse,2'
 
-    //listaDatos0="rojo,10-azul,20-verde,30-rosa,80-aqua,200-rojo1,10-azul1,20-verde1,30-rosa1,80-aqua1,200-rojo2,10-azul2,20-verde2,30-rosa2,80-aqua2,200-rojo3,10-azul3,20-verde3,30-rosa3,80-aqua3,200-rojo4,10-azul4,20-verde4,30-rosa4,80-aqua4,200-rojo5,10-azul5,20-verde5,30-rosa5,80-aqua5,200-rojo6,10-azul6,20-verde6,30-rosa6,80-aqua6,200-rojo7,10-azul7,20-verde7,30-rosa7,80-aqua7,200-rojo8,10-azul8,20-verde8,30-rosa8,80-aqua8,200-rojo9,10-azul9,20-verde9,30-rosa9,80-aqua9,200"
+    listaDatos0="rojo,10-azul,20-verde,30-rosa,80-aqua,200-rojo1,10-azul1,20-verde1,30-rosa1,80-aqua1,200-rojo2,10-azul2,20-verde2,30-rosa2,80-aqua2,200-rojo3,10-azul3,20-verde3,30-rosa3,80-aqua3,200-rojo4,10-azul4,20-verde4,30-rosa4,80-aqua4,200-rojo5,10-azul5,20-verde5,30-rosa5,80-aqua5,200-rojo6,10-azul6,20-verde6,30-rosa6,80-aqua6,200-rojo7,10-azul7,20-verde7,30-rosa7,80-aqua7,200-rojo8,10-azul8,20-verde8,30-rosa8,80-aqua8,200-rojo9,10-azul9,20-verde9,30-rosa9,80-aqua9,200"
 
 
 
@@ -66,8 +71,8 @@ export default function Penalizaciones() {
       },
 
       // en colors puede ir bien una lista larga por default
-      colors: ["#3D32EE", "#EE3251", "#FA8C0F", "#FACC0F", "#ECFA0F", "#A5FA0F", "#61FA0F", "#0FFA7D", "#0FFAD3", "#0FFAFA", "#0FC5FA", "#0F96FA", "#0F5DFA", "#0F0FFA", "#5D0FFA", "#9D0FFA", "#DA0FFA", "#FA0FE1", "#FA0FAF", "#FA0F5D", "#B20000", "#B24600", "#B28F00", "#AAB200", "#59B200", "#00B20B", "#00B27C", "#00B2B2", "#009AB2", "#0069B2", "#003BB2", "#2000B2", "#6F00B2", "#AD00B2", "#999898"],
-      titleOptions: {
+      colors: ["#00B0FF","#002AFF","#7B00B9","#AE00FF"     ,"#FF8787","#FF0000","#CB0000","#8B0000"     ,"#6DFF88","#00FF2F","#75F100","#58B500"    ,"#FEFF67","#FDFF00","#E2C500","#B39C00"],
+        titleOptions: {
         align: 'center',
         fill: 'black',
         font: {
@@ -110,34 +115,41 @@ export default function Penalizaciones() {
     upperLeftCornerY,
     width,
     height,
-    color, value, puntoX, valorBarra
+    color, value, puntoX,valorBarra
   ) {
-    ctx.save()
-    ctx.fillStyle = color
-    ctx.fillRect(upperLeftCornerX, upperLeftCornerY, width, height)
-    ctx.restore()
-
-    // --------nueva funcionalidad propia-------------
-
-    //----------nombre de la barra vertical
-    ctx.save()
-    ctx.translate(upperLeftCornerX + 55, puntoX - 15)
-    //ctx.rotate(-0.5 * Math.PI)
-    ctx.fillStyle = '#181818'
-    ctx.font = 'bold 32px serif' // "bold 12px serif"
-    ctx.fillText(value, 0, 0)
-    ctx.restore()
-
-    // ---------new name de barra inclinado
-    // nombre de barra
-    ctx.save()
-    ctx.translate(upperLeftCornerX + 5, upperLeftCornerY)
-    ctx.rotate(-(Math.PI / 4))
-    ctx.font = 'bold 12px serif' // "bold 12px serif"
-    ctx.fillStyle = 'blue'
-    ctx.textAlign = 'left'
-    ctx.fillText(valorBarra, 0, 0)
-    ctx.restore()
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.fillRect(upperLeftCornerX, upperLeftCornerY, width, height);
+    ctx.restore();
+  
+  
+  
+    // ctx.fillStyle = color;
+    // ctx.fillRect(upperLeftCornerX, upperLeftCornerY, width, height);
+    ctx.restore();
+  
+    //--------new nombre en eje x
+    ctx.save();
+    ctx.translate(upperLeftCornerX+9, puntoX-5);
+    ctx.rotate(-0.5 * Math.PI);
+  
+    ctx.fillStyle = "#181818";
+    ctx.font = "12px serif" //"bold 12px serif"
+    ctx.fillText(value, 0, 0);
+  
+    ctx.restore();
+  
+    //---------new name de barra inclinado
+    //nombre de barra
+    ctx.save();
+    ctx.translate( upperLeftCornerX+5,  upperLeftCornerY );
+    ctx.rotate(-( Math.PI / 4) );
+    ctx.fillStyle='#BA8C21';
+    ctx.textAlign = "left";
+    ctx.fillText( valorBarra, 0, 0 );
+    ctx.restore();
+  
+    
   }
 
 
@@ -255,7 +267,7 @@ export default function Penalizaciones() {
             this.options.padding,
             this.options.padding + barIndex * barSize,
             this.ctx.canvas.clientHeight - 25,
-            'red'
+            '#0000FF'
           )
         }
 
@@ -429,6 +441,27 @@ export default function Penalizaciones() {
   }
 
 
+  function draw2() {
+    console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    console.log('Input value:', inputValue);
+  
+  
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  
+    
+  
+  
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    draw(myBarchart, tituloBarra0, ejeYname0, ejeXname0, inputValue)
+    
+  }
+  
+  
+  const [inputValue, setInputValue] = useState('');
+  
+    const handleInputChange = (event) => {
+      setInputValue(event.target.value);
+    }
 
 
 
@@ -439,6 +472,11 @@ export default function Penalizaciones() {
         <title>Penalizaciones</title>
       </Head>
       <Navbar />
+
+
+      <input type="text" value={inputValue} onChange={handleInputChange}></input>
+      <input type="button" value="submit" name="submit" onClick={draw2}></input>
+
 
 
       <section className="home">

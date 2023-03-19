@@ -10,17 +10,20 @@ const DynamicComponentWithNoSSR = dynamic(
   { ssr: false }
 )
 
+
+//datos default
+var tituloBarra0 = 'penalizacion de pomodoro'; var ejeYname0 = 'pomodoro'; var ejeXname0 = 'tiempo(s)'; var listaDatos0 = 'rojo,1-azul,2-verde,3'
+
+//grafico de barras creacion propia
+var myBarchart;
+
+
+
 export default function Penalizaciones() {
 
 
   //para que pueda usar el canvas en react
   const canvasRef = useRef(null);
-
-  //datos default
-  var tituloBarra0 = 'penalizacion de pomodoro'; var ejeYname0 = 'pomodoro'; var ejeXname0 = 'tiempo(s)'; var listaDatos0 = 'rojo,1-azul,2-verde,3'
-
-  //grafico de barras creacion propia
-  var myBarchart;
 
 
   // este se encarga de dibujar el grafico de barras----------------------
@@ -448,6 +451,27 @@ export default function Penalizaciones() {
   }
 
 
+  function draw2() {
+    console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    console.log('Input value:', inputValue);
+  
+  
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  
+    
+  
+  
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    draw(myBarchart, tituloBarra0, ejeYname0, ejeXname0, inputValue)
+    
+  }
+  
+  
+  const [inputValue, setInputValue] = useState('');
+  
+    const handleInputChange = (event) => {
+      setInputValue(event.target.value);
+    }
 
 
 
@@ -458,6 +482,12 @@ export default function Penalizaciones() {
         <title>Penalizaciones</title>
       </Head>
       <Navbar />
+
+
+
+      <input type="text" value={inputValue} onChange={handleInputChange}></input>
+      <input type="button" value="submit" name="submit" onClick={draw2}></input>
+
 
 
       <section className="home">

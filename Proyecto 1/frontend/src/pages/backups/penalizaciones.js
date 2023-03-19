@@ -10,11 +10,6 @@ const DynamicComponentWithNoSSR = dynamic(
   { ssr: false }
 )
 
-export default function Penalizaciones() {
-
-
-  //para que pueda usar el canvas en react
-  const canvasRef = useRef(null);
 
   //datos default
   var tituloBarra0 = 'penalizacion de pomodoro'; var ejeYname0 = 'pomodoro'; var ejeXname0 = 'tiempo(s)'; var listaDatos0 = 'rojo,1-azul,2-verde,3'
@@ -22,6 +17,12 @@ export default function Penalizaciones() {
   //grafico de barras creacion propia
   var myBarchart;
 
+
+
+export default function Penalizaciones() {
+
+  //para que pueda usar el canvas en react
+  const canvasRef = useRef(null);
 
   // este se encarga de dibujar el grafico de barras----------------------
   useEffect(() => {
@@ -66,7 +67,7 @@ export default function Penalizaciones() {
       },
 
       // en colors puede ir bien una lista larga por default
-      colors: ["#3D32EE", "#EE3251", "#FA8C0F", "#FACC0F", "#ECFA0F", "#A5FA0F", "#61FA0F", "#0FFA7D", "#0FFAD3", "#0FFAFA", "#0FC5FA", "#0F96FA", "#0F5DFA", "#0F0FFA", "#5D0FFA", "#9D0FFA", "#DA0FFA", "#FA0FE1", "#FA0FAF", "#FA0F5D", "#B20000", "#B24600", "#B28F00", "#AAB200", "#59B200", "#00B20B", "#00B27C", "#00B2B2", "#009AB2", "#0069B2", "#003BB2", "#2000B2", "#6F00B2", "#AD00B2", "#999898"],
+      colors: ["#323292", "#EE3251", "#FA8C0F", "#FACC0F", "#ECFA0F", "#A5FA0F", "#61FA0F", "#0FFA7D", "#0FFAD3", "#0FFAFA", "#0FC5FA", "#0F96FA", "#0F5DFA", "#0F0FFA", "#5D0FFA", "#9D0FFA", "#DA0FFA", "#FA0FE1", "#FA0FAF", "#FA0F5D", "#B20000", "#B24600", "#B28F00", "#AAB200", "#59B200", "#00B20B", "#00B27C", "#00B2B2", "#009AB2", "#0069B2", "#003BB2", "#2000B2", "#6F00B2", "#AD00B2", "#999898"],
       titleOptions: {
         align: 'center',
         fill: 'black',
@@ -133,8 +134,8 @@ export default function Penalizaciones() {
     ctx.save()
     ctx.translate(upperLeftCornerX + 5, upperLeftCornerY)
     ctx.rotate(-(Math.PI / 4))
-    ctx.font = 'bold 12px serif' // "bold 12px serif"
-    ctx.fillStyle = 'blue'
+    ctx.font = 'bold 25px serif' // "bold 12px serif"
+    ctx.fillStyle = '#EAAF26'
     ctx.textAlign = 'left'
     ctx.fillText(valorBarra, 0, 0)
     ctx.restore()
@@ -428,7 +429,27 @@ export default function Penalizaciones() {
     }, initialValue)
   }
 
+function draw2() {
+  console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++")
+  console.log('Input value:', inputValue);
 
+
+  //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+  
+
+
+  //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  draw(myBarchart, tituloBarra0, ejeYname0, ejeXname0, inputValue)
+  
+}
+
+
+const [inputValue, setInputValue] = useState('');
+
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+  }
 
 
 
@@ -439,6 +460,12 @@ export default function Penalizaciones() {
         <title>Penalizaciones</title>
       </Head>
       <Navbar />
+
+
+
+      <input type="text" value={inputValue} onChange={handleInputChange}></input>
+      <input type="button" value="submit" name="submit" onClick={draw2}></input>
+
 
 
       <section className="home">
