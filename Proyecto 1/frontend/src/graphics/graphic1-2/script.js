@@ -1,4 +1,4 @@
-// supuestamente con la grafica
+// supuestamente con la grafica     npm run dev
 
 let tituloBarra0 = 'eje x vs eje y'; let ejeYname0 = 'pomodoro'; let ejeXname0 = 'tiempo(s)'; let listaDatos0 = 'rojo,1-azul,2-verde,3'
 
@@ -23,15 +23,6 @@ document.body.style.margin = '0px'
 window.onresize = function () {
   resizeCanvas()
 
-  // var tituloBarra0, ejeYname0, ejeXname0, listaDatos0
-
-  /*
-  var param = tituloBarra0
-  var paramY = ejeYname0
-  var paramX = ejeXname0
-
-  var n2 = document.getElementById("num").value; */
-
   draw(tituloBarra0, ejeYname0, ejeXname0, listaDatos0)
 }
 
@@ -40,7 +31,8 @@ function resizeCanvas () {
   myCanvas.height = window.innerHeight * 0.85
 }
 
-function SUMMIT () {
+ function SUMMIT () {
+  alert("hello")
   resizeCanvas()
 
   const param = 'penalizacion de pomodoro'
@@ -111,6 +103,8 @@ class BarChart {
     this.maxValue = Math.max(...Object.values(this.options.data))
 
     // creamos la lista que identifica a c/u de las barras del grafico
+
+    /*
     this.ul = document.createElement('ul')
     this.ul2 = document.createElement('ul')
     this.ul3 = document.createElement('ul')
@@ -121,11 +115,13 @@ class BarChart {
 
     this.ul7 = document.createElement('ul')
     this.ul8 = document.createElement('ul')
-    this.ul9 = document.createElement('ul')
+    this.ul9 = document.createElement('ul')*/
 
     // this.ul.className="social-icons"
 
     // identificador de esta lista de c/u de las barras en el grafico
+
+    /*
     this.ul.id = 'legends'
     this.ul2.id = 'legends2'
     this.ul3.id = 'legends3'
@@ -137,6 +133,7 @@ class BarChart {
     this.ul7.id = 'legends7'
     this.ul8.id = 'legends8'
     this.ul9.id = 'legends9'
+    */
   }
 
   // inician los metodos de esta clase (metodos graficos)
@@ -292,6 +289,8 @@ class BarChart {
   }
 
   // 4
+
+  /*
   drawLegend () { // dibuja los cuadros de color con su label respectivo, identificador de que cosa representa cada una de las barras
     let pIndex = 0
     const legend = document.querySelector("legend[for='myCanvas']")
@@ -364,7 +363,7 @@ class BarChart {
 
       pIndex++
     }
-  }
+  }*/
 
   // el metodo que importa xd (manda a llamar a todos los anteriores)
   draw () { // manda a dibujar todo en el canvas grafico-barras
@@ -374,7 +373,7 @@ class BarChart {
     this.drawLabel2()// el num de muestra
     this.drawLabelY()// nombre eje y
     this.drawLabelX()// nombre eje x
-    this.drawLegend()// nombre de cada barra de color
+   // this.drawLegend()// nombre de cada barra de color
   }
 }
 
@@ -414,6 +413,24 @@ myBarchart.draw() // se manda a dibujar todo el objeto(grafico de barras)
 
 // --------- se vienen mis funciones de los botones ---------======================================================================
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // borra todo(limpia la pantalla)
 function reset () {
   // borro el grafico de barras
@@ -422,19 +439,30 @@ function reset () {
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
   // borro las leyendas del grafico
+  /*
   let leyendas = document.getElementById('legends')
   leyendas.innerHTML = ''
 
   for (let index = 2; index <= 9; index++) {
     leyendas = document.getElementById('legends' + index)
     leyendas.innerHTML = ''
-  }
+  }*/
 }
 
 //= ================================================================================================================================
 //= ================================================================================================================================
 //= ================================================================================================================================
 //= ================================================================================================================================
+// pasa de array a OBJ
+const convertArrayToObject = (array, key) => {
+  const initialValue = {}
+  return array.reduce((obj, item) => {
+    return {
+      ...obj,
+      [item[key]]: Number(item.valor)
+    }
+  }, initialValue)
+}
 
 function draw (tituloBarra, ejeYname, ejeXname, listaDatos) {
   // los params se los paso a las var globales para cuando se llame a la funcion window.resize sea la misma a la ingresada
@@ -485,13 +513,4 @@ function draw (tituloBarra, ejeYname, ejeXname, listaDatos) {
   myBarchart.draw()
 }
 
-// pasa de array a OBJ
-const convertArrayToObject = (array, key) => {
-  const initialValue = {}
-  return array.reduce((obj, item) => {
-    return {
-      ...obj,
-      [item[key]]: Number(item.valor)
-    }
-  }, initialValue)
-}
+

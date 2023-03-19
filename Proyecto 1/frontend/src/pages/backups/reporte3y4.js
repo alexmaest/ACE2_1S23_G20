@@ -39,15 +39,15 @@ export default function Penalizaciones() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // esto dibujare cambio las variables anteriores 
-    tituloBarra0 = 'penalizacion de pomodoro'; ejeYname0 = 'tiempo(s)'; ejeXname0 = 'penalizacion'; 
-    
-    
+    tituloBarra0 = '(penalizacion por no sentarse a tiempo/por no pararse a tiempo ) a lo largo del tiempo'; ejeYname0 = 'tiempo(s)'; ejeXname0 = 'pomodoro';
+
+
     // lo primordial
-    listaDatos0 = 'pararse,10-sentarse,2'
+    //listaDatos0 = 'pararse,10-sentarse,2'
 
     //listaDatos0="rojo,10-azul,20-verde,30-rosa,80-aqua,200-rojo1,10-azul1,20-verde1,30-rosa1,80-aqua1,200-rojo2,10-azul2,20-verde2,30-rosa2,80-aqua2,200-rojo3,10-azul3,20-verde3,30-rosa3,80-aqua3,200-rojo4,10-azul4,20-verde4,30-rosa4,80-aqua4,200-rojo5,10-azul5,20-verde5,30-rosa5,80-aqua5,200-rojo6,10-azul6,20-verde6,30-rosa6,80-aqua6,200-rojo7,10-azul7,20-verde7,30-rosa7,80-aqua7,200-rojo8,10-azul8,20-verde8,30-rosa8,80-aqua8,200-rojo9,10-azul9,20-verde9,30-rosa9,80-aqua9,200"
 
-
+    listaDatos0 = "A0,0-A1,1-A2,1-A3,0-A4,1 -B0,0-B1,1-B2,1-B3,0-B4,1 -C0,0-C1,1-C2,1-C3,0-C4,1 -D0,0-D1,1-D2,1-D3,0-D4,1 -E0,0-E1,1-E2,1-E3,0-E4,1 -F0,0-F1,1-F2,1-F3,0-F4,1 -H0,0-H1,1-H2,1-H3,0-H4,1 -G0,0-G1,1-G2,1-G3,0-G4,1"
 
     // OBJ inicial si o si debe de estar
     myBarchart = new BarChart({
@@ -66,7 +66,7 @@ export default function Penalizaciones() {
       },
 
       // en colors puede ir bien una lista larga por default
-      colors: ["#3D32EE", "#EE3251", "#FA8C0F", "#FACC0F", "#ECFA0F", "#A5FA0F", "#61FA0F", "#0FFA7D", "#0FFAD3", "#0FFAFA", "#0FC5FA", "#0F96FA", "#0F5DFA", "#0F0FFA", "#5D0FFA", "#9D0FFA", "#DA0FFA", "#FA0FE1", "#FA0FAF", "#FA0F5D", "#B20000", "#B24600", "#B28F00", "#AAB200", "#59B200", "#00B20B", "#00B27C", "#00B2B2", "#009AB2", "#0069B2", "#003BB2", "#2000B2", "#6F00B2", "#AD00B2", "#999898"],
+      colors: ["#000000", "#000000", "#000000"],
       titleOptions: {
         align: 'center',
         fill: 'black',
@@ -110,34 +110,42 @@ export default function Penalizaciones() {
     upperLeftCornerY,
     width,
     height,
-    color, value, puntoX, valorBarra
+    color, value, puntoX
   ) {
-    ctx.save()
-    ctx.fillStyle = color
-    ctx.fillRect(upperLeftCornerX, upperLeftCornerY, width, height)
-    ctx.restore()
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.fillRect(upperLeftCornerX, upperLeftCornerY, width, height);
+    ctx.restore();
 
-    // --------nueva funcionalidad propia-------------
 
-    //----------nombre de la barra vertical
-    ctx.save()
-    ctx.translate(upperLeftCornerX + 55, puntoX - 15)
-    //ctx.rotate(-0.5 * Math.PI)
-    ctx.fillStyle = '#181818'
-    ctx.font = 'bold 32px serif' // "bold 12px serif"
-    ctx.fillText(value, 0, 0)
-    ctx.restore()
 
-    // ---------new name de barra inclinado
-    // nombre de barra
-    ctx.save()
-    ctx.translate(upperLeftCornerX + 5, upperLeftCornerY)
-    ctx.rotate(-(Math.PI / 4))
-    ctx.font = 'bold 12px serif' // "bold 12px serif"
-    ctx.fillStyle = 'blue'
-    ctx.textAlign = 'left'
-    ctx.fillText(valorBarra, 0, 0)
-    ctx.restore()
+    // ctx.fillStyle = color;
+    // ctx.fillRect(upperLeftCornerX, upperLeftCornerY, width, height);
+    ctx.restore();
+
+    //--------new
+    ctx.save();
+    ctx.translate(upperLeftCornerX + 9, puntoX);
+    ctx.rotate(-0.5 * Math.PI);
+
+    ctx.fillStyle = "red";
+    ctx.font = "12px serif"//"bold 12px serif"
+    ctx.fillText(value, 0, 0);
+
+    ctx.restore();
+
+
+    //---------new name de barra inclinado
+    //nombre de barra
+    ctx.save();
+    ctx.translate(upperLeftCornerX + 5, upperLeftCornerY);
+    ctx.rotate(-(Math.PI / 4));
+    ctx.fillStyle = 'black';
+    ctx.textAlign = "left";
+    ctx.fillText(value, 0, 0);
+    ctx.restore();
+
+
   }
 
 
@@ -187,154 +195,169 @@ export default function Penalizaciones() {
 
     // inician los metodos de esta clase (metodos graficos)
     // 1
-    drawGridLines() { // dibuja las lineas horizontales para identificar o darle un fondo mas legible respecto a los valores en el eje y
-      const canvasActualHeight = this.canvas.height - this.options.padding * 2
-      const canvasActualWidth = this.canvas.width - this.options.padding * 2
-      let gridValue = 0
+    drawGridLines() {//dibuja las lineas horizontales para identificar o darle un fondo mas legible respecto a los valores en el eje y
+      var canvasActualHeight = this.canvas.height - this.options.padding * 2;
+      var canvasActualWidth = this.canvas.width - this.options.padding * 2;
+      var gridValue = 0;
       console.log(this.maxValue)
+
+      var numberOfBars = Object.keys(this.options.data).length;//saber el max num de elemntos ==SI
+      var contador = 0//elemento 0 ==NO
+
       while (gridValue <= this.maxValue) {
-        const gridY =
+        var gridY =
           canvasActualHeight * (1 - gridValue / this.maxValue) +
-          this.options.padding
-        drawLine(// barra horizontal del eje x
-          this.ctx,
-          17,
-          gridY,
-          this.canvas.width,
-          gridY,
-          this.options.gridColor
-        )
-        drawLine(// barra vertical del eje y
+          this.options.padding;
+        if (gridValue == 0) {
+          drawLine(//barra horizontal del eje x
+            this.ctx,
+            17,
+            gridY,
+            this.canvas.width,
+            gridY,
+            this.options.gridColor
+          );
+        } else if (gridValue == this.maxValue) {
+          drawLine(//barra horizontal del eje x
+            this.ctx,
+            17,
+            gridY,
+            this.canvas.width - 1230,
+            gridY,
+            this.options.gridColor
+          );
+        }
+        drawLine(//barra vertical del eje y
           this.ctx,
           24,
           this.options.padding / 2,
           24,
           gridY + this.options.padding / 2,
           this.options.gridColor
-        )
-        // Writing grid markers son los numeros por linea
-        this.ctx.save()
-        this.ctx.fillStyle = 'red'
-        this.ctx.textBaseline = 'bottom'
-        this.ctx.font = 'bold 10px Arial'
-        this.ctx.fillText(Math.round(gridValue), 0, gridY - 4)
-        this.ctx.restore()
-        gridValue += this.options.gridStep
+        );
+        // Writing grid markers son los numeros por linea   SE MODIFICO 
+        this.ctx.save();
+
+        /*
+        if(contador==0){
+        this.ctx.fillStyle = "red";
+        this.ctx.fillText(/ *Math.round(gridValue)+* /" NO", 0, gridY + 4);
+  
+        }else if((contador)==numberOfBars){
+          this.ctx.fillStyle = "red";
+          this.ctx.fillText(/ *Math.round(gridValue)+* /" SI", 0, gridY + 4);
+  
+        }else{
+          this.ctx.fillStyle = "blue";
+        }*/
+
+        this.ctx.fillStyle = "red";
+        this.ctx.textBaseline = "bottom";
+        this.ctx.font = "bold 10px Arial";
+        this.ctx.fillText(Math.round(gridValue) + "", 0, gridY + 4);
+        this.ctx.restore();
+        gridValue += this.options.gridStep;
+
+        contador++//para identificar 0s y 1s
       }
     }
 
-    // 2
-    drawBars() { // dibuja todas las barras del canvas se auto-ajusta
-      const canvasActualHeight = this.canvas.height - this.options.padding * 2
-      const canvasActualWidth = this.canvas.width - this.options.padding * 2
-      let barIndex = 0
-      const numberOfBars = Object.keys(this.options.data).length
-      const barSize = canvasActualWidth / numberOfBars
-      const values = Object.values(this.options.data)
 
-      const array = Object.keys(this.options.data)
-      let contador = 0
-      for (const val of values) {
-        const barHeight = Math.round((canvasActualHeight * val) / this.maxValue)
-        // console.log(barHeight);
+    // 2
+    drawBars() {// dibuja todas las barras del canvas se auto-ajusta
+      var canvasActualHeight = this.canvas.height - this.options.padding * 2;
+      var canvasActualWidth = this.canvas.width - this.options.padding * 2;
+      var barIndex = 0;
+      var numberOfBars = Object.keys(this.options.data).length;
+      var barSize = canvasActualWidth / numberOfBars;
+      var values = Object.values(this.options.data);
+
+      var array = Object.keys(this.options.data)
+      var contador = 0
+      for (let val of values) {
+        var barHeight = Math.round((canvasActualHeight * val) / this.maxValue);
+        //console.log(barHeight);
         drawBar(
           this.ctx,
           this.options.padding + barIndex * barSize,
           this.canvas.height - barHeight - this.options.padding,
           barSize,
           barHeight,
-          this.colors[barIndex % this.colors.length], array[contador], // new  le envio valor a mostrar en la barra
-          this.canvas.height - 15, val
-        )
-
-        // barra roja final de pomodoro========================================
-        if (contador % 4 == 0 && contador != 0) {
-          drawLine(
-            this.ctx,
-            this.options.padding + barIndex * barSize,
-            this.options.padding,
-            this.options.padding + barIndex * barSize,
-            this.ctx.canvas.clientHeight - 25,
-            'red'
-          )
-        }
-
-        barIndex++
+          this.colors[0], array[contador],  //new  le envio valor a mostrar en la barra
+          this.canvas.height - 15
+        );
+        barIndex++;
         contador++
       }
     }
-
-    // 3
-    drawLabel() { // dibuja el titulo del grafico
-      this.ctx.save()
-      this.ctx.textBaseline = 'bottom'
-      this.ctx.textAlign = this.titleOptions.align
-      this.ctx.fillStyle = this.titleOptions.fill
-      this.ctx.font = `${this.titleOptions.font.weight} ${this.titleOptions.font.size} ${this.titleOptions.font.family}`
-      let xPos = this.canvas.width / 2
-      if (this.titleOptions.align == 'left') {
-        xPos = 10
+    //3
+    drawLabel() {//dibuja el titulo del grafico
+      this.ctx.save();
+      this.ctx.textBaseline = "bottom";
+      this.ctx.textAlign = this.titleOptions.align;
+      this.ctx.fillStyle = this.titleOptions.fill;
+      this.ctx.font = `${this.titleOptions.font.weight} ${this.titleOptions.font.size} ${this.titleOptions.font.family}`;
+      let xPos = this.canvas.width / 2;
+      if (this.titleOptions.align == "left") {
+        xPos = 10;
       }
-      if (this.titleOptions.align == 'right') {
-        xPos = this.canvas.width - 10
+      if (this.titleOptions.align == "right") {
+        xPos = this.canvas.width - 10;
       }
-      this.ctx.fillText(this.options.seriesName, xPos + 45, 18)
-      this.ctx.restore()
+      this.ctx.fillText(this.options.seriesName, xPos + 45, 18);
+      this.ctx.restore();
     }
-
-    drawLabelY() { // dibuja el titulo del eje y
-      this.ctx.save()
-      this.ctx.textBaseline = 'bottom'
-      this.ctx.textAlign = this.titleOptions.align
-      this.ctx.fillStyle = this.titleOptions.fill
-      this.ctx.font = `${this.titleOptions.font.weight} ${this.titleOptions.font.size} ${this.titleOptions.font.family}`
-      let xPos = this.canvas.width / 2
-      if (this.titleOptions.align == 'left') {
-        xPos = 10
+    drawLabelY() {//dibuja el titulo del eje y
+      this.ctx.save();
+      this.ctx.textBaseline = "bottom";
+      this.ctx.textAlign = this.titleOptions.align;
+      this.ctx.fillStyle = this.titleOptions.fill;
+      this.ctx.font = `${this.titleOptions.font.weight} ${this.titleOptions.font.size} ${this.titleOptions.font.family}`;
+      let xPos = this.canvas.width / 2;
+      if (this.titleOptions.align == "left") {
+        xPos = 10;
       }
-      if (this.titleOptions.align == 'right') {
-        xPos = this.canvas.width - 10
+      if (this.titleOptions.align == "right") {
+        xPos = this.canvas.width - 10;
       }
-      this.ctx.fillText(this.options.seriesNameY, 55, 18)
-      this.ctx.restore()
+      this.ctx.fillText(this.options.seriesNameY, 55, 18);
+      this.ctx.restore();
     }
-
-    drawLabelX() { // dibuja el titulo del eje x
-      this.ctx.save()
-      this.ctx.textBaseline = 'bottom'
-      this.ctx.textAlign = this.titleOptions.align
-      this.ctx.fillStyle = this.titleOptions.fill
-      this.ctx.font = `${this.titleOptions.font.weight} ${this.titleOptions.font.size} ${this.titleOptions.font.family}`
-      let xPos = this.canvas.width / 2
-      if (this.titleOptions.align == 'left') {
-        xPos = 10
+    drawLabelX() {//dibuja el titulo del eje x
+      this.ctx.save();
+      this.ctx.textBaseline = "bottom";
+      this.ctx.textAlign = this.titleOptions.align;
+      this.ctx.fillStyle = this.titleOptions.fill;
+      this.ctx.font = `${this.titleOptions.font.weight} ${this.titleOptions.font.size} ${this.titleOptions.font.family}`;
+      let xPos = this.canvas.width / 2;
+      if (this.titleOptions.align == "left") {
+        xPos = 10;
       }
-      if (this.titleOptions.align == 'right') {
-        xPos = this.canvas.width - 10
+      if (this.titleOptions.align == "right") {
+        xPos = this.canvas.width - 10;
       }
-      this.ctx.fillText(this.options.seriesNameX, this.canvas.width - 65, this.canvas.height - 1)
-      this.ctx.restore()
+      this.ctx.fillText(this.options.seriesNameX, this.canvas.width - 65, this.canvas.height - 1);
+      this.ctx.restore();
     }
-
-    drawLabel2() { // dibuja el #muestras del grafico
-      this.ctx.save()
-      this.ctx.textBaseline = 'bottom'
-      this.ctx.textAlign = this.titleOptions.align
-      this.ctx.fillStyle = this.titleOptions.fill
-      this.ctx.font = `${this.titleOptions.font.weight} ${this.titleOptions.font.size} ${this.titleOptions.font.family}`
-      let xPos = this.canvas.width / 2
-      if (this.titleOptions.align == 'left') {
-        xPos = 10
+    drawLabel2() {//dibuja el #muestras del grafico
+      this.ctx.save();
+      this.ctx.textBaseline = "bottom";
+      this.ctx.textAlign = this.titleOptions.align;
+      this.ctx.fillStyle = this.titleOptions.fill;
+      this.ctx.font = `${this.titleOptions.font.weight} ${this.titleOptions.font.size} ${this.titleOptions.font.family}`;
+      let xPos = this.canvas.width / 2;
+      if (this.titleOptions.align == "left") {
+        xPos = 10;
       }
-      if (this.titleOptions.align == 'right') {
-        xPos = this.canvas.width - 10
+      if (this.titleOptions.align == "right") {
+        xPos = this.canvas.width - 10;
       }
 
-      // numero de elementos del grafico
-      const values = Object.values(this.options.data)
+      //numero de elementos del grafico
+      var values = Object.values(this.options.data);
 
-      this.ctx.fillText('Muestra:' + values.length, xPos, this.canvas.height)
-      this.ctx.restore()
+      this.ctx.fillText("Muestra:" + values.length, xPos, this.canvas.height);
+      this.ctx.restore();
     }
 
 
@@ -351,8 +374,8 @@ export default function Penalizaciones() {
   }
 
 
-//************************************************************************************************************** */
-//************************************************************************************************************** */
+  //************************************************************************************************************** */
+  //************************************************************************************************************** */
 
   // borra todo(limpia la pantalla)
   function reset() {
@@ -400,18 +423,14 @@ export default function Penalizaciones() {
     const final = convertArrayToObject(countries, 'medida')// paso de array a objeto
     console.log(final)
 
-    // se lo asigno a myBarchart options.data
+    //se lo asigno a myBarchart options.data
     myBarchart.options.data = final
 
-    // calculo de nuevo el max valor del data
-    myBarchart.maxValue = Math.max(...Object.values(myBarchart.options.data))
+    //calculo de nuevo el max valor del data
+    myBarchart.maxValue = Math.max(...Object.values(myBarchart.options.data));
 
-    // defino el valor por linea hasta el max
-    myBarchart.options.gridStep = myBarchart.maxValue / values.length
-
-    //* ********************* defino un valor max para que asi se mire mejor la grafica
-    myBarchart.maxValue = 20 + Math.max(...Object.values(myBarchart.options.data))
-
+    //defino el valor por linea hasta el max en este caso 1 dado a SI o NO
+    myBarchart.options.gridStep = 1
     // ----------------------------------------------------------------
     // se manda a dibujar todo el objeto(grafico de barras)
     myBarchart.draw()
