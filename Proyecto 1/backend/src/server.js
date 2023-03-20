@@ -1,7 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import body from 'body-parser'
-import { registerUser, loginUser, updatePenalties, createPomodoro, createReport } from './hooks/useQueries.js'
+import { registerUser, loginUser, updatePenalties, createPomodoro, createReport, getPomodoro } from './hooks/useQueries.js'
 
 let _rest = ''
 let _userId
@@ -81,13 +81,27 @@ app.post('/api/penalty', body.text({ type: '*/*' }), async (req, res) => {
   let data = req.body
   data = data.replace(';', '')
   if (data.includes('*')) { // Creación pomodoro
+    const currentPomodoro = await getPomodoro(_userId, _pomodoroId)
+    const workTime = currentPomodoro[0].tiempoTrabajo
+    const restTime = currentPomodoro[0].tiempoDescanso
+    const startDate = new Date(currentPomodoro[0].fechaInicio)
     const info = data.split('*')
     for (let i = 0; i < info.length; i++) {
       const report = info[i].split('$')
+      let reverseSeconds
+      let reverseMinutes
+      if (report[3] === 'T') {
+        reverseMinutes = report[0] === workTime ? 0 : workTime - parseInt(report[0]) - 1
+        reverseSeconds = report[1] === '00' ? 0 : 60 - parseInt(report[1])
+      } else {
+        reverseMinutes = report[0] === restTime ? 0 : workTime + restTime - parseInt(report[0]) - 1
+        reverseSeconds = report[1] === '00' ? 0 : 60 - parseInt(report[1])
+      }
+      const newDate = new Date(startDate.getTime() + (reverseMinutes * 60000) * parseInt(report[2]) + (reverseSeconds * 1000))
       const cycleType = report[3] === 'D' ? 1 : 0
       // minutos$segundos$ciclo$trabajo o descanso$penalizacion
       // 0 == trabajo, 1 == descanso
-      const _createReport = await createReport(_pomodoroId, report[2], cycleType, report[4], report[0], report[1])
+      const _createReport = await createReport(_pomodoroId, report[2], cycleType, report[4], reverseMinutes, reverseSeconds, newDate)
       if (_createReport.length > 0) {
         return res.status(400).send({ message: 'Error creating report' })
       }
@@ -96,27 +110,24 @@ app.post('/api/penalty', body.text({ type: '*/*' }), async (req, res) => {
   } else if (data.includes('D') || data.includes('T')) { // Reporte tiempo real
     const tipos = data.split('$')
     if (tipos[0] === 'D' && tipos[1] === 'S') {
-      const _updatePenalties = await updatePenalties(_userId, 0, 1)
+      const _updatePenalties = await updatePenalties(_userId, false)
       if (_updatePenalties.length > 0) {
         return res.status(400).send({ message: 'Error updating penalties' })
       }
       return res.status(200).send({ message: 'Penalty saved' })
     } else if (tipos[0] === 'T' && tipos[1] === 'N') {
-      const _updatePenalties = await updatePenalties(_userId, 1, 0)
+      const _updatePenalties = await updatePenalties(_userId, true)
       if (_updatePenalties.length > 0) {
         return res.status(400).send({ message: 'Error updating penalties' })
       }
       return res.status(200).send({ message: 'Penalty saved' })
     } else {
-      const _updatePenalties = await updatePenalties(_userId, 0, 0)
-      if (_updatePenalties.length > 0) {
-        return res.status(400).send({ message: 'Error updating penalties' })
-      }
-      return res.status(200).send({ message: 'Penalty saved' })
+      return res.status(200).send({ message: 'No penalty' })
     }
   } else {
     const times = data.split('$')
-    const _createPomodoro = await createPomodoro(_userId, times[0], times[1])
+    const _date = new Date()
+    const _createPomodoro = await createPomodoro(_userId, times[0], times[1], _date)
     if (_createPomodoro.length > 0) {
       return res.status(400).send({ message: 'Error creating pomodoro' })
     }
