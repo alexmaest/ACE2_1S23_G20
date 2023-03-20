@@ -1,7 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import body from 'body-parser'
-import { registerUser, loginUser, updatePenalties, createPomodoro, createReport } from './hooks/useQueries.js'
+import { registerUser, loginUser, updatePenalties, createPomodoro, createReport, getRealTimePenalties } from './hooks/useQueries.js'
 
 let _rest = ''
 let _userId
@@ -123,6 +123,19 @@ app.post('/api/penalty', body.text({ type: '*/*' }), async (req, res) => {
     _pomodoroId = _createPomodoro.insertId
     return res.status(200).send({ message: 'Pomodoro saved' })
   }
+})
+
+app.get('/api/getPenalties', async (req, res) => {
+  const _getRealTimePenalties = await getRealTimePenalties(_userId)
+
+  if (_getRealTimePenalties.length > 0) {
+    return res.status(200).send({
+      penalizacionPararse: _getRealTimePenalties[0].penalizacionPararse,
+      penalizacionSentarse: _getRealTimePenalties[0].penalizacionSentarse
+    })
+  }
+
+  return res.status(400).send({ message: 'Error getting penalties' })
 })
 
 app.listen(port, () => {

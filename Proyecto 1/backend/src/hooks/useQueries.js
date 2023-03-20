@@ -35,4 +35,12 @@ const createReport = async (pomodoroId, cycle, mode, penaltyTime, min, sec) => {
   return rows[0]
 }
 
-export { registerUser, loginUser, updatePenalties, createPomodoro, createReport }
+const getRealTimePenalties = async (userId) => {
+  console.log({ userId })
+  const rows = await pool.query(
+    'SELECT penalizacionPararse, penalizacionSentarse FROM Usuario WHERE idUsuario = ?', [userId]
+  )
+  return rows[0]
+}
+
+export { registerUser, loginUser, updatePenalties, createPomodoro, createReport, getRealTimePenalties }

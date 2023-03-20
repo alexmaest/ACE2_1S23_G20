@@ -2,57 +2,65 @@ import Head from 'next/head'
 import Navbar from '../components/Navbar'
 import dynamic from 'next/dynamic'
 
-
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react'
 
 const DynamicComponentWithNoSSR = dynamic(
   () => import('../graphics/graphic1-2/script'),
   { ssr: false }
 )
 
+// datos default
+let tituloBarra0 = 'Penalización de Pomodoro'; let ejeYname0 = 'pomodoro'; let ejeXname0 = 'tiempo(s)'
+let listaDatos0 = ''
 
-  //datos default
-  var tituloBarra0 = 'penalizacion de pomodoro'; var ejeYname0 = 'pomodoro'; var ejeXname0 = 'tiempo(s)'; var listaDatos0 = 'rojo,1-azul,2-verde,3'
+// grafico de barras creacion propia
+let myBarchart
 
-  //grafico de barras creacion propia
-  var myBarchart;
+export default function Penalizaciones () {
+  const [penalties, setPenalties] = useState({})
 
+  // hacer fetch de datos para gráfica en tiempo real con useEffect cada segundo
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetch('http://localhost:3555/api/getPenalties')
+        .then(res => res.json())
+        .then(data => {
+          setPenalties(data)
+        })
+    }, 1000)
+    return () => clearInterval(interval)
+  })
 
+  // para que pueda usar el canvas en react
+  const canvasRef = useRef(null)
 
-export default function Penalizaciones() {
-
-  //para que pueda usar el canvas en react
-  const canvasRef = useRef(null);
+  // hacer fetch de datos para gráfica en tiempo real
 
   // este se encarga de dibujar el grafico de barras----------------------
   useEffect(() => {
+    // obtengo el canvas y ctx
+    const canvas = canvasRef.current
+    const ctx = canvas.getContext('2d')
 
-    //obtengo el canvas y ctx
-    var canvas = canvasRef.current;
-    var ctx = canvas.getContext('2d');
-
-    //dimensiones en base a la ventana
+    // dimensiones en base a la ventana
     canvas.width = window.innerWidth * 0.95
     canvas.height = window.innerHeight * 0.85
 
     // Dibujar un rectángulo en el canvas >>>> color de fondo
-    ctx.fillStyle = '#C1BFE1';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#C1BFE1'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    // esto dibujare cambio las variables anteriores 
-    tituloBarra0 = 'penalizacion de pomodoro'; ejeYname0 = 'tiempo(s)'; ejeXname0 = 'penalizacion'; 
-    
-    
+    // esto dibujare cambio las variables anteriores
+    tituloBarra0 = 'Penalizacion de Pomodoro'; ejeYname0 = 'tiempo(s)'; ejeXname0 = 'penalizacion'
+
     // lo primordial
-    listaDatos0 = 'pararse,10-sentarse,2'
+    listaDatos0 = `Por pararse,${penalties.penalizacionPararse}-Por sentarse,${penalties.penalizacionSentarse}`
 
-    //listaDatos0="rojo,10-azul,20-verde,30-rosa,80-aqua,200-rojo1,10-azul1,20-verde1,30-rosa1,80-aqua1,200-rojo2,10-azul2,20-verde2,30-rosa2,80-aqua2,200-rojo3,10-azul3,20-verde3,30-rosa3,80-aqua3,200-rojo4,10-azul4,20-verde4,30-rosa4,80-aqua4,200-rojo5,10-azul5,20-verde5,30-rosa5,80-aqua5,200-rojo6,10-azul6,20-verde6,30-rosa6,80-aqua6,200-rojo7,10-azul7,20-verde7,30-rosa7,80-aqua7,200-rojo8,10-azul8,20-verde8,30-rosa8,80-aqua8,200-rojo9,10-azul9,20-verde9,30-rosa9,80-aqua9,200"
-
-
+    // listaDatos0="rojo,10-azul,20-verde,30-rosa,80-aqua,200-rojo1,10-azul1,20-verde1,30-rosa1,80-aqua1,200-rojo2,10-azul2,20-verde2,30-rosa2,80-aqua2,200-rojo3,10-azul3,20-verde3,30-rosa3,80-aqua3,200-rojo4,10-azul4,20-verde4,30-rosa4,80-aqua4,200-rojo5,10-azul5,20-verde5,30-rosa5,80-aqua5,200-rojo6,10-azul6,20-verde6,30-rosa6,80-aqua6,200-rojo7,10-azul7,20-verde7,30-rosa7,80-aqua7,200-rojo8,10-azul8,20-verde8,30-rosa8,80-aqua8,200-rojo9,10-azul9,20-verde9,30-rosa9,80-aqua9,200"
 
     // OBJ inicial si o si debe de estar
     myBarchart = new BarChart({
-      canvas: canvas,
+      canvas,
       seriesName: 'Vinyl records',
       seriesNameY: 'eje y',
       seriesNameX: 'eje x',
@@ -67,7 +75,7 @@ export default function Penalizaciones() {
       },
 
       // en colors puede ir bien una lista larga por default
-      colors: ["#323292", "#EE3251", "#FA8C0F", "#FACC0F", "#ECFA0F", "#A5FA0F", "#61FA0F", "#0FFA7D", "#0FFAD3", "#0FFAFA", "#0FC5FA", "#0F96FA", "#0F5DFA", "#0F0FFA", "#5D0FFA", "#9D0FFA", "#DA0FFA", "#FA0FE1", "#FA0FAF", "#FA0F5D", "#B20000", "#B24600", "#B28F00", "#AAB200", "#59B200", "#00B20B", "#00B27C", "#00B2B2", "#009AB2", "#0069B2", "#003BB2", "#2000B2", "#6F00B2", "#AD00B2", "#999898"],
+      colors: ['#323292', '#EE3251', '#FA8C0F', '#FACC0F', '#ECFA0F', '#A5FA0F', '#61FA0F', '#0FFA7D', '#0FFAD3', '#0FFAFA', '#0FC5FA', '#0F96FA', '#0F5DFA', '#0F0FFA', '#5D0FFA', '#9D0FFA', '#DA0FFA', '#FA0FE1', '#FA0FAF', '#FA0F5D', '#B20000', '#B24600', '#B28F00', '#AAB200', '#59B200', '#00B20B', '#00B27C', '#00B2B2', '#009AB2', '#0069B2', '#003BB2', '#2000B2', '#6F00B2', '#AD00B2', '#999898'],
       titleOptions: {
         align: 'center',
         fill: 'black',
@@ -79,22 +87,15 @@ export default function Penalizaciones() {
       }
     })
 
-
     // grafico de inicio(por default)
-    //myBarchart.draw() // se manda a dibujar todo el objeto(grafico de barras)
-
-
+    // myBarchart.draw() // se manda a dibujar todo el objeto(grafico de barras)
 
     // lo que importa de verdad
     draw(myBarchart, tituloBarra0, ejeYname0, ejeXname0, listaDatos0)
+  }, [penalties])
 
-
-
-  }, []);
-
-
-  //dibujar linea en canvas
-  function drawLine(ctx, startX, startY, endX, endY, color) {
+  // dibujar linea en canvas
+  function drawLine (ctx, startX, startY, endX, endY, color) {
     ctx.save()
     ctx.strokeStyle = color
     ctx.beginPath()
@@ -104,8 +105,8 @@ export default function Penalizaciones() {
     ctx.restore()
   }
 
-  //dibujar barra en canvas
-  function drawBar(
+  // dibujar barra en canvas
+  function drawBar (
     ctx,
     upperLeftCornerX,
     upperLeftCornerY,
@@ -120,10 +121,10 @@ export default function Penalizaciones() {
 
     // --------nueva funcionalidad propia-------------
 
-    //----------nombre de la barra vertical
+    // ----------nombre de la barra vertical
     ctx.save()
     ctx.translate(upperLeftCornerX + 55, puntoX - 15)
-    //ctx.rotate(-0.5 * Math.PI)
+    // ctx.rotate(-0.5 * Math.PI)
     ctx.fillStyle = '#181818'
     ctx.font = 'bold 32px serif' // "bold 12px serif"
     ctx.fillText(value, 0, 0)
@@ -141,10 +142,9 @@ export default function Penalizaciones() {
     ctx.restore()
   }
 
-
-  //objeto canvas para el grafico de barras
+  // objeto canvas para el grafico de barras
   class BarChart {
-    constructor(options) { // constructor del BarChart
+    constructor (options) { // constructor del BarChart
       this.options = options
       this.canvas = options.canvas
       this.ctx = this.canvas.getContext('2d')
@@ -158,14 +158,14 @@ export default function Penalizaciones() {
       this.ul = document.createElement('ul')
       this.ul2 = document.createElement('ul')
       this.ul3 = document.createElement('ul')
-  
+
       this.ul4 = document.createElement('ul')
       this.ul5 = document.createElement('ul')
       this.ul6 = document.createElement('ul')
-  
+
       this.ul7 = document.createElement('ul')
       this.ul8 = document.createElement('ul')
-      this.ul9 = document.createElement('ul')*/
+      this.ul9 = document.createElement('ul') */
 
       // this.ul.className="social-icons"
 
@@ -175,11 +175,11 @@ export default function Penalizaciones() {
       this.ul.id = 'legends'
       this.ul2.id = 'legends2'
       this.ul3.id = 'legends3'
-  
+
       this.ul4.id = 'legends4'
       this.ul5.id = 'legends5'
       this.ul6.id = 'legends6'
-  
+
       this.ul7.id = 'legends7'
       this.ul8.id = 'legends8'
       this.ul9.id = 'legends9'
@@ -188,7 +188,7 @@ export default function Penalizaciones() {
 
     // inician los metodos de esta clase (metodos graficos)
     // 1
-    drawGridLines() { // dibuja las lineas horizontales para identificar o darle un fondo mas legible respecto a los valores en el eje y
+    drawGridLines () { // dibuja las lineas horizontales para identificar o darle un fondo mas legible respecto a los valores en el eje y
       const canvasActualHeight = this.canvas.height - this.options.padding * 2
       const canvasActualWidth = this.canvas.width - this.options.padding * 2
       let gridValue = 0
@@ -225,7 +225,7 @@ export default function Penalizaciones() {
     }
 
     // 2
-    drawBars() { // dibuja todas las barras del canvas se auto-ajusta
+    drawBars () { // dibuja todas las barras del canvas se auto-ajusta
       const canvasActualHeight = this.canvas.height - this.options.padding * 2
       const canvasActualWidth = this.canvas.width - this.options.padding * 2
       let barIndex = 0
@@ -266,7 +266,7 @@ export default function Penalizaciones() {
     }
 
     // 3
-    drawLabel() { // dibuja el titulo del grafico
+    drawLabel () { // dibuja el titulo del grafico
       this.ctx.save()
       this.ctx.textBaseline = 'bottom'
       this.ctx.textAlign = this.titleOptions.align
@@ -283,7 +283,7 @@ export default function Penalizaciones() {
       this.ctx.restore()
     }
 
-    drawLabelY() { // dibuja el titulo del eje y
+    drawLabelY () { // dibuja el titulo del eje y
       this.ctx.save()
       this.ctx.textBaseline = 'bottom'
       this.ctx.textAlign = this.titleOptions.align
@@ -300,7 +300,7 @@ export default function Penalizaciones() {
       this.ctx.restore()
     }
 
-    drawLabelX() { // dibuja el titulo del eje x
+    drawLabelX () { // dibuja el titulo del eje x
       this.ctx.save()
       this.ctx.textBaseline = 'bottom'
       this.ctx.textAlign = this.titleOptions.align
@@ -317,7 +317,7 @@ export default function Penalizaciones() {
       this.ctx.restore()
     }
 
-    drawLabel2() { // dibuja el #muestras del grafico
+    drawLabel2 () { // dibuja el #muestras del grafico
       this.ctx.save()
       this.ctx.textBaseline = 'bottom'
       this.ctx.textAlign = this.titleOptions.align
@@ -338,9 +338,8 @@ export default function Penalizaciones() {
       this.ctx.restore()
     }
 
-
     // el metodo que importa xd (manda a llamar a todos los anteriores)
-    draw() { // manda a dibujar todo en el canvas grafico-barras
+    draw () { // manda a dibujar todo en el canvas grafico-barras
       this.drawGridLines()// dibuja el lineado del grafico
       this.drawBars()// las barras
       this.drawLabel()// el titulo del grafico
@@ -351,24 +350,21 @@ export default function Penalizaciones() {
     }
   }
 
-
-//************************************************************************************************************** */
-//************************************************************************************************************** */
+  //* ************************************************************************************************************* */
+  //* ************************************************************************************************************* */
 
   // borra todo(limpia la pantalla)
-  function reset() {
+  function reset () {
     // borro el grafico de barras
-    var canvas = canvasRef.current;
-    var ctx = canvas.getContext('2d');
+    const canvas = canvasRef.current
+    const ctx = canvas.getContext('2d')
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-
   }
 
-  function draw(myBarchart, tituloBarra, ejeYname, ejeXname, listaDatos) {
-
-    console.log("-----------------------------------------------------")
-    console.log("titulo: " + tituloBarra + " ejeY: " + ejeYname + " ejeX: " + ejeXname + " datos: [" + listaDatos + "]")
-    console.log("-----------------------------------------------------")
+  function draw (myBarchart, tituloBarra, ejeYname, ejeXname, listaDatos) {
+    console.log('-----------------------------------------------------')
+    console.log('titulo: ' + tituloBarra + ' ejeY: ' + ejeYname + ' ejeX: ' + ejeXname + ' datos: [' + listaDatos + ']')
+    console.log('-----------------------------------------------------')
 
     // los params se los paso a las var globales para cuando se llame a la funcion window.resize sea la misma a la ingresada
     tituloBarra0 = tituloBarra
@@ -416,7 +412,6 @@ export default function Penalizaciones() {
     // ----------------------------------------------------------------
     // se manda a dibujar todo el objeto(grafico de barras)
     myBarchart.draw()
-
   }
 
   const convertArrayToObject = (array, key) => {
@@ -429,31 +424,6 @@ export default function Penalizaciones() {
     }, initialValue)
   }
 
-function draw2() {
-  console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++")
-  console.log('Input value:', inputValue);
-
-
-  //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-  
-
-
-  //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  draw(myBarchart, tituloBarra0, ejeYname0, ejeXname0, inputValue)
-  
-}
-
-
-const [inputValue, setInputValue] = useState('');
-
-  const handleInputChange = (event) => {
-    setInputValue(event.target.value);
-  }
-
-
-
-
   return (
     <>
       <Head>
@@ -461,15 +431,8 @@ const [inputValue, setInputValue] = useState('');
       </Head>
       <Navbar />
 
-
-
-      <input type="text" value={inputValue} onChange={handleInputChange}></input>
-      <input type="button" value="submit" name="submit" onClick={draw2}></input>
-
-
-
       <section className="home">
-        <div className="in-flex">
+        <div className="flex-1 p-15">
           <canvas ref={canvasRef} width={1500} height={1500} >
           </canvas>
           <legend htmlFor="myCanvas"></legend>
