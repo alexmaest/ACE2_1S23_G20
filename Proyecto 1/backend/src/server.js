@@ -1,7 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import body from 'body-parser'
-import { registerUser, loginUser, updatePenalties, createPomodoro, createReport, getPomodoro } from './hooks/useQueries.js'
+import { registerUser, loginUser, updatePenalties, createPomodoro, createReport, getPomodoro, resetPenalties } from './hooks/useQueries.js'
 
 let _rest = ''
 let _userId
@@ -130,6 +130,10 @@ app.post('/api/penalty', body.text({ type: '*/*' }), async (req, res) => {
     const _createPomodoro = await createPomodoro(_userId, times[0], times[1], _date)
     if (_createPomodoro.length > 0) {
       return res.status(400).send({ message: 'Error creating pomodoro' })
+    }
+    const _resetPenalties = await resetPenalties(_userId)
+    if (_resetPenalties.length > 0) {
+      return res.status(400).send({ message: 'Error resetting penalties' })
     }
     _pomodoroId = _createPomodoro.insertId
     return res.status(200).send({ message: 'Pomodoro saved' })

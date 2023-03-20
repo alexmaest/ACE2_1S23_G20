@@ -49,4 +49,11 @@ const createReport = async (pomodoroId, cycle, mode, penaltyTime, min, sec, date
   return rows[0]
 }
 
-export { registerUser, loginUser, updatePenalties, createPomodoro, createReport, getPomodoro }
+const resetPenalties = async (userId) => {
+  const rows = await pool.query(
+    'UPDATE Usuario SET penalizacionPararse = 0, penalizacionSentarse = 0 WHERE idUsuario = ?',
+    [userId])
+  return rows[0]
+}
+
+export { registerUser, loginUser, updatePenalties, createPomodoro, createReport, getPomodoro, resetPenalties }
