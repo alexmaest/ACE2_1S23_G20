@@ -14,24 +14,38 @@ const loginUser = async (userName, password) => {
   return rows[0]
 }
 
-const updatePenalties = async (userId, penaltyStand, penaltySit) => {
+const updatePenalties = async (userId, isStanding) => {
+  if (isStanding) {
+    const rows = await pool.query(
+      'UPDATE Usuario SET penalizacionPararse = penalizacionPararse + 1 WHERE idUsuario = ?',
+      [userId])
+    return rows[0]
+  } else {
+    const rows = await pool.query(
+      'UPDATE Usuario SET penalizacionSentarse = penalizacionSentarse + 1 WHERE idUsuario = ?',
+      [userId])
+    return rows[0]
+  }
+}
+
+const createPomodoro = async (userId, pomodoroTime, restTime, date) => {
   const rows = await pool.query(
-    'UPDATE Usuario SET penalizacionPararse = ?, penalizacionSentarse = ? WHERE idUsuario = ?',
-    [penaltyStand, penaltySit, userId])
+    'INSERT INTO Pomodoro(idUsuario, tiempoTrabajo, tiempoDescanso, fechaInicio) VALUES(?, ?, ?, ?)',
+    [userId, pomodoroTime, restTime, date])
   return rows[0]
 }
 
-const createPomodoro = async (userId, pomodoroTime, restTime) => {
+const getPomodoro = async (userId, pomodoroId) => {
   const rows = await pool.query(
-    'INSERT INTO Pomodoro(idUsuario, tiempoTrabajo, tiempoDescanso) VALUES(?, ?, ?)',
-    [userId, pomodoroTime, restTime])
+    'SELECT * FROM Pomodoro WHERE idUsuario = ? AND idPomodoro = ?',
+    [userId, pomodoroId])
   return rows[0]
 }
 
-const createReport = async (pomodoroId, cycle, mode, penaltyTime, min, sec) => {
+const createReport = async (pomodoroId, cycle, mode, penaltyTime, min, sec, date) => {
   const rows = await pool.query(
-    'INSERT INTO Reporte(idPomodoro, ciclo, modo, tiempoPenalizacion, minuto, segundo) VALUES(?, ?, ?, ?, ?, ?)',
-    [pomodoroId, cycle, mode, penaltyTime, min, sec])
+    'INSERT INTO Reporte(idPomodoro, ciclo, modo, tiempoPenalizacion, minuto, segundo, fechaDato) VALUES(?, ?, ?, ?, ?, ?, ?)',
+    [pomodoroId, cycle, mode, penaltyTime, min, sec, date])
   return rows[0]
 }
 
@@ -42,5 +56,11 @@ const getRealTimePenalties = async (userId) => {
   )
   return rows[0]
 }
+const resetPenalties = async (userId) => {
+  const rows = await pool.query(
+    'UPDATE Usuario SET penalizacionPararse = 0, penalizacionSentarse = 0 WHERE idUsuario = ?',
+    [userId])
+  return rows[0]
+}
 
-export { registerUser, loginUser, updatePenalties, createPomodoro, createReport, getRealTimePenalties }
+export { registerUser, loginUser, updatePenalties, createPomodoro, createReport, getPomodoro, resetPenalties, getRealTimePenalties }
