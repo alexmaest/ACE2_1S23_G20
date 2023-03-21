@@ -63,4 +63,30 @@ const resetPenalties = async (userId) => {
   return rows[0]
 }
 
-export { registerUser, loginUser, updatePenalties, createPomodoro, createReport, getPomodoro, resetPenalties, getRealTimePenalties }
+const queryReport1And2 = async (userId, date, time) => {
+  console.log({ userId, date, time })
+  const rows = await pool.query(
+    `SELECT
+    idPomodoro,
+    ciclo,
+    (SELECT fechaInicio FROM Pomodoro WHERE idPomodoro = r.idPomodoro) AS fechaInicio,
+    SUM(CASE WHEN modo = 0 THEN tiempoPenalizacion ELSE 0 END) AS penalizacionTiempoTrabajo,
+    SUM(CASE WHEN modo = 1 THEN tiempoPenalizacion ELSE 0 END) AS penalizacionTiempoDescanso
+    FROM Reporte r WHERE DATE_FORMAT(fechaDato, '%Y-%m-%d %H:%i:%s')
+    BETWEEN ? AND NOW() AND idPomodoro IN (SELECT idPomodoro FROM Pomodoro WHERE idUsuario = ?)
+    GROUP BY idPomodoro, ciclo`, [`${date} ${time}`, userId])
+  console.log(rows[0])
+  return rows[0]
+}
+
+export {
+  registerUser,
+  loginUser,
+  updatePenalties,
+  createPomodoro,
+  createReport,
+  getPomodoro,
+  resetPenalties,
+  getRealTimePenalties,
+  queryReport1And2
+}

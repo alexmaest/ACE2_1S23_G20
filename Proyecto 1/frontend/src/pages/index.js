@@ -1,6 +1,7 @@
 import Navbar from '@/components/Navbar'
 import Head from 'next/head'
 import { useState } from 'react'
+import { Constants } from '@/constants'
 
 export default function Home () {
   const [rest, setRest] = useState(5)
@@ -10,7 +11,7 @@ export default function Home () {
   }
 
   const handlerSend = () => {
-    fetch('http://localhost:3555/api/sendRest', {
+    fetch(`http://${Constants.IP_ADDRESS}/api/sendRest`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

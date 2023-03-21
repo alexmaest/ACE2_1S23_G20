@@ -1,13 +1,8 @@
 import Head from 'next/head'
 import Navbar from '../components/Navbar'
-import dynamic from 'next/dynamic'
+import { Constants } from '@/constants'
 
 import React, { useRef, useEffect, useState } from 'react'
-
-const DynamicComponentWithNoSSR = dynamic(
-  () => import('../graphics/graphic1-2/script'),
-  { ssr: false }
-)
 
 // datos default
 let tituloBarra0 = 'Penalización de Pomodoro'; let ejeYname0 = 'pomodoro'; let ejeXname0 = 'tiempo(s)'
@@ -16,13 +11,15 @@ let listaDatos0 = ''
 // grafico de barras creacion propia
 let myBarchart
 
-export default function Penalizaciones () {
+export default function TiempoReal () {
   const [penalties, setPenalties] = useState({})
+  const [pararse, setPararse] = useState(5)
+  const [sentarse, setSentarse] = useState(5)
 
   // hacer fetch de datos para gráfica en tiempo real con useEffect cada segundo
   useEffect(() => {
     const interval = setInterval(() => {
-      fetch('http://localhost:3555/api/getPenalties')
+      fetch(`http://${Constants.IP_ADDRESS}:3555/api/getPenalties`)
         .then(res => res.json())
         .then(data => {
           setPenalties(data)
@@ -38,6 +35,12 @@ export default function Penalizaciones () {
 
   // este se encarga de dibujar el grafico de barras----------------------
   useEffect(() => {
+    setPararse(() => {
+      return penalties.penalizacionPararse === 1 ? pararse + 1 : pararse
+    })
+    setSentarse(() => {
+      return penalties.penalizacionSentarse === 1 ? sentarse + 1 : sentarse
+    })
     // obtengo el canvas y ctx
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
@@ -54,7 +57,7 @@ export default function Penalizaciones () {
     tituloBarra0 = 'Penalizacion de Pomodoro'; ejeYname0 = 'tiempo(s)'; ejeXname0 = 'penalizacion'
 
     // lo primordial
-    listaDatos0 = `Por pararse,${penalties.penalizacionPararse}-Por sentarse,${penalties.penalizacionSentarse}`
+    listaDatos0 = `Por pararse,${pararse}-Por sentarse,${sentarse}`
 
     // listaDatos0="rojo,10-azul,20-verde,30-rosa,80-aqua,200-rojo1,10-azul1,20-verde1,30-rosa1,80-aqua1,200-rojo2,10-azul2,20-verde2,30-rosa2,80-aqua2,200-rojo3,10-azul3,20-verde3,30-rosa3,80-aqua3,200-rojo4,10-azul4,20-verde4,30-rosa4,80-aqua4,200-rojo5,10-azul5,20-verde5,30-rosa5,80-aqua5,200-rojo6,10-azul6,20-verde6,30-rosa6,80-aqua6,200-rojo7,10-azul7,20-verde7,30-rosa7,80-aqua7,200-rojo8,10-azul8,20-verde8,30-rosa8,80-aqua8,200-rojo9,10-azul9,20-verde9,30-rosa9,80-aqua9,200"
 
@@ -431,13 +434,13 @@ export default function Penalizaciones () {
       </Head>
       <Navbar />
 
-      <section className="home">
+      <section className="flex">
         <div className="flex-1 p-15">
           <canvas ref={canvasRef} width={1500} height={1500} >
           </canvas>
           <legend htmlFor="myCanvas"></legend>
         </div>
-        <DynamicComponentWithNoSSR />
+
       </section>
     </>
   )

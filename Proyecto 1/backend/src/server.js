@@ -1,7 +1,17 @@
 import express from 'express'
 import cors from 'cors'
 import body from 'body-parser'
-import { registerUser, loginUser, updatePenalties, createPomodoro, createReport, getPomodoro, resetPenalties, getRealTimePenalties } from './hooks/useQueries.js'
+import {
+  registerUser,
+  loginUser,
+  updatePenalties,
+  createPomodoro,
+  createReport,
+  getPomodoro,
+  resetPenalties,
+  getRealTimePenalties,
+  queryReport1And2
+} from './hooks/useQueries.js'
 
 let _rest = ''
 let _userId
@@ -33,6 +43,8 @@ app.post('/api/register', async (req, res) => {
 
 app.post('/api/login', async (req, res) => {
   const { username, password } = req.body
+
+  console.log('Entro a login')
 
   const _loginUser = await loginUser(username, password)
 
@@ -151,6 +163,17 @@ app.get('/api/getPenalties', async (req, res) => {
   }
 
   return res.status(400).send({ message: 'Error getting penalties' })
+})
+
+app.post('/api/getReporte1And2', async (req, res) => {
+  const { date, time } = req.body
+  const _queryReport1And2 = await queryReport1And2(_userId, date, time)
+
+  if (_queryReport1And2.length > 0) {
+    return res.status(200).send({
+      _queryReport1And2
+    })
+  }
 })
 
 app.listen(port, () => {
