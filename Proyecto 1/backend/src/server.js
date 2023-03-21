@@ -110,18 +110,22 @@ app.post('/api/penalty', body.text({ type: '*/*' }), async (req, res) => {
   } else if (data.includes('D') || data.includes('T')) { // Reporte tiempo real
     const tipos = data.split('$')
     if (tipos[0] === 'D' && tipos[1] === 'S') {
-      const _updatePenalties = await updatePenalties(_userId, false)
+      const _updatePenalties = await updatePenalties(_userId, 0, 1)
       if (_updatePenalties.length > 0) {
         return res.status(400).send({ message: 'Error updating penalties' })
       }
       return res.status(200).send({ message: 'Penalty saved' })
     } else if (tipos[0] === 'T' && tipos[1] === 'N') {
-      const _updatePenalties = await updatePenalties(_userId, true)
+      const _updatePenalties = await updatePenalties(_userId, 1, 0)
       if (_updatePenalties.length > 0) {
         return res.status(400).send({ message: 'Error updating penalties' })
       }
       return res.status(200).send({ message: 'Penalty saved' })
     } else {
+      const _updatePenalties = await updatePenalties(_userId, 0, 0)
+      if (_updatePenalties.length > 0) {
+        return res.status(400).send({ message: 'Error updating penalties' })
+      }
       return res.status(200).send({ message: 'No penalty' })
     }
   } else {
