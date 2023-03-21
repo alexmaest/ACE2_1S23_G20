@@ -14,18 +14,11 @@ const loginUser = async (userName, password) => {
   return rows[0]
 }
 
-const updatePenalties = async (userId, isStanding) => {
-  if (isStanding) {
-    const rows = await pool.query(
-      'UPDATE Usuario SET penalizacionPararse = penalizacionPararse + 1 WHERE idUsuario = ?',
-      [userId])
-    return rows[0]
-  } else {
-    const rows = await pool.query(
-      'UPDATE Usuario SET penalizacionSentarse = penalizacionSentarse + 1 WHERE idUsuario = ?',
-      [userId])
-    return rows[0]
-  }
+const updatePenalties = async (userId, isStanding, isSeated) => {
+  const rows = await pool.query(
+    'UPDATE Usuario SET penalizacionPararse = ? penalizacionSentarse = ? WHERE idUsuario = ?',
+    [userId, isStanding, isSeated])
+  return rows[0]
 }
 
 const createPomodoro = async (userId, pomodoroTime, restTime, date) => {
@@ -56,6 +49,7 @@ const getRealTimePenalties = async (userId) => {
   )
   return rows[0]
 }
+
 const resetPenalties = async (userId) => {
   const rows = await pool.query(
     'UPDATE Usuario SET penalizacionPararse = 0, penalizacionSentarse = 0 WHERE idUsuario = ?',

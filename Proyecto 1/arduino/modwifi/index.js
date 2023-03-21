@@ -17,15 +17,20 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
       let _body = body.replace("\n", "");
       let __body = _body.replace("\r", "");
-      if(__body != ''){
-        console.log(__body); // Valor enviado sobre penalizacion
+      if (__body != '') {
+        // console.log(__body); // Valor enviado sobre penalizacion
+        fetch('http://localhost:3555/api/penalty', { // Enviar el valor a la pagina web
+          method: 'POST',
+          body: __body,
+          headers: { 'Content-Type': 'text/plain' },
+        })
       }
     });
-  }else if (req.method === 'GET') {
-    if(time != ''){
+  } else if (req.method === 'GET') {
+    if (time != '') {
       res.end(time); // Responde con el tiempo a configurar
       time = '';
-    }else{
+    } else {
       res.end(' '); // Responde con el tiempo a configurar
     }
   }
