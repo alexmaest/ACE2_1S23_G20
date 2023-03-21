@@ -56,7 +56,7 @@ export default function Penalizaciones () {
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     // esto dibujare cambio las variables anteriores
-    tituloBarra0 = 'No sentarse a tiempo a lo largo del tiempo'
+    tituloBarra0 = 'Sentarse a tiempo a lo largo del tiempo'
     ejeYname0 = 't(s)'
     ejeXname0 = 'Fecha-Hora'
 
@@ -67,9 +67,9 @@ export default function Penalizaciones () {
     for (let i = 0; i < data.length; i++) {
       const fechaFormateada = moment(data[i].fechaInicio).format('DD/MM/YYYY HH:mm:ss')
       if (i === data.length - 1) {
-        listaDatos0 += `Ciclo:${data[i].ciclo} ${fechaFormateada},${data[i].penalizacionTiempoTrabajo}`
+        listaDatos0 += `Ciclo:${data[i].ciclo} ${fechaFormateada},${data[i].penalizacionTiempoDescanso}`
       } else {
-        listaDatos0 += `Ciclo:${data[i].ciclo} ${fechaFormateada},${data[i].penalizacionTiempoTrabajo}-`
+        listaDatos0 += `Ciclo:${data[i].ciclo} ${fechaFormateada},${data[i].penalizacionTiempoDescanso}-`
       }
     }
 

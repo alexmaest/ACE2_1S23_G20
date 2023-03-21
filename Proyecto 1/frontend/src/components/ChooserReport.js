@@ -14,7 +14,7 @@ export default function ChooserReport ({ title, path }) {
     setTime(moment(e.target.value, 'HH:mm').format('HH:mm'))
   }
   return (
-        <div className="bg-bgred p-4 rounded-lg shadow-xl">
+        <div className="bg-gray-700 p-4 rounded-lg shadow-xl">
         <h2 className="text-xl font-bold mb-2 text-white">{title}</h2>
         <input
           type="date"
@@ -32,7 +32,7 @@ export default function ChooserReport ({ title, path }) {
           pathname: path,
           query: { date, time }
         }}>
-         <button className="bg-green-400 w-full h-8 font-bold text-gray-800 ring-2 ring-green-700 rounded mt-4">
+         <button className="bg-red-500 w-full h-8 font-bold text-gray-800 ring-2 ring-red-700 rounded mt-4">
             Ver
             </button>
         </Link>
