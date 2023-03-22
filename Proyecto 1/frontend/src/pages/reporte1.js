@@ -155,7 +155,7 @@ export default function Penalizaciones () {
     ctx.font = 'bold 12px serif' // "bold 12px serif"
     ctx.fillStyle = 'blue'
     ctx.textAlign = 'left'
-    ctx.fillText(valorBarra, 0, 0)
+    ctx.fillText(valorBarra, 15, 0)
     ctx.restore()
   }
 
@@ -263,16 +263,16 @@ export default function Penalizaciones () {
           this.colors[barIndex % this.colors.length], array[contador], // new  le envio valor a mostrar en la barra
           this.canvas.height - 15, val
         )
-
+          //console.log("XXX: "+array[contador])
         // barra roja final de pomodoro========================================
-        if (contador % 4 === 0 && contador !== 0) {
+        if (array[contador].includes("Ciclo:1")) {
           drawLine(
             this.ctx,
             this.options.padding + barIndex * barSize,
             this.options.padding,
             this.options.padding + barIndex * barSize,
             this.ctx.canvas.clientHeight - 25,
-            'red'
+            '#00FBFF'
           )
         }
 
