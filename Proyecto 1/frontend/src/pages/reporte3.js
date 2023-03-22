@@ -163,7 +163,7 @@ export default function Reporte3 () {
     upperLeftCornerY,
     width,
     height,
-    color, value, puntoX
+    color, value, puntoX,valorAnalogico
   ) {
     ctx.save()
     ctx.fillStyle = color
@@ -181,7 +181,7 @@ export default function Reporte3 () {
 
     ctx.fillStyle = 'red'
     ctx.font = '12px serif'// "bold 12px serif"
-    ctx.fillText(value, 0, 0)
+    ctx.fillText(value, 10, 0)
 
     ctx.restore()
 
@@ -192,7 +192,7 @@ export default function Reporte3 () {
     ctx.rotate(-(Math.PI / 4))
     ctx.fillStyle = 'black'
     ctx.textAlign = 'left'
-    ctx.fillText(value, 0, 0)
+    ctx.fillText(valorAnalogico, 15, 0)
     ctx.restore()
   }
 
@@ -330,7 +330,7 @@ export default function Reporte3 () {
           barSize,
           barHeight,
           this.colors[0], array[contador], // new  le envio valor a mostrar en la barra
-          this.canvas.height - 15
+          this.canvas.height - 15,val
         )
         barIndex++
         contador++
