@@ -1,21 +1,91 @@
 import Head from 'next/head'
 import Navbar from '../components/Navbar'
-import dynamic from 'next/dynamic'
-
-import React, { useRef, useEffect, useState } from 'react'
-
-// datos default
-let tituloBarra0 = 'penalizacion de pomodoro'; let ejeYname0 = 'pomodoro'; let ejeXname0 = 'tiempo(s)'; let listaDatos0 = 'rojo,1-azul,2-verde,3'
-
+import { Constants } from '@/constants'
+import { useRouter } from 'next/router'
+import { useRef, useEffect, useState } from 'react'
+import moment from 'moment'
 // grafico de barras creacion propia
 let myBarchart
 
-export default function Penalizaciones () {
+export default function Reporte3 () {
+  // datos default
+  let tituloBarra0 = ''
+  let ejeYname0 = ''
+  let ejeXname0 = ''
+  let listaDatos0 = ''
+  const router = useRouter()
+  const { date, time } = router.query
+
+  const [data, setData] = useState([])
   // para que pueda usar el canvas en react
   const canvasRef = useRef(null)
 
+  useEffect(() => {
+    fetch(`http://${Constants.IP_ADDRESS}:3555/api/getReporte3`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        date,
+        time
+      })
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setData(data._queryReport3)
+      })
+  }, [date, time])
+
+  console.log({ data })
   // este se encarga de dibujar el grafico de barras----------------------
   useEffect(() => {
+    for (let i = 0; i < data.length; i++) {
+      if (i === 0) {
+        const fechaFormateada = moment(data[i].fechaInicio, 'YYYY-MM-DD HH:mm:ss').format('DD/MM/YYYY HH:mm:ss')
+        const horaInicioPomodoro = moment(data[i].fechaInicio, 'YYYY-MM-DD HH:mm:ss').format('HH:mm:ss')
+        const fechaSeLevanto = moment(data[i].fechaDato, 'YYYY-MM-DD HH:mm:ss').format('DD/MM/YYYY HH:mm:ss')
+        const horaSeLevanto = moment(data[i].fechaDato, 'YYYY-MM-DD HH:mm:ss').format('HH:mm:ss')
+        const diff = moment(horaSeLevanto, 'HH:mm:ss').diff(moment(horaInicioPomodoro, 'HH:mm:ss'))
+        const seconds = moment.duration(diff).asSeconds()
+
+        console.log({ secondsIIgualCero: seconds })
+
+        if (data.length === 1) {
+          listaDatos0 += `${fechaFormateada} ${seconds}s,1`
+          listaDatos0 += `${fechaFormateada} ${data[i].tiempoParadoEnTrabajo}s,0`
+        } else {
+          listaDatos0 += `${fechaFormateada} ${seconds}s,1-`
+          listaDatos0 += `${fechaFormateada} ${data[i].tiempoParadoEnTrabajo}s,0-`
+        }
+      } else {
+        const fechaFormateada = moment(data[i].fechaInicio).format('DD/MM/YYYY HH:mm:ss')
+        const horaSeLevanto = moment(data[i].fechaDato).format('HH:mm:ss')
+        const horaAnteriorSeLevanto = moment(data[i - 1].fechaDato).format('HH:mm:ss')
+        const segundosParado = moment.duration(data[i - 1].tiempoParadoEnTrabajo, 'seconds').asSeconds()
+
+        // sumar los segundos segundosParado con la horaAnteriorSeLevando que es una fecha
+
+        const add = moment(moment(data[i - 1].fechaDato).format('HH:mm:ss'), 'HH:mm:ss').add(segundosParado, 'seconds').format('HH:mm:ss')
+
+        console.log({ horaAnteriorSeLevanto })
+        console.log({ add })
+
+        const diff = moment(horaSeLevanto, 'HH:mm:ss').diff(moment(add, 'HH:mm:ss'))
+        const seconds = moment.duration(diff).asSeconds()
+        console.log({ seconds })
+        if (i === data.length - 1) {
+          listaDatos0 += `${fechaFormateada} ${seconds}s,1-`
+          listaDatos0 += `${fechaFormateada} ${data[i].tiempoParadoEnTrabajo}s,0`
+        } else {
+          listaDatos0 += `${fechaFormateada} ${seconds}s,1-`
+          listaDatos0 += `${fechaFormateada} ${data[i].tiempoParadoEnTrabajo}s,0-`
+        }
+      }
+    }
+
+    console.log('listaDatos0', listaDatos0)
+
     // obtengo el canvas y ctx
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
@@ -29,12 +99,14 @@ export default function Penalizaciones () {
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     // esto dibujare cambio las variables anteriores
-    tituloBarra0 = 'porcentaje de cumplimiento de los 4 pomodoros'; ejeYname0 = 'porcentaje(%)'; ejeXname0 = 'ciclos pomodoro'
-
+    tituloBarra0 = 'Sentado = 1'
+    ejeYname0 = 'S/N'
+    ejeXname0 = 't(s)'
+    // listaDatos0 = 'A0,0-A1,1-A2,1-A3,0-A4,1'
     // lo primordial
     // listaDatos0 = 'pararse,10-sentarse,2'
 
-    listaDatos0 = 'rojo,10-azul,20-verde,30-rosa,80-aqua,200-rojo1,10-azul1,20-verde1,30-rosa1,80-aqua1,200-rojo2,10-azul2,20-verde2,30-rosa2,80-aqua2,200-rojo3,10-azul3,20-verde3,30-rosa3,80-aqua3,200-rojo4,10-azul4,20-verde4,30-rosa4,80-aqua4,200-rojo5,10-azul5,20-verde5,30-rosa5,80-aqua5,200-rojo6,10-azul6,20-verde6,30-rosa6,80-aqua6,200-rojo7,10-azul7,20-verde7,30-rosa7,80-aqua7,200-rojo8,10-azul8,20-verde8,30-rosa8,80-aqua8,200-rojo9,10-azul9,20-verde9,30-rosa9,80-aqua9,200'
+    // listaDatos0="rojo,10-azul,20-verde,30-rosa,80-aqua,200-rojo1,10-azul1,20-verde1,30-rosa1,80-aqua1,200-rojo2,10-azul2,20-verde2,30-rosa2,80-aqua2,200-rojo3,10-azul3,20-verde3,30-rosa3,80-aqua3,200-rojo4,10-azul4,20-verde4,30-rosa4,80-aqua4,200-rojo5,10-azul5,20-verde5,30-rosa5,80-aqua5,200-rojo6,10-azul6,20-verde6,30-rosa6,80-aqua6,200-rojo7,10-azul7,20-verde7,30-rosa7,80-aqua7,200-rojo8,10-azul8,20-verde8,30-rosa8,80-aqua8,200-rojo9,10-azul9,20-verde9,30-rosa9,80-aqua9,200"
 
     // OBJ inicial si o si debe de estar
     myBarchart = new BarChart({
@@ -53,7 +125,7 @@ export default function Penalizaciones () {
       },
 
       // en colors puede ir bien una lista larga por default
-      colors: ['#00B0FF', '#002AFF', '#7B00B9', '#AE00FF', '#FF8787', '#FF0000', '#CB0000', '#8B0000', '#6DFF88', '#00FF2F', '#75F100', '#58B500', '#FEFF67', '#FDFF00', '#E2C500', '#B39C00'],
+      colors: ['#000000', '#000000', '#000000'],
       titleOptions: {
         align: 'center',
         fill: 'black',
@@ -70,7 +142,7 @@ export default function Penalizaciones () {
 
     // lo que importa de verdad
     draw(myBarchart, tituloBarra0, ejeYname0, ejeXname0, listaDatos0)
-  }, [])
+  }, [data, draw, tituloBarra0, ejeYname0, ejeXname0, listaDatos0])
 
   // dibujar linea en canvas
   function drawLine (ctx, startX, startY, endX, endY, color) {
@@ -90,7 +162,7 @@ export default function Penalizaciones () {
     upperLeftCornerY,
     width,
     height,
-    color, value, puntoX, valorBarra
+    color, value, puntoX
   ) {
     ctx.save()
     ctx.fillStyle = color
@@ -101,13 +173,13 @@ export default function Penalizaciones () {
     // ctx.fillRect(upperLeftCornerX, upperLeftCornerY, width, height);
     ctx.restore()
 
-    // --------new nombre en eje x
+    // --------new
     ctx.save()
-    ctx.translate(upperLeftCornerX + 9, puntoX - 5)
+    ctx.translate(upperLeftCornerX + 9, puntoX)
     ctx.rotate(-0.5 * Math.PI)
 
-    ctx.fillStyle = '#181818'
-    ctx.font = '12px serif' // "bold 12px serif"
+    ctx.fillStyle = 'red'
+    ctx.font = '12px serif'// "bold 12px serif"
     ctx.fillText(value, 0, 0)
 
     ctx.restore()
@@ -117,9 +189,9 @@ export default function Penalizaciones () {
     ctx.save()
     ctx.translate(upperLeftCornerX + 5, upperLeftCornerY)
     ctx.rotate(-(Math.PI / 4))
-    ctx.fillStyle = '#BA8C21'
+    ctx.fillStyle = 'black'
     ctx.textAlign = 'left'
-    ctx.fillText(valorBarra, 0, 0)
+    ctx.fillText(value, 0, 0)
     ctx.restore()
   }
 
@@ -174,18 +246,33 @@ export default function Penalizaciones () {
       const canvasActualWidth = this.canvas.width - this.options.padding * 2
       let gridValue = 0
       console.log(this.maxValue)
+
+      const numberOfBars = Object.keys(this.options.data).length// saber el max num de elemntos ==SI
+      let contador = 0// elemento 0 ==NO
+
       while (gridValue <= this.maxValue) {
         const gridY =
           canvasActualHeight * (1 - gridValue / this.maxValue) +
           this.options.padding
-        drawLine(// barra horizontal del eje x
-          this.ctx,
-          17,
-          gridY,
-          this.canvas.width,
-          gridY,
-          this.options.gridColor
-        )
+        if (gridValue == 0) {
+          drawLine(// barra horizontal del eje x
+            this.ctx,
+            17,
+            gridY,
+            this.canvas.width,
+            gridY,
+            this.options.gridColor
+          )
+        } else if (gridValue == this.maxValue) {
+          drawLine(// barra horizontal del eje x
+            this.ctx,
+            17,
+            gridY,
+            this.canvas.width - 1230,
+            gridY,
+            this.options.gridColor
+          )
+        }
         drawLine(// barra vertical del eje y
           this.ctx,
           24,
@@ -194,14 +281,30 @@ export default function Penalizaciones () {
           gridY + this.options.padding / 2,
           this.options.gridColor
         )
-        // Writing grid markers son los numeros por linea
+        // Writing grid markers son los numeros por linea   SE MODIFICO
         this.ctx.save()
+
+        /*
+        if(contador==0){
+        this.ctx.fillStyle = "red";
+        this.ctx.fillText(/ *Math.round(gridValue)+* /" NO", 0, gridY + 4);
+
+        }else if((contador)==numberOfBars){
+          this.ctx.fillStyle = "red";
+          this.ctx.fillText(/ *Math.round(gridValue)+* /" SI", 0, gridY + 4);
+
+        }else{
+          this.ctx.fillStyle = "blue";
+        } */
+
         this.ctx.fillStyle = 'red'
         this.ctx.textBaseline = 'bottom'
         this.ctx.font = 'bold 10px Arial'
-        this.ctx.fillText(Math.round(gridValue), 0, gridY - 4)
+        this.ctx.fillText(Math.round(gridValue) + '', 0, gridY + 4)
         this.ctx.restore()
         gridValue += this.options.gridStep
+
+        contador++// para identificar 0s y 1s
       }
     }
 
@@ -225,22 +328,9 @@ export default function Penalizaciones () {
           this.canvas.height - barHeight - this.options.padding,
           barSize,
           barHeight,
-          this.colors[barIndex % this.colors.length], array[contador], // new  le envio valor a mostrar en la barra
-          this.canvas.height - 15, val
+          this.colors[0], array[contador], // new  le envio valor a mostrar en la barra
+          this.canvas.height - 15
         )
-
-        // barra roja final de pomodoro========================================
-        if (contador % 4 == 0 && contador != 0) {
-          drawLine(
-            this.ctx,
-            this.options.padding + barIndex * barSize,
-            this.options.padding,
-            this.options.padding + barIndex * barSize,
-            this.ctx.canvas.clientHeight - 25,
-            '#0000FF'
-          )
-        }
-
         barIndex++
         contador++
       }
@@ -384,12 +474,8 @@ export default function Penalizaciones () {
     // calculo de nuevo el max valor del data
     myBarchart.maxValue = Math.max(...Object.values(myBarchart.options.data))
 
-    // defino el valor por linea hasta el max
-    myBarchart.options.gridStep = myBarchart.maxValue / values.length
-
-    //* ********************* defino un valor max para que asi se mire mejor la grafica
-    myBarchart.maxValue = 20 + Math.max(...Object.values(myBarchart.options.data))
-
+    // defino el valor por linea hasta el max en este caso 1 dado a SI o NO
+    myBarchart.options.gridStep = 1
     // ----------------------------------------------------------------
     // se manda a dibujar todo el objeto(grafico de barras)
     myBarchart.draw()
@@ -405,34 +491,14 @@ export default function Penalizaciones () {
     }, initialValue)
   }
 
-  function draw2 () {
-    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++')
-    console.log('Input value:', inputValue)
-
-    // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-    // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    draw(myBarchart, tituloBarra0, ejeYname0, ejeXname0, inputValue)
-  }
-
-  const [inputValue, setInputValue] = useState('')
-
-  const handleInputChange = (event) => {
-    setInputValue(event.target.value)
-  }
-
   return (
     <>
       <Head>
         <title>Penalizaciones</title>
       </Head>
       <Navbar />
-
-      <input type="text" value={inputValue} onChange={handleInputChange}></input>
-      <input type="button" value="submit" name="submit" onClick={draw2}></input>
-
-      <section className="home">
-        <div className="in-flex">
+      <section className="flex">
+        <div className="flex-1 p-15">
           <canvas ref={canvasRef} width={1500} height={1500} >
           </canvas>
           <legend htmlFor="myCanvas"></legend>

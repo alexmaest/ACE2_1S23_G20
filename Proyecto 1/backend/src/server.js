@@ -10,7 +10,9 @@ import {
   getPomodoro,
   resetPenalties,
   getRealTimePenalties,
-  queryReport1And2
+  queryReport1And2,
+  queryReport3,
+  queryReport4
 } from './hooks/useQueries.js'
 
 let _rest = ''
@@ -176,6 +178,28 @@ app.post('/api/getReporte1And2', async (req, res) => {
   if (_queryReport1And2.length > 0) {
     return res.status(200).send({
       _queryReport1And2
+    })
+  }
+})
+
+app.post('/api/getReporte3', async (req, res) => {
+  const { date, time } = req.body
+  const _queryReport3 = await queryReport3(_userId, date, time)
+
+  if (_queryReport3.length > 0) {
+    return res.status(200).send({
+      _queryReport3
+    })
+  }
+})
+
+app.post('/api/getReporte4', async (req, res) => {
+  const { date, time } = req.body
+  const _queryReport4 = await queryReport4(_userId, date, time)
+
+  if (_queryReport4.length > 0) {
+    return res.status(200).send({
+      _queryReport4
     })
   }
 })

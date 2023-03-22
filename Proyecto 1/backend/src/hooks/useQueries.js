@@ -73,6 +73,38 @@ const queryReport1And2 = async (userId, date, time) => {
   return rows[0]
 }
 
+const queryReport3 = async (userId, date, time) => {
+  const rows = await pool.query(
+    `SELECT
+    idPomodoro,
+    ciclo,
+    (SELECT fechaInicio FROM Pomodoro WHERE idPomodoro = r.idPomodoro) AS fechaInicio,
+    tiempoPenalizacion AS tiempoParadoEnTrabajo,
+    fechaDato
+    FROM Reporte r WHERE DATE_FORMAT(fechaDato, '%Y-%m-%d %H:%i:%s')
+    BETWEEN ? AND NOW() AND idPomodoro IN (SELECT idPomodoro FROM Pomodoro WHERE idUsuario = ? AND modo = 0)`,
+    [`${date} ${time}`, userId]
+  )
+  console.log(rows[0])
+  return rows[0]
+}
+
+const queryReport4 = async (userId, date, time) => {
+  const rows = await pool.query(
+    `SELECT
+    idPomodoro,
+    ciclo,
+    (SELECT fechaInicio FROM Pomodoro WHERE idPomodoro = r.idPomodoro) AS fechaInicio,
+    tiempoPenalizacion AS tiempoParadoEnTrabajo,
+    fechaDato
+    FROM Reporte r WHERE DATE_FORMAT(fechaDato, '%Y-%m-%d %H:%i:%s')
+    BETWEEN ? AND NOW() AND idPomodoro IN (SELECT idPomodoro FROM Pomodoro WHERE idUsuario = ? AND modo = 1)`,
+    [`${date} ${time}`, userId]
+  )
+  console.log(rows[0])
+  return rows[0]
+}
+
 export {
   registerUser,
   loginUser,
@@ -82,5 +114,7 @@ export {
   getPomodoro,
   resetPenalties,
   getRealTimePenalties,
-  queryReport1And2
+  queryReport1And2,
+  queryReport3,
+  queryReport4
 }
