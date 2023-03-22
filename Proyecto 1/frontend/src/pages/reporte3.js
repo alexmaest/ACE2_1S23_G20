@@ -175,7 +175,9 @@ export default function Reporte3 () {
     ctx.translate(upperLeftCornerX + 9, puntoX)
     ctx.rotate(-0.5 * Math.PI)
 
-    ctx.fillStyle = 'red'
+    if(valorAnalogico==0){ctx.fillStyle = 'blue'}else{
+      ctx.fillStyle = 'cyan'
+      }
     ctx.font = '12px serif'// "bold 12px serif"
     ctx.fillText(value, 10, 0)
 
