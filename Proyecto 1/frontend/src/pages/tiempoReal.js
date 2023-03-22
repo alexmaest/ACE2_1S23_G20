@@ -13,8 +13,8 @@ let myBarchart
 
 export default function TiempoReal () {
   const [penalties, setPenalties] = useState({})
-  const [pararse, setPararse] = useState(5)
-  const [sentarse, setSentarse] = useState(5)
+  const [pararse, setPararse] = useState(0)//cambiado para que sea mas real
+  const [sentarse, setSentarse] = useState(0)//cambiado para que sea mas real
 
   // hacer fetch de datos para gráfica en tiempo real con useEffect cada segundo
   useEffect(() => {
@@ -407,7 +407,7 @@ export default function TiempoReal () {
     myBarchart.maxValue = Math.max(...Object.values(myBarchart.options.data))
 
     // defino el valor por linea hasta el max
-    myBarchart.options.gridStep = myBarchart.maxValue / values.length
+    //myBarchart.options.gridStep = myBarchart.maxValue / values.length //ahorita que hay pocos datos F
 
     //* ********************* defino un valor max para que asi se mire mejor la grafica
     myBarchart.maxValue = 20 + Math.max(...Object.values(myBarchart.options.data))
