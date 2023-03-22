@@ -7,7 +7,7 @@ import moment from 'moment'
 // grafico de barras creacion propia
 let myBarchart
 
-export default function Reporte3 () {
+export default function Reporte4 () {
   // datos default
   let tituloBarra0 = ''
   let ejeYname0 = ''
@@ -21,7 +21,7 @@ export default function Reporte3 () {
   const canvasRef = useRef(null)
 
   useEffect(() => {
-    fetch(`http://${Constants.IP_ADDRESS}:3555/api/getReporte3`, {
+    fetch(`http://${Constants.IP_ADDRESS}:3555/api/getReporte4`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -33,7 +33,7 @@ export default function Reporte3 () {
     })
       .then((res) => res.json())
       .then((data) => {
-        setData(data._queryReport3)
+        setData(data._queryReport4)
       })
   }, [date, time])
 
@@ -41,42 +41,43 @@ export default function Reporte3 () {
   // este se encarga de dibujar el grafico de barras----------------------
   useEffect(() => {
     for (let i = 0; i < data.length; i++) {
+      console.log('data[i]', data[i])
       if (i === 0) {
-        const fechaFormateada = moment(data[i].fechaInicio).format('DD/MM/YYYY HH:mm:ss')
-        const horaInicioPomodoro = moment(data[i].fechaInicio, 'YYYY-MM-DD HH:mm:ss').format('HH:mm:ss')
-        const fechaSeLevanto = moment(data[i].fechaDato).format('DD/MM/YYYY HH:mm:ss')
-        const horaSeLevanto = moment(data[i].fechaDato, 'YYYY-MM-DD HH:mm:ss').format('HH:mm:ss')
-        const diff = moment(horaSeLevanto, 'HH:mm:ss').diff(moment(horaInicioPomodoro, 'HH:mm:ss'))
+        const tiempoTrabajo = moment.duration(data[i].tiempoTrabajo, 'minutes').asMinutes()
+        const fechaInicioTiempoDescanso = moment(data[i].fechaInicio).add(tiempoTrabajo, 'minutes').format('DD/MM/YYYY HH:mm:ss')
+        const horaInicioTiempoDescanso = moment(data[i].fechaInicio).add(tiempoTrabajo, 'minutes').format('HH:mm:ss')
+        const fechaSeSento = moment(data[i].fechaDato).format('DD/MM/YYYY HH:mm:ss')
+        const horaSeSento = moment(data[i].fechaDato).format('HH:mm:ss')
+        const diff = moment(horaSeSento, 'HH:mm:ss').diff(moment(horaInicioTiempoDescanso, 'HH:mm:ss'))
         const seconds = moment.duration(diff).asSeconds()
 
-        console.log({ secondsIIgualCero: seconds })
+        console.log({ seconds })
 
         if (data.length === 1) {
-          listaDatos0 += `${fechaFormateada} ${seconds}s,1`
-          listaDatos0 += `${fechaSeLevanto} ${data[i].tiempoParadoEnTrabajo}s,0`
+          listaDatos0 += `${fechaInicioTiempoDescanso} ${seconds}s,1`
+          listaDatos0 += `${fechaSeSento} ${data[i].tiempoSentadoEnDescanso}s,0`
         } else {
-          listaDatos0 += `${fechaFormateada} ${seconds}s,1-`
-          listaDatos0 += `${fechaSeLevanto} ${data[i].tiempoParadoEnTrabajo}s,0-`
+          listaDatos0 += `${fechaInicioTiempoDescanso} ${seconds}s,1-`
+          listaDatos0 += `${fechaSeSento} ${data[i].tiempoSentadoEnDescanso}s,0-`
         }
       } else {
-        const horaSeLevanto = moment(data[i].fechaDato).format('HH:mm:ss')
-        const segundosParado = moment.duration(data[i - 1].tiempoParadoEnTrabajo, 'seconds').asSeconds()
+        const horaSeSento = moment(data[i].fechaDato).format('HH:mm:ss')
+        const segundosSentado = moment.duration(data[i - 1].tiempoSentadoEnDescanso, 'seconds').asSeconds()
 
-        // sumar los segundos segundosParado con la horaAnteriorSeLevando que es una fecha
+        const add = moment(moment(data[i - 1].fechaDato).format('HH:mm:ss'), 'HH:mm:ss').add(segundosSentado, 'seconds').format('HH:mm:ss')
+        const fechaSeLevanto = moment(data[i - 1].fechaDato).add(segundosSentado, 'seconds').format('DD/MM/YYYY HH:mm:ss')
+        const fechaSeSento = moment(data[i].fechaDato).format('DD/MM/YYYY HH:mm:ss')
 
-        const add = moment(moment(data[i - 1].fechaDato).format('HH:mm:ss'), 'HH:mm:ss').add(segundosParado, 'seconds').format('HH:mm:ss')
-        const fechaSeSento = moment(data[i - 1].fechaDato).add(segundosParado, 'seconds').format('DD/MM/YYYY HH:mm:ss')
-        const fechaSeLevanto = moment(data[i].fechaDato).format('DD/MM/YYYY HH:mm:ss')
-
-        const diff = moment(horaSeLevanto, 'HH:mm:ss').diff(moment(add, 'HH:mm:ss'))
+        const diff = moment(horaSeSento, 'HH:mm:ss').diff(moment(add, 'HH:mm:ss'))
         const seconds = moment.duration(diff).asSeconds()
         console.log({ seconds })
+
         if (i === data.length - 1) {
-          listaDatos0 += `${fechaSeSento} ${seconds}s,1-`
-          listaDatos0 += `${fechaSeLevanto} ${data[i].tiempoParadoEnTrabajo}s,0`
+          listaDatos0 += `${fechaSeLevanto} ${seconds}s,1-`
+          listaDatos0 += `${fechaSeSento} ${data[i].tiempoSentadoEnDescanso}s,0`
         } else {
-          listaDatos0 += `${fechaSeSento} ${seconds}s,1-`
-          listaDatos0 += `${fechaSeLevanto} ${data[i].tiempoParadoEnTrabajo}s,0-`
+          listaDatos0 += `${fechaSeLevanto} ${seconds}s,1-`
+          listaDatos0 += `${fechaSeSento} ${data[i].tiempoSentadoEnDescanso}s,0-`
         }
       }
     }
@@ -96,7 +97,7 @@ export default function Reporte3 () {
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     // esto dibujare cambio las variables anteriores
-    tituloBarra0 = 'Sentado = 1'
+    tituloBarra0 = 'Parado = 1'
     ejeYname0 = 'S/N'
     ejeXname0 = 't(s)'
     // listaDatos0 = 'A0,0-A1,1-A2,1-A3,0-A4,1'

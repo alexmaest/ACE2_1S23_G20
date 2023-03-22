@@ -90,12 +90,14 @@ const queryReport3 = async (userId, date, time) => {
 }
 
 const queryReport4 = async (userId, date, time) => {
+  console.log({ userId, date, time })
   const rows = await pool.query(
     `SELECT
     idPomodoro,
     ciclo,
     (SELECT fechaInicio FROM Pomodoro WHERE idPomodoro = r.idPomodoro) AS fechaInicio,
-    tiempoPenalizacion AS tiempoParadoEnTrabajo,
+    (SELECT tiempoTrabajo FROM Pomodoro WHERE idPomodoro = r.idPomodoro) AS tiempoTrabajo,
+    tiempoPenalizacion AS tiempoSentadoEnDescanso,
     fechaDato
     FROM Reporte r WHERE DATE_FORMAT(fechaDato, '%Y-%m-%d %H:%i:%s')
     BETWEEN ? AND NOW() AND idPomodoro IN (SELECT idPomodoro FROM Pomodoro WHERE idUsuario = ? AND modo = 1)`,
