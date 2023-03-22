@@ -16,7 +16,7 @@ const loginUser = async (userName, password) => {
 
 const updatePenalties = async (userId, isStanding, isSeated) => {
   const rows = await pool.query(
-    'UPDATE Usuario SET penalizacionPararse = ? penalizacionSentarse = ? WHERE idUsuario = ?',
+    'UPDATE Usuario SET penalizacionPararse = ?, penalizacionSentarse = ? WHERE idUsuario = ?',
     [userId, isStanding, isSeated])
   return rows[0]
 }
