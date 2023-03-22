@@ -22,7 +22,7 @@ export default function Reporte5() {
   const [data, setData] = useState([])
 
   useEffect(() => {
-    fetch(`http://${Constants.IP_ADDRESS}:3555/api/reporte5`, {
+    fetch(`http://${Constants.IP_ADDRESS}:3555/api/reporte6`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -53,14 +53,14 @@ export default function Reporte5() {
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     // esto dibujare cambio las variables anteriores
-    tituloBarra0 = 'porcentaje de cumplimiento de los 4 pomodoros'
+    tituloBarra0 = 'porcentaje de cumplimiento de los pomodoros'
     ejeYName0 = 'porcentaje(%)'
     ejeXName0 = 'ciclos pomodoro'
 
     // lo primordial
     // listaDatos0 = 'pararse,10-sentarse,2'
     data.forEach((item, index) => {
-      listaDatos0 += `${item.idPomodoro} Porcentaje Cumplimiento 1,${Math.round(item.porcentajeCumplimiento1)}-${item.idPomodoro} Porcentaje Incumplimiento 1,${Math.round(item.porcentajeIncumplimiento1)}-${item.idPomodoro} Porcentaje Penalizacion Parado 1,${Math.round(item.porcentajePenalizacionParado1)}-${item.idPomodoro} Porcentaje Penalizacion Sentado 1,${Math.round(item.porcentajePenalizacionSentado1)}-${item.idPomodoro} Porcentaje Cumplimiento 2,${Math.round(item.porcentajeCumplimiento2)}-${item.idPomodoro} Porcentaje Incumplimiento 2,${Math.round(item.porcentajeIncumplimiento2)}-${item.idPomodoro} Porcentaje Penalizacion Parado 2,${Math.round(item.porcentajePenalizacionParado2)}-${item.idPomodoro} Porcentaje Penalizacion Sentado 2,${Math.round(item.porcentajePenalizacionSentado2)}-${item.idPomodoro} Porcentaje Cumplimiento 3,${Math.round(item.porcentajeCumplimiento3)}-${item.idPomodoro} Porcentaje Incumplimiento 3,${Math.round(item.porcentajeIncumplimiento3)}-${item.idPomodoro} Porcentaje Penalizacion Parado 3,${Math.round(item.porcentajePenalizacionParado3)}-${item.idPomodoro} Porcentaje Penalizacion Sentado 3,${Math.round(item.porcentajePenalizacionSentado3)}-${item.idPomodoro} Porcentaje Cumplimiento 4,${Math.round(item.porcentajeCumplimiento4)}-${item.idPomodoro} Porcentaje Incumplimiento 4,${Math.round(item.porcentajeIncumplimiento4)}-${item.idPomodoro} Porcentaje Penalizacion Parado 4,${Math.round(item.porcentajePenalizacionParado4)}-${item.idPomodoro} Porcentaje Penalizacion Sentado 4,${Math.round(item.porcentajePenalizacionSentado4)}`
+      listaDatos0 += `${item.idPomodoro} Porcentaje Cumplimiento,${Math.round(item.porcentajeCumplimientoPromedio)}-${item.idPomodoro} Porcentaje Incumplimiento,${Math.round(item.porcentajeIncumplimientoPromedio)}-${item.idPomodoro} Porcentaje Penalizacion Parado,${Math.round(item.porcentajePenalizacionParadoPromedio)}-${item.idPomodoro} Porcentaje Penalizacion Sentado,${Math.round(item.porcentajePenalizacionSentadoPromedio)}`
       if (index !== data.length - 1) {
         listaDatos0 += '-'
       }

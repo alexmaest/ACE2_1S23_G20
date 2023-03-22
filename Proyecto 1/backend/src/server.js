@@ -12,7 +12,8 @@ import {
   getRealTimePenalties,
   queryReport1And2,
   queryReport3,
-  queryReport4
+  queryReport4,
+  queryReport5And6
 } from './hooks/useQueries.js'
 
 let _rest = ''
@@ -119,6 +120,11 @@ app.post('/api/penalty', body.text({ type: '*/*' }), async (req, res) => {
       if (_createReport.length > 0) {
         return res.status(400).send({ message: 'Error creating report' })
       }
+
+      const _resetPenalties = await resetPenalties(_userId)
+      if (_resetPenalties.length > 0) {
+        return res.status(400).send({ message: 'Error resetting penalties' })
+      }
     }
     return res.status(200).send({ message: 'Report saved' })
   } else if (data.includes('D') || data.includes('T')) { // Reporte tiempo real
@@ -202,6 +208,187 @@ app.post('/api/getReporte4', async (req, res) => {
       _queryReport4
     })
   }
+})
+
+const processDataQuery5And6 = async (queryData) => {
+  // unir datos por id
+  const dataIds = []
+  const joinedData = []
+  queryData.forEach((element) => {
+    if (dataIds.length === 0) {
+      dataIds.push(element.idPomodoro)
+    } else {
+      if (!dataIds.includes(element.idPomodoro)) {
+        dataIds.push(element.idPomodoro)
+      }
+    }
+  })
+
+  dataIds.forEach((id) => {
+    const joinedDataAux = []
+    queryData.forEach((element) => {
+      if (element.idPomodoro === id) {
+        joinedDataAux.push(element)
+      }
+    })
+    joinedData.push(joinedDataAux)
+  })
+
+  const processedData = []
+
+  joinedData.forEach((element) => {
+    const cycleTime = (element[0].tiempoTrabajo + element[0].tiempoDescanso) * 60
+    const workTime = element[0].tiempoTrabajo * 60
+    const restTime = element[0].tiempoDescanso * 60
+    let totalTime1 = 0
+    let totalTime2 = 0
+    let totalTime3 = 0
+    let totalTime4 = 0
+    let penaltyStanding1 = 0
+    let penaltyStanding2 = 0
+    let penaltyStanding3 = 0
+    let penaltyStanding4 = 0
+    let penaltySitting1 = 0
+    let penaltySitting2 = 0
+    let penaltySitting3 = 0
+    let penaltySitting4 = 0
+
+    element.forEach((_element) => {
+      if (_element.ciclo === 1) {
+        totalTime1 += _element.tiempoPenalizacion
+        if (_element.modo === 0) {
+          penaltyStanding1 += _element.tiempoPenalizacion
+        } else {
+          penaltySitting1 += _element.tiempoPenalizacion
+        }
+      } else if (_element.ciclo === 2) {
+        totalTime2 += _element.tiempoPenalizacion
+        if (_element.modo === 0) {
+          penaltyStanding2 += _element.tiempoPenalizacion
+        } else {
+          penaltySitting2 += _element.tiempoPenalizacion
+        }
+      } else if (_element.ciclo === 3) {
+        totalTime3 += _element.tiempoPenalizacion
+        if (_element.modo === 0) {
+          penaltyStanding3 += _element.tiempoPenalizacion
+        } else {
+          penaltySitting3 += _element.tiempoPenalizacion
+        }
+      } else if (_element.ciclo === 4) {
+        totalTime4 += _element.tiempoPenalizacion
+        if (_element.modo === 0) {
+          penaltyStanding4 += _element.tiempoPenalizacion
+        } else {
+          penaltySitting4 += _element.tiempoPenalizacion
+        }
+      }
+    })
+
+    const porcentajeIncumplimiento1 = (totalTime1 / cycleTime) * 100
+    const porcentajeIncumplimiento2 = (totalTime2 / cycleTime) * 100
+    const porcentajeIncumplimiento3 = (totalTime3 / cycleTime) * 100
+    const porcentajeIncumplimiento4 = (totalTime4 / cycleTime) * 100
+
+    const porcentajeCumplimiento1 = 100 - porcentajeIncumplimiento1
+    const porcentajeCumplimiento2 = 100 - porcentajeIncumplimiento2
+    const porcentajeCumplimiento3 = 100 - porcentajeIncumplimiento3
+    const porcentajeCumplimiento4 = 100 - porcentajeIncumplimiento4
+
+    const porcentajePenalizacionParado1 = (penaltyStanding1 / workTime) * 100
+    const porcentajePenalizacionParado2 = (penaltyStanding2 / workTime) * 100
+    const porcentajePenalizacionParado3 = (penaltyStanding3 / workTime) * 100
+    const porcentajePenalizacionParado4 = (penaltyStanding4 / workTime) * 100
+
+    const porcentajePenalizacionSentado1 = (penaltySitting1 / restTime) * 100
+    const porcentajePenalizacionSentado2 = (penaltySitting2 / restTime) * 100
+    const porcentajePenalizacionSentado3 = (penaltySitting3 / restTime) * 100
+    const porcentajePenalizacionSentado4 = (penaltySitting4 / restTime) * 100
+
+    processedData.push({
+      idPomodoro: element[0].idPomodoro,
+      porcentajeCumplimiento1,
+      porcentajeIncumplimiento1,
+      porcentajePenalizacionParado1,
+      porcentajePenalizacionSentado1,
+      porcentajeCumplimiento2,
+      porcentajeIncumplimiento2,
+      porcentajePenalizacionParado2,
+      porcentajePenalizacionSentado2,
+      porcentajeCumplimiento3,
+      porcentajeIncumplimiento3,
+      porcentajePenalizacionParado3,
+      porcentajePenalizacionSentado3,
+      porcentajeCumplimiento4,
+      porcentajeIncumplimiento4,
+      porcentajePenalizacionParado4,
+      porcentajePenalizacionSentado4
+    })
+  })
+
+  return processedData
+}
+
+app.post('/api/reporte5', async (req, res) => {
+  const { date, time } = req.body
+  const _queryReport5And6 = await queryReport5And6(_userId, date, time)
+  if (_queryReport5And6.length > 0) {
+    const report5Data = await processDataQuery5And6(_queryReport5And6)
+    return res.status(200).send({
+      reportData: report5Data
+    })
+  }
+  return res.status(400).send({ message: 'Error getting report 5' })
+})
+
+app.post('/api/reporte6', async (req, res) => {
+  const { date, time } = req.body
+  const _queryReport5And6 = await queryReport5And6(_userId, date, time)
+  if (_queryReport5And6.length > 0) {
+    const processedData = await processDataQuery5And6(_queryReport5And6)
+    const report6Data = []
+    processedData.forEach((element) => {
+      const porcentajeCumplimientoPromedio =
+        (element.porcentajeCumplimiento1 +
+          element.porcentajeCumplimiento2 +
+          element.porcentajeCumplimiento3 +
+          element.porcentajeCumplimiento4) /
+        4
+      const porcentajeIncumplimientoPromedio =
+        (element.porcentajeIncumplimiento1 +
+          element.porcentajeIncumplimiento2 +
+          element.porcentajeIncumplimiento3 +
+          element.porcentajeIncumplimiento4) /
+        4
+
+      const porcentajePenalizacionParadoPromedio =
+        (element.porcentajePenalizacionParado1 +
+          element.porcentajePenalizacionParado2 +
+          element.porcentajePenalizacionParado3 +
+          element.porcentajePenalizacionParado4) /
+        4
+
+      const porcentajePenalizacionSentadoPromedio =
+        (element.porcentajePenalizacionSentado1 +
+          element.porcentajePenalizacionSentado2 +
+          element.porcentajePenalizacionSentado3 +
+          element.porcentajePenalizacionSentado4) /
+        4
+
+      report6Data.push({
+        idPomodoro: element.idPomodoro,
+        porcentajeCumplimientoPromedio,
+        porcentajeIncumplimientoPromedio,
+        porcentajePenalizacionParadoPromedio,
+        porcentajePenalizacionSentadoPromedio
+      })
+    })
+
+    return res.status(200).send({
+      reportData: report6Data
+    })
+  }
+  return res.status(400).send({ message: 'Error getting report 6' })
 })
 
 app.listen(port, () => {

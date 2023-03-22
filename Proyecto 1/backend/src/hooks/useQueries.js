@@ -105,6 +105,23 @@ const queryReport4 = async (userId, date, time) => {
   return rows[0]
 }
 
+const queryReport5And6 = async (userId, date, time) => {
+  const rows = await pool.query(
+    `SELECT
+    idPomodoro,
+    ciclo,
+    modo,
+    tiempoPenalizacion,
+    (SELECT tiempoTrabajo FROM Pomodoro WHERE idPomodoro = r.idPomodoro) AS tiempoTrabajo,
+    (SELECT tiempoDescanso FROM Pomodoro WHERE idPomodoro = r.idPomodoro) AS tiempoDescanso,
+    fechaDato
+    FROM Reporte r WHERE DATE_FORMAT(fechaDato, '%Y-%m-%d %H:%i:%s')
+    BETWEEN ? AND NOW() AND idPomodoro IN (SELECT idPomodoro FROM Pomodoro WHERE idUsuario = ?)`,
+    [`${date} ${time}`, userId]
+  )
+  return rows[0]
+}
+
 export {
   registerUser,
   loginUser,
@@ -116,5 +133,6 @@ export {
   getRealTimePenalties,
   queryReport1And2,
   queryReport3,
-  queryReport4
+  queryReport4,
+  queryReport5And6
 }
