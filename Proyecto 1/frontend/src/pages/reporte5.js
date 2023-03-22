@@ -60,7 +60,7 @@ export default function Reporte5() {
     // lo primordial
     // listaDatos0 = 'pararse,10-sentarse,2'
     data.forEach((item, index) => {
-      listaDatos0 += `${item.idPomodoro} Porcentaje Cumplimiento 1,${Math.round(item.porcentajeCumplimiento1)}-${item.idPomodoro} Porcentaje Incumplimiento 1,${Math.round(item.porcentajeIncumplimiento1)}-${item.idPomodoro} Porcentaje Penalizacion Parado 1,${Math.round(item.porcentajePenalizacionParado1)}-${item.idPomodoro} Porcentaje Penalizacion Sentado 1,${Math.round(item.porcentajePenalizacionSentado1)}-${item.idPomodoro} Porcentaje Cumplimiento 2,${Math.round(item.porcentajeCumplimiento2)}-${item.idPomodoro} Porcentaje Incumplimiento 2,${Math.round(item.porcentajeIncumplimiento2)}-${item.idPomodoro} Porcentaje Penalizacion Parado 2,${Math.round(item.porcentajePenalizacionParado2)}-${item.idPomodoro} Porcentaje Penalizacion Sentado 2,${Math.round(item.porcentajePenalizacionSentado2)}-${item.idPomodoro} Porcentaje Cumplimiento 3,${Math.round(item.porcentajeCumplimiento3)}-${item.idPomodoro} Porcentaje Incumplimiento 3,${Math.round(item.porcentajeIncumplimiento3)}-${item.idPomodoro} Porcentaje Penalizacion Parado 3,${Math.round(item.porcentajePenalizacionParado3)}-${item.idPomodoro} Porcentaje Penalizacion Sentado 3,${Math.round(item.porcentajePenalizacionSentado3)}-${item.idPomodoro} Porcentaje Cumplimiento 4,${Math.round(item.porcentajeCumplimiento4)}-${item.idPomodoro} Porcentaje Incumplimiento 4,${Math.round(item.porcentajeIncumplimiento4)}-${item.idPomodoro} Porcentaje Penalizacion Parado 4,${Math.round(item.porcentajePenalizacionParado4)}-${item.idPomodoro} Porcentaje Penalizacion Sentado 4,${Math.round(item.porcentajePenalizacionSentado4)}`
+      listaDatos0 += `${item.idPomodoro} %Cumplimiento 1,${Math.round(item.porcentajeCumplimiento1)}-${item.idPomodoro} %Incumplimiento 1,${Math.round(item.porcentajeIncumplimiento1)}-${item.idPomodoro} %Penalizacion Parado 1,${Math.round(item.porcentajePenalizacionParado1)}-${item.idPomodoro} %Penalizacion Sentado 1,${Math.round(item.porcentajePenalizacionSentado1)}-${item.idPomodoro} %Cumplimiento 2,${Math.round(item.porcentajeCumplimiento2)}-${item.idPomodoro} %Incumplimiento 2,${Math.round(item.porcentajeIncumplimiento2)}-${item.idPomodoro} %Penalizacion Parado 2,${Math.round(item.porcentajePenalizacionParado2)}-${item.idPomodoro} %Penalizacion Sentado 2,${Math.round(item.porcentajePenalizacionSentado2)}-${item.idPomodoro} %Cumplimiento 3,${Math.round(item.porcentajeCumplimiento3)}-${item.idPomodoro} %Incumplimiento 3,${Math.round(item.porcentajeIncumplimiento3)}-${item.idPomodoro} %Penalizacion Parado 3,${Math.round(item.porcentajePenalizacionParado3)}-${item.idPomodoro} %Penalizacion Sentado 3,${Math.round(item.porcentajePenalizacionSentado3)}-${item.idPomodoro} %Cumplimiento 4,${Math.round(item.porcentajeCumplimiento4)}-${item.idPomodoro} %Incumplimiento 4,${Math.round(item.porcentajeIncumplimiento4)}-${item.idPomodoro} %Penalizacion Parado 4,${Math.round(item.porcentajePenalizacionParado4)}-${item.idPomodoro} %Penalizacion Sentado 4,${Math.round(item.porcentajePenalizacionSentado4)}`
       if (index !== data.length - 1) {
         listaDatos0 += '-'
       }
@@ -72,7 +72,7 @@ export default function Reporte5() {
       seriesName: 'Vinyl records',
       seriesNameY: 'eje y',
       seriesNameX: 'eje x',
-      padding: 40,
+      padding: 35,
       gridStep: 5,
       gridColor: 'black',
       data: {
@@ -149,7 +149,8 @@ export default function Reporte5() {
     ctx.rotate(-(Math.PI / 4))
     ctx.fillStyle = '#BA8C21'
     ctx.textAlign = 'left'
-    ctx.fillText(valorBarra, 15, 0)
+    ctx.font = '12px serif' // "bold 12px serif"
+    ctx.fillText(valorBarra, 2, 0)
     ctx.restore()
   }
 
