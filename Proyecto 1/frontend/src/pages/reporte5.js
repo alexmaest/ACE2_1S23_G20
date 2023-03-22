@@ -407,7 +407,7 @@ export default function Reporte5() {
     myBarChart.maxValue = Math.max(...Object.values(myBarChart.options.data))
 
     // defino el valor por linea hasta el max
-    myBarChart.options.gridStep = myBarChart.maxValue / values.length
+    //myBarChart.options.gridStep = myBarChart.maxValue / values.length
 
     //* ********************* defino un valor max para que asi se mire mejor la gráfica
     myBarChart.maxValue = 20 + Math.max(...Object.values(myBarChart.options.data))

@@ -56,7 +56,7 @@ export default function Penalizaciones () {
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     // esto dibujare cambio las variables anteriores
-    tituloBarra0 = 'Sentarse a tiempo a lo largo del tiempo'
+    tituloBarra0 = 'No pararse a tiempo a lo largo del tiempo'
     ejeYname0 = 't(s)'
     ejeXname0 = 'Fecha-Hora'
 

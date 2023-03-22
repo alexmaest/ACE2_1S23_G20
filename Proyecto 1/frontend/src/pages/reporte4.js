@@ -97,7 +97,7 @@ export default function Reporte4 () {
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     // esto dibujare cambio las variables anteriores
-    tituloBarra0 = 'Parado = 1'
+    tituloBarra0 = 'Usuario no este sentado en el tiempo de descanso    Parado = 1'
     ejeYname0 = 'S/N'
     ejeXname0 = 't(s)'
     // listaDatos0 = 'A0,0-A1,1-A2,1-A3,0-A4,1'

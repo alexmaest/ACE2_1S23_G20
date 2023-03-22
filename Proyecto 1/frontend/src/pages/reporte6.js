@@ -53,9 +53,9 @@ export default function Reporte5() {
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     // esto dibujare cambio las variables anteriores
-    tituloBarra0 = 'porcentaje de cumplimiento de los pomodoros'
+    tituloBarra0 = 'porcentaje de cumplimiento total de los pomodoros'
     ejeYName0 = 'porcentaje(%)'
-    ejeXName0 = 'ciclos pomodoro'
+    ejeXName0 = 'pomodoro'
 
     // lo primordial
     // listaDatos0 = 'pararse,10-sentarse,2'
@@ -407,7 +407,7 @@ export default function Reporte5() {
     myBarChart.maxValue = Math.max(...Object.values(myBarChart.options.data))
 
     // defino el valor por linea hasta el max
-    myBarChart.options.gridStep = myBarChart.maxValue / values.length
+    //myBarChart.options.gridStep = myBarChart.maxValue / values.length
 
     //* ********************* defino un valor max para que asi se mire mejor la gráfica
     myBarChart.maxValue = 20 + Math.max(...Object.values(myBarChart.options.data))
