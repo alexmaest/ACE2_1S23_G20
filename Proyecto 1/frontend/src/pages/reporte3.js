@@ -42,9 +42,9 @@ export default function Reporte3 () {
   useEffect(() => {
     for (let i = 0; i < data.length; i++) {
       if (i === 0) {
-        const fechaFormateada = moment(data[i].fechaInicio, 'YYYY-MM-DD HH:mm:ss').format('DD/MM/YYYY HH:mm:ss')
+        const fechaFormateada = moment(data[i].fechaInicio).format('DD/MM/YYYY HH:mm:ss')
         const horaInicioPomodoro = moment(data[i].fechaInicio, 'YYYY-MM-DD HH:mm:ss').format('HH:mm:ss')
-        const fechaSeLevanto = moment(data[i].fechaDato, 'YYYY-MM-DD HH:mm:ss').format('DD/MM/YYYY HH:mm:ss')
+        const fechaSeLevanto = moment(data[i].fechaDato).format('DD/MM/YYYY HH:mm:ss')
         const horaSeLevanto = moment(data[i].fechaDato, 'YYYY-MM-DD HH:mm:ss').format('HH:mm:ss')
         const diff = moment(horaSeLevanto, 'HH:mm:ss').diff(moment(horaInicioPomodoro, 'HH:mm:ss'))
         const seconds = moment.duration(diff).asSeconds()
@@ -53,13 +53,12 @@ export default function Reporte3 () {
 
         if (data.length === 1) {
           listaDatos0 += `${fechaFormateada} ${seconds}s,1`
-          listaDatos0 += `${fechaFormateada} ${data[i].tiempoParadoEnTrabajo}s,0`
+          listaDatos0 += `${fechaSeLevanto} ${data[i].tiempoParadoEnTrabajo}s,0`
         } else {
           listaDatos0 += `${fechaFormateada} ${seconds}s,1-`
-          listaDatos0 += `${fechaFormateada} ${data[i].tiempoParadoEnTrabajo}s,0-`
+          listaDatos0 += `${fechaSeLevanto} ${data[i].tiempoParadoEnTrabajo}s,0-`
         }
       } else {
-        const fechaFormateada = moment(data[i].fechaInicio).format('DD/MM/YYYY HH:mm:ss')
         const horaSeLevanto = moment(data[i].fechaDato).format('HH:mm:ss')
         const horaAnteriorSeLevanto = moment(data[i - 1].fechaDato).format('HH:mm:ss')
         const segundosParado = moment.duration(data[i - 1].tiempoParadoEnTrabajo, 'seconds').asSeconds()
@@ -67,19 +66,21 @@ export default function Reporte3 () {
         // sumar los segundos segundosParado con la horaAnteriorSeLevando que es una fecha
 
         const add = moment(moment(data[i - 1].fechaDato).format('HH:mm:ss'), 'HH:mm:ss').add(segundosParado, 'seconds').format('HH:mm:ss')
-
+        const fechaSeSento = moment(data[i - 1].fechaDato).add(segundosParado, 'seconds').format('DD/MM/YYYY HH:mm:ss')
+        const fechaSeLevanto = moment(data[i].fechaDato).format('DD/MM/YYYY HH:mm:ss')
         console.log({ horaAnteriorSeLevanto })
         console.log({ add })
+        console.log({ fechaSeSento })
 
         const diff = moment(horaSeLevanto, 'HH:mm:ss').diff(moment(add, 'HH:mm:ss'))
         const seconds = moment.duration(diff).asSeconds()
         console.log({ seconds })
         if (i === data.length - 1) {
-          listaDatos0 += `${fechaFormateada} ${seconds}s,1-`
-          listaDatos0 += `${fechaFormateada} ${data[i].tiempoParadoEnTrabajo}s,0`
+          listaDatos0 += `${fechaSeSento} ${seconds}s,1-`
+          listaDatos0 += `${fechaSeLevanto} ${data[i].tiempoParadoEnTrabajo}s,0`
         } else {
-          listaDatos0 += `${fechaFormateada} ${seconds}s,1-`
-          listaDatos0 += `${fechaFormateada} ${data[i].tiempoParadoEnTrabajo}s,0-`
+          listaDatos0 += `${fechaSeSento} ${seconds}s,1-`
+          listaDatos0 += `${fechaSeLevanto} ${data[i].tiempoParadoEnTrabajo}s,0-`
         }
       }
     }
