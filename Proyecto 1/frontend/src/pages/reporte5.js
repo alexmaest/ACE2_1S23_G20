@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Navbar from '../components/Navbar'
 
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect } from 'react'
 
 // grafico de barras creacion propia
 let myBarchart
@@ -406,22 +406,6 @@ export default function Reporte5 () {
         [item[key]]: Number(item.valor)
       }
     }, initialValue)
-  }
-
-  function draw2 () {
-    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++')
-    console.log('Input value:', inputValue)
-
-    // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-    // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    draw(myBarchart, tituloBarra0, ejeYname0, ejeXname0, inputValue)
-  }
-
-  const [inputValue, setInputValue] = useState('')
-
-  const handleInputChange = (event) => {
-    setInputValue(event.target.value)
   }
 
   return (
