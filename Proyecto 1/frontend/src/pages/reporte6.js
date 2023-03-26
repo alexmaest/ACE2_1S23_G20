@@ -60,7 +60,7 @@ export default function Reporte5() {
     // lo primordial
     // listaDatos0 = 'pararse,10-sentarse,2'
     data.forEach((item, index) => {
-      listaDatos0 += `${item.idPomodoro} Porcentaje Cumplimiento,${Math.round(item.porcentajeCumplimientoPromedio)}-${item.idPomodoro} Porcentaje Incumplimiento,${Math.round(item.porcentajeIncumplimientoPromedio)}-${item.idPomodoro} Porcentaje Penalizacion Parado,${Math.round(item.porcentajePenalizacionParadoPromedio)}-${item.idPomodoro} Porcentaje Penalizacion Sentado,${Math.round(item.porcentajePenalizacionSentadoPromedio)}`
+      listaDatos0 += `${item.idPomodoro} %Cumplimiento,${Math.round(item.porcentajeCumplimientoPromedio)}-${item.idPomodoro} %Incumplimiento,${Math.round(item.porcentajeIncumplimientoPromedio)}-${item.idPomodoro} %Penalizacion Parado,${Math.round(item.porcentajePenalizacionParadoPromedio)}-${item.idPomodoro} %Penalizacion Sentado,${Math.round(item.porcentajePenalizacionSentadoPromedio)}`
       if (index !== data.length - 1) {
         listaDatos0 += '-'
       }
@@ -138,10 +138,11 @@ export default function Reporte5() {
 
     ctx.fillStyle = '#181818'
     ctx.font = '12px serif' // "bold 12px serif"
-    ctx.fillText(value, 0, 0)
+    ctx.fillText(value+": "+valorBarra+"", 0, 2)
 
     ctx.restore()
 
+    /*
     // ---------new name de barra inclinado
     // nombre de barra
     ctx.save()
@@ -150,7 +151,7 @@ export default function Reporte5() {
     ctx.fillStyle = '#BA8C21'
     ctx.textAlign = 'left'
     ctx.fillText(valorBarra, 15, 0)
-    ctx.restore()
+    ctx.restore()*/
   }
 
   // objeto canvas para el gráfico de barras
@@ -343,7 +344,7 @@ export default function Reporte5() {
       // numero de elementos del gráfico
       const values = Object.values(this.options.data)
 
-      this.ctx.fillText('Muestra:' + values.length, xPos, this.canvas.height)
+      this.ctx.fillText('Muestra:' + values.length+"|Cumplimiento,Incumplimiento,Penalizacion Parado,Penalizacion Sentado", xPos, this.canvas.height)
       this.ctx.restore()
     }
 

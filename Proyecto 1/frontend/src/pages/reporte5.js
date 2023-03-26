@@ -60,7 +60,7 @@ export default function Reporte5() {
     // lo primordial
     // listaDatos0 = 'pararse,10-sentarse,2'
     data.forEach((item, index) => {
-      listaDatos0 += `${item.idPomodoro} %Cumplimiento 1,${Math.round(item.porcentajeCumplimiento1)}-${item.idPomodoro} %Incumplimiento 1,${Math.round(item.porcentajeIncumplimiento1)}-${item.idPomodoro} %Penalizacion Parado 1,${Math.round(item.porcentajePenalizacionParado1)}-${item.idPomodoro} %Penalizacion Sentado 1,${Math.round(item.porcentajePenalizacionSentado1)}-${item.idPomodoro} %Cumplimiento 2,${Math.round(item.porcentajeCumplimiento2)}-${item.idPomodoro} %Incumplimiento 2,${Math.round(item.porcentajeIncumplimiento2)}-${item.idPomodoro} %Penalizacion Parado 2,${Math.round(item.porcentajePenalizacionParado2)}-${item.idPomodoro} %Penalizacion Sentado 2,${Math.round(item.porcentajePenalizacionSentado2)}-${item.idPomodoro} %Cumplimiento 3,${Math.round(item.porcentajeCumplimiento3)}-${item.idPomodoro} %Incumplimiento 3,${Math.round(item.porcentajeIncumplimiento3)}-${item.idPomodoro} %Penalizacion Parado 3,${Math.round(item.porcentajePenalizacionParado3)}-${item.idPomodoro} %Penalizacion Sentado 3,${Math.round(item.porcentajePenalizacionSentado3)}-${item.idPomodoro} %Cumplimiento 4,${Math.round(item.porcentajeCumplimiento4)}-${item.idPomodoro} %Incumplimiento 4,${Math.round(item.porcentajeIncumplimiento4)}-${item.idPomodoro} %Penalizacion Parado 4,${Math.round(item.porcentajePenalizacionParado4)}-${item.idPomodoro} %Penalizacion Sentado 4,${Math.round(item.porcentajePenalizacionSentado4)}`
+      listaDatos0 += `${item.idPomodoro} %C1,${Math.round(item.porcentajeCumplimiento1)}-${item.idPomodoro} %IC1,${Math.round(item.porcentajeIncumplimiento1)}-${item.idPomodoro} %PP1,${Math.round(item.porcentajePenalizacionParado1)}-${item.idPomodoro} %PS1,${Math.round(item.porcentajePenalizacionSentado1)}-${item.idPomodoro} %C2,${Math.round(item.porcentajeCumplimiento2)}-${item.idPomodoro} %IC2,${Math.round(item.porcentajeIncumplimiento2)}-${item.idPomodoro} %PP2,${Math.round(item.porcentajePenalizacionParado2)}-${item.idPomodoro} %PS2,${Math.round(item.porcentajePenalizacionSentado2)}-${item.idPomodoro} %C3,${Math.round(item.porcentajeCumplimiento3)}-${item.idPomodoro} %IC3,${Math.round(item.porcentajeIncumplimiento3)}-${item.idPomodoro} %PP3,${Math.round(item.porcentajePenalizacionParado3)}-${item.idPomodoro} %PS3,${Math.round(item.porcentajePenalizacionSentado3)}-${item.idPomodoro} %C4,${Math.round(item.porcentajeCumplimiento4)}-${item.idPomodoro} %IC4,${Math.round(item.porcentajeIncumplimiento4)}-${item.idPomodoro} %PP4,${Math.round(item.porcentajePenalizacionParado4)}-${item.idPomodoro} %PS4,${Math.round(item.porcentajePenalizacionSentado4)}`
       if (index !== data.length - 1) {
         listaDatos0 += '-'
       }
@@ -138,9 +138,11 @@ export default function Reporte5() {
 
     ctx.fillStyle = '#181818'
     ctx.font = '12px serif' // "bold 12px serif"
-    ctx.fillText(value, 0, 0)
+    ctx.fillText(value+": "+valorBarra+"", 0, 0)
 
     ctx.restore()
+
+    /*
 
     // ---------new name de barra inclinado
     // nombre de barra
@@ -151,7 +153,7 @@ export default function Reporte5() {
     ctx.textAlign = 'left'
     ctx.font = '12px serif' // "bold 12px serif"
     ctx.fillText(valorBarra, 2, 0)
-    ctx.restore()
+    ctx.restore()*/
   }
 
   // objeto canvas para el gráfico de barras
@@ -344,7 +346,7 @@ export default function Reporte5() {
       // numero de elementos del gráfico
       const values = Object.values(this.options.data)
 
-      this.ctx.fillText('Muestra:' + values.length, xPos, this.canvas.height)
+      this.ctx.fillText('Muestra:' + values.length+"|Cumplimiento,Incumplimiento,Penalizacion Parado,Penalizacion Sentado", xPos, this.canvas.height)
       this.ctx.restore()
     }
 
