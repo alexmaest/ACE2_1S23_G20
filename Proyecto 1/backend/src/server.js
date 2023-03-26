@@ -112,7 +112,14 @@ app.post('/api/penalty', body.text({ type: '*/*' }), async (req, res) => {
         reverseMinutes = report[0] === restTime ? 0 : workTime + restTime - parseInt(report[0]) - 1
         reverseSeconds = report[1] === '00' ? 0 : 60 - parseInt(report[1])
       }
-      const newDate = new Date(startDate.getTime() + (reverseMinutes * 60000) * parseInt(report[2]) + (reverseSeconds * 1000))
+      if (report[2] == 2) {
+        reverseMinutes += workTime + restTime
+      } else if (report[2] == 3) {
+        reverseMinutes += (workTime + restTime) * 2
+      } else if (report[2] == 4) {
+        reverseMinutes += (workTime + restTime) * 3
+      }
+      const newDate = new Date(startDate.getTime() + (reverseMinutes * 60000) + (reverseSeconds * 1000))
       const cycleType = report[3] === 'D' ? 1 : 0
       // minutos$segundos$ciclo$trabajo o descanso$penalizacion
       // 0 == trabajo, 1 == descanso
