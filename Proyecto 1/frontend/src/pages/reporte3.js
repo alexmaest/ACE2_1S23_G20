@@ -70,7 +70,6 @@ export default function Reporte3 () {
 
         const diff = moment(horaSeLevanto, 'HH:mm:ss').diff(moment(add, 'HH:mm:ss'))
         const seconds = moment.duration(diff).asSeconds()
-        console.log({ seconds })
         if (i === data.length - 1) {
           listaDatos0 += `${fechaSeSento} ${seconds}s,1-`
           listaDatos0 += `${fechaSeLevanto} ${data[i].tiempoParadoEnTrabajo}s,0`
@@ -159,7 +158,7 @@ export default function Reporte3 () {
     upperLeftCornerY,
     width,
     height,
-    color, value, puntoX,valorAnalogico
+    color, value, puntoX, valorAnalogico
   ) {
     ctx.save()
     ctx.fillStyle = color
@@ -175,9 +174,9 @@ export default function Reporte3 () {
     ctx.translate(upperLeftCornerX + 9, puntoX)
     ctx.rotate(-0.5 * Math.PI)
 
-    if(valorAnalogico==0){ctx.fillStyle = 'blue'}else{
+    if (valorAnalogico == 0) { ctx.fillStyle = 'blue' } else {
       ctx.fillStyle = 'cyan'
-      }
+    }
     ctx.font = '12px serif'// "bold 12px serif"
     ctx.fillText(value, 10, 0)
 
@@ -328,7 +327,7 @@ export default function Reporte3 () {
           barSize,
           barHeight,
           this.colors[0], array[contador], // new  le envio valor a mostrar en la barra
-          this.canvas.height - 15,val
+          this.canvas.height - 15, val
         )
         barIndex++
         contador++

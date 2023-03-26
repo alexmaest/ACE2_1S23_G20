@@ -11,7 +11,8 @@ export default function Home () {
   }
 
   const handlerSend = () => {
-    fetch(`http://${Constants.IP_ADDRESS}/api/sendRest`, {
+    console.log(`http://${Constants.IP_ADDRESS}:3555/api/sendRest`)
+    fetch(`http://${Constants.IP_ADDRESS}:3555/api/sendRest`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
