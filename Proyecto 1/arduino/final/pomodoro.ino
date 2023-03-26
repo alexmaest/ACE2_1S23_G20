@@ -380,7 +380,7 @@ void duracionPomodoro()
 {
   int valorPotenciometro = analogRead(A0);
   tiempoTrabajoDimmer = map(valorPotenciometro, 100, 800, 1, 45);
-  if (tiempoTrabajoDimmer != tdefdimmer || dimerActivo == true) {
+  if (((tiempoTrabajoDimmer != tdefdimmer) && (abs(tiempoTrabajoDimmer-tdefdimmer) >= 2 )) || dimerActivo == true) {
     dimerActivo = true;
     if (tiempoTrabajoDimmer < 1){
       tiempoTrabajo = 1;
