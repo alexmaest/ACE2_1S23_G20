@@ -1,5 +1,6 @@
 const http = require('http');
-var time = 'D45;'; // Variable donde se almacena el tiempo a configurar
+var time = ''; // Variable donde se almacena el tiempo a configurar
+var _time = '';
 
 const server = http.createServer((req, res) => {
   // Configurar el encabezado de respuesta HTTP
@@ -18,7 +19,7 @@ const server = http.createServer((req, res) => {
       let _body = body.replace("\n", "");
       let __body = _body.replace("\r", "");
       if (__body != '') {
-        // console.log(__body); // Valor enviado sobre penalizacion
+        console.log(__body); // Valor enviado sobre penalizacion
         fetch('http://localhost:3555/api/penalty', { // Enviar el valor a la pagina web
           method: 'POST',
           body: __body,
@@ -27,11 +28,21 @@ const server = http.createServer((req, res) => {
       }
     });
   } else if (req.method === 'GET') {
-    if (time != '') {
-      res.end(time); // Responde con el tiempo a configurar
-      time = '';
-    } else {
-      res.end(' '); // Responde con el tiempo a configurar
+    fetch('http://localhost:3555/api/getRest')
+    .then(response => response.json())
+    .then(data => {
+      time = data.rest;
+    })
+    
+    if(time != ''){
+      if (_time != time) {
+        res.end(time + ';'); // Responde con el tiempo a configurar
+        _time = time;
+      }else{
+        res.end(' ');
+      }
+    }else{
+      res.end(' ');
     }
   }
 });
