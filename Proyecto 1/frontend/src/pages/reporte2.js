@@ -65,7 +65,54 @@ export default function Penalizaciones () {
 
     // listaDatos0 = 'Ciclo: 1 20-03-2023,4-Ciclo:2 20-03-2023,10-...'
     for (let i = 0; i < data.length; i++) {
-      const fechaFormateada = moment(data[i].fechaInicio).format('DD/MM/YYYY HH:mm:ss')
+      let fechaFormateada
+
+      switch (data[i].ciclo) {
+        case 1:
+          fechaFormateada = moment(data[i].fechaInicio).format('DD/MM/YYYY HH:mm:ss')
+          break
+        case 2: {
+          const minutosTrabajoC1 = moment.duration(data[i].tiempoTrabajo, 'minutes')
+          const minutosDescansoC1 = moment.duration(data[i].tiempoDescanso, 'minutes')
+          fechaFormateada = moment(data[i].fechaInicio)
+            .add(minutosTrabajoC1).add(minutosDescansoC1)
+            .format('DD/MM/YYYY HH:mm:ss')
+          break
+        }
+        case 3: {
+          const minutosTrabajoC1 = moment.duration(data[i].tiempoTrabajo, 'minutes')
+          const minutosDescansoC1 = moment.duration(data[i].tiempoDescanso, 'minutes')
+
+          const minutosTrabajoC2 = moment.duration(data[i].tiempoTrabajo, 'minutes')
+          const minutosDescansoC2 = moment.duration(data[i].tiempoDescanso, 'minutes')
+
+          fechaFormateada = moment(data[i].fechaInicio)
+            .add(minutosTrabajoC1).add(minutosDescansoC1)
+            .add(minutosTrabajoC2).add(minutosDescansoC2)
+            .format('DD/MM/YYYY HH:mm:ss')
+          break
+        }
+        case 4: {
+          const minutosTrabajoC1 = moment.duration(data[i].tiempoTrabajo, 'minutes')
+          const minutosDescansoC1 = moment.duration(data[i].tiempoDescanso, 'minutes')
+
+          const minutosTrabajoC2 = moment.duration(data[i].tiempoTrabajo, 'minutes')
+          const minutosDescansoC2 = moment.duration(data[i].tiempoDescanso, 'minutes')
+
+          const minutosTrabajoC3 = moment.duration(data[i].tiempoTrabajo, 'minutes')
+          const minutosDescansoC3 = moment.duration(data[i].tiempoDescanso, 'minutes')
+
+          fechaFormateada = moment(data[i].fechaInicio)
+            .add(minutosTrabajoC1).add(minutosDescansoC1)
+            .add(minutosTrabajoC2).add(minutosDescansoC2)
+            .add(minutosTrabajoC3).add(minutosDescansoC3)
+            .format('DD/MM/YYYY HH:mm:ss')
+          break
+        }
+        default:
+          fechaFormateada = moment(data[i].fechaInicio).format('DD/MM/YYYY')
+          break
+      }
       if (i === data.length - 1) {
         listaDatos0 += `Ciclo:${data[i].ciclo} ${fechaFormateada},${data[i].penalizacionTiempoDescanso}`
       } else {
@@ -265,7 +312,7 @@ export default function Penalizaciones () {
         )
 
         // barra roja final de pomodoro========================================
-        if (array[contador].includes("Ciclo:1")) {
+        if (array[contador].includes('Ciclo:1')) {
           drawLine(
             this.ctx,
             this.options.padding + barIndex * barSize,

@@ -64,6 +64,8 @@ const queryReport1And2 = async (userId, date, time) => {
     idPomodoro,
     ciclo,
     (SELECT fechaInicio FROM Pomodoro WHERE idPomodoro = r.idPomodoro) AS fechaInicio,
+    (SELECT tiempoTrabajo FROM Pomodoro WHERE idPomodoro = r.idPomodoro) AS tiempoTrabajo,
+    (SELECT tiempoDescanso FROM Pomodoro WHERE idPomodoro = r.idPomodoro) AS tiempoDescanso,
     SUM(CASE WHEN modo = 0 THEN tiempoPenalizacion ELSE 0 END) AS penalizacionTiempoTrabajo,
     SUM(CASE WHEN modo = 1 THEN tiempoPenalizacion ELSE 0 END) AS penalizacionTiempoDescanso
     FROM Reporte r WHERE DATE_FORMAT(fechaDato, '%Y-%m-%d %H:%i:%s')
