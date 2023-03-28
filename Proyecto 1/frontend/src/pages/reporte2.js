@@ -68,14 +68,20 @@ export default function Penalizaciones () {
       let fechaFormateada
 
       switch (data[i].ciclo) {
-        case 1:
-          fechaFormateada = moment(data[i].fechaInicio).format('DD/MM/YYYY HH:mm:ss')
+        case 1: {
+          const minutosTrabajoC1 = moment.duration(data[i].tiempoTrabajo, 'minutes')
+          fechaFormateada = moment(data[i].fechaInicio)
+            .add(minutosTrabajoC1)
+            .format('DD/MM/YYYY HH:mm:ss')
           break
+        }
         case 2: {
           const minutosTrabajoC1 = moment.duration(data[i].tiempoTrabajo, 'minutes')
           const minutosDescansoC1 = moment.duration(data[i].tiempoDescanso, 'minutes')
+          const minutosTrabajosC2 = moment.duration(data[i].tiempoTrabajo, 'minutes')
           fechaFormateada = moment(data[i].fechaInicio)
             .add(minutosTrabajoC1).add(minutosDescansoC1)
+            .add(minutosTrabajosC2)
             .format('DD/MM/YYYY HH:mm:ss')
           break
         }
@@ -86,9 +92,12 @@ export default function Penalizaciones () {
           const minutosTrabajoC2 = moment.duration(data[i].tiempoTrabajo, 'minutes')
           const minutosDescansoC2 = moment.duration(data[i].tiempoDescanso, 'minutes')
 
+          const minutosTrabajoC3 = moment.duration(data[i].tiempoTrabajo, 'minutes')
+
           fechaFormateada = moment(data[i].fechaInicio)
             .add(minutosTrabajoC1).add(minutosDescansoC1)
             .add(minutosTrabajoC2).add(minutosDescansoC2)
+            .add(minutosTrabajoC3)
             .format('DD/MM/YYYY HH:mm:ss')
           break
         }
@@ -102,10 +111,13 @@ export default function Penalizaciones () {
           const minutosTrabajoC3 = moment.duration(data[i].tiempoTrabajo, 'minutes')
           const minutosDescansoC3 = moment.duration(data[i].tiempoDescanso, 'minutes')
 
+          const minutosTrabajoC4 = moment.duration(data[i].tiempoTrabajo, 'minutes')
+
           fechaFormateada = moment(data[i].fechaInicio)
             .add(minutosTrabajoC1).add(minutosDescansoC1)
             .add(minutosTrabajoC2).add(minutosDescansoC2)
             .add(minutosTrabajoC3).add(minutosDescansoC3)
+            .add(minutosTrabajoC4)
             .format('DD/MM/YYYY HH:mm:ss')
           break
         }
