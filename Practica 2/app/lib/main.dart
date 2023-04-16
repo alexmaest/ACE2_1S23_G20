@@ -17,7 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final timeToWaterController = TextEditingController();
-  final backendURL = 'http://10.0.2.2:3001';
+  final backendURL = 'http://192.168.0.27:3001';
   Map data = {};
   var settings = {
     'power': false,
@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
       Map dataSettings = data['settings'][0];
       settings['power'] = dataSettings['power'];
       settings['timeToWater'] = dataSettings['timeToWater'];
-      timeToWaterController.text = settings['timeToWater'].toString();
+      //timeToWaterController.text = settings['timeToWater'].toString();
     });
     debugPrint(settings.toString());
   }
@@ -51,9 +51,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    String powerStatus = settings['power'] == true ? 'Encendido' : 'Apagado';
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Grupo 20'),
+          title: const Text('Grupo 20 ACE2'),
           backgroundColor: Colors.indigo[900],
         ),
         body: Column(
@@ -63,8 +64,44 @@ class _HomePageState extends State<HomePage> {
                 padding: EdgeInsets.all(16.0),
                 child: Text(
                   'Sistema De Riego',
-                  style: TextStyle(fontSize: 24.0),
+                  style: TextStyle(fontSize: 22.0, color: Colors.indigo),
                 )),
+            Row(
+              children: [
+                const Padding(
+                    padding: EdgeInsets.only(left: 16.0, right: 2, top: 12),
+                    child: Text(
+                      'Estado: ',
+                      style: TextStyle(fontSize: 20.0),
+                    )),
+                Padding(
+                    padding: const EdgeInsets.only(left: 2, top: 12),
+                    child: Text(
+                      powerStatus,
+                      style: const TextStyle(
+                          fontSize: 20.0, fontWeight: FontWeight.bold),
+                    )),
+              ],
+            ),
+            Row(
+              children: [
+                const Padding(
+                    padding: EdgeInsets.only(
+                        left: 16.0, right: 2, top: 12, bottom: 12),
+                    child: Text(
+                      'Tiempo de riego: ',
+                      style: TextStyle(fontSize: 20.0),
+                    )),
+                Padding(
+                    padding:
+                        const EdgeInsets.only(left: 2, top: 12, bottom: 12),
+                    child: Text(
+                      '${settings['timeToWater']}s',
+                      style: const TextStyle(
+                          fontSize: 20.0, fontWeight: FontWeight.bold),
+                    )),
+              ],
+            ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
               ElevatedButton(
                   onPressed: () async {
@@ -80,8 +117,11 @@ class _HomePageState extends State<HomePage> {
                     debugPrint(response.body);
                   },
                   style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.green)),
+                      backgroundColor: settings['power'] == true
+                          ? MaterialStateProperty.all<Color>(
+                              const Color.fromARGB(255, 2, 167, 151))
+                          : MaterialStateProperty.all<Color>(
+                              const Color.fromARGB(255, 0, 116, 104))),
                   child: const Text('Encender')),
               ElevatedButton(
                   onPressed: () async {
@@ -97,10 +137,19 @@ class _HomePageState extends State<HomePage> {
                     debugPrint(response.body);
                   },
                   style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.red)),
+                      backgroundColor: settings['power'] == true
+                          ? MaterialStateProperty.all<Color>(
+                              const Color.fromARGB(255, 186, 11, 2))
+                          : MaterialStateProperty.all<Color>(
+                              const Color.fromARGB(255, 216, 12, 1))),
                   child: const Text('Apagar'))
             ]),
+            const Padding(
+                padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+                child: Text(
+                  'Establecer tiempo de riego',
+                  style: TextStyle(fontSize: 18.0),
+                )),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: TextField(
