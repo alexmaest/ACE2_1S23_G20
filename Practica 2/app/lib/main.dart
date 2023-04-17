@@ -21,6 +21,7 @@ const backendURL = 'http://192.168.0.27:3001';
 class _HomePageState extends State<HomePage> {
   final timeToWaterController = TextEditingController();
   final soilMoistureController = TextEditingController(text: '0');
+  bool showAlert = false;
 
   Map data = {};
   var settings = {
@@ -48,15 +49,29 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    initSocket();
     super.initState();
+    getSoilMoisture();
+    initSocket();
     getSettings();
   }
 
   @override
   void dispose() {
     timeToWaterController.dispose();
+    soilMoistureController.dispose();
+    socket.disconnected;
+    socket.dispose();
     super.dispose();
+  }
+
+  getSoilMoisture() async {
+    http.Response response =
+        await http.get(Uri.parse('$backendURL/api/realTimeData'));
+    data = json.decode(response.body);
+    setState(() {
+      soilMoistureController.text =
+          data['realTimeData'][0]['soilMoisture'].toString();
+    });
   }
 
   initSocket() {
@@ -69,16 +84,49 @@ class _HomePageState extends State<HomePage> {
     socket.onConnectError((err) => debugPrint(err));
     socket.onError((err) => debugPrint(err));
     socket.on('soilMoisture', (data) {
-      debugPrint(data.toString());
+      if (data > 80) {
+        setState(() {
+          showAlert = true;
+        });
+      }
       setState(() {
         soilMoistureController.text = data.toString();
       });
     });
   }
 
+  void dismissAlert() {
+    setState(() {
+      showAlert = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     String powerStatus = settings['power'] == true ? 'Encendido' : 'Apagado';
+    debugPrint('Alerta: $showAlert');
+
+    if (showAlert) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('Alerta'),
+                content: const Text('La humedad del suelo supera el 80%'),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        dismissAlert();
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Aceptar'))
+                ],
+              );
+            });
+      });
+    }
+
     return Scaffold(
         appBar: AppBar(
           title: const Text('Grupo 20 ACE2'),
@@ -136,13 +184,13 @@ class _HomePageState extends State<HomePage> {
                       style: TextStyle(fontSize: 20.0),
                     )),
                 Padding(
-                    padding:
-                        const EdgeInsets.only(left: 2, top: 12, bottom: 12),
-                    child: Text(
-                      '${soilMoistureController.text}%',
-                      style: const TextStyle(
-                          fontSize: 20.0, fontWeight: FontWeight.bold),
-                    )),
+                  padding: const EdgeInsets.only(left: 2, top: 12, bottom: 12),
+                  child: Text(
+                    '${soilMoistureController.text}%',
+                    style: const TextStyle(
+                        fontSize: 20.0, fontWeight: FontWeight.bold),
+                  ),
+                ),
               ],
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
