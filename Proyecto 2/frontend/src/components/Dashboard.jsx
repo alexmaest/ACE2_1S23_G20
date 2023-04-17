@@ -38,7 +38,7 @@ function Dashboard() {
 
         <div className="grid grid-cols-2 gap-6 font-chivo-mono">
           <div className="backdrop-blur-lg bg-white/30 rounded shadow-2xl basis-1/4 p-6 grid justify-items-center">
-            <p className="text-lg">Humedad</p>
+            <p className="text-lg">Humedad de Tierra</p>
             <Pie percentage={50} />
             <button
               className="rounded-full bg-green-400 hover:hover:brightness-105 px-8 py-2 "
