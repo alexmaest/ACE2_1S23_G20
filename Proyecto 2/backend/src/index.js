@@ -1,6 +1,7 @@
 const { server, io } = require('./app')
 const { connect } = require('./database')
 const soilMoistureWatcher = require('./events/soilMoisture')
+const waterLevelWatcher = require('./events/waterLevel')
 
 const PORT = process.env.PORT || 3001
 
@@ -8,6 +9,7 @@ const main = async () => {
   await connect()
   await server.listen(PORT)
   soilMoistureWatcher()
+  waterLevelWatcher()
   io.on('connection', (socket) => {
     console.log('New client connected')
     socket.on('disconnect', () => {

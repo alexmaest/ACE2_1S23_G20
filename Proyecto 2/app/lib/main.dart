@@ -21,6 +21,7 @@ const backendURL = 'http://192.168.0.27:3001';
 class _HomePageState extends State<HomePage> {
   final timeToWaterController = TextEditingController();
   final soilMoistureController = TextEditingController(text: '0');
+  final waterLevelController = TextEditingController(text: '0');
   bool showAlert = false;
 
   Map data = {};
@@ -51,6 +52,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     getSoilMoisture();
+    getWaterLevel();
     initSocket();
     getSettings();
   }
@@ -59,6 +61,7 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     timeToWaterController.dispose();
     soilMoistureController.dispose();
+    waterLevelController.dispose();
     socket.disconnected;
     socket.dispose();
     super.dispose();
@@ -71,6 +74,16 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       soilMoistureController.text =
           data['realTimeData'][0]['soilMoisture'].toString();
+    });
+  }
+
+  getWaterLevel() async {
+    http.Response response =
+        await http.get(Uri.parse('$backendURL/api/realTimeData'));
+    data = json.decode(response.body);
+    setState(() {
+      waterLevelController.text =
+          data['realTimeData'][0]['waterLevel'].toString();
     });
   }
 
@@ -91,6 +104,12 @@ class _HomePageState extends State<HomePage> {
       }
       setState(() {
         soilMoistureController.text = data.toString();
+      });
+    });
+
+    socket.on('waterLevel', (data) {
+      setState(() {
+        waterLevelController.text = data.toString();
       });
     });
   }
@@ -177,16 +196,34 @@ class _HomePageState extends State<HomePage> {
             Row(
               children: [
                 const Padding(
-                    padding: EdgeInsets.only(
-                        left: 16.0, right: 2, top: 12, bottom: 12),
+                    padding: EdgeInsets.only(left: 16.0, right: 2, top: 12),
                     child: Text(
                       'Humedad actual: ',
                       style: TextStyle(fontSize: 20.0),
                     )),
                 Padding(
-                  padding: const EdgeInsets.only(left: 2, top: 12, bottom: 12),
+                  padding: const EdgeInsets.only(left: 2, top: 12),
                   child: Text(
                     '${soilMoistureController.text}%',
+                    style: const TextStyle(
+                        fontSize: 20.0, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                const Padding(
+                    padding: EdgeInsets.only(
+                        left: 16.0, right: 2, top: 12, bottom: 12),
+                    child: Text(
+                      'Nivel de agua: ',
+                      style: TextStyle(fontSize: 20.0),
+                    )),
+                Padding(
+                  padding: const EdgeInsets.only(left: 2, top: 12, bottom: 12),
+                  child: Text(
+                    '${waterLevelController.text}%',
                     style: const TextStyle(
                         fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
