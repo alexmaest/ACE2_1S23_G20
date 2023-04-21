@@ -6,7 +6,12 @@ const app = express()
 const morgan = require('morgan')
 
 const server = require('http').createServer(app)
-const io = require('socket.io')(server)
+const io = require('socket.io')(server, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET']
+  }
+})
 
 app.use(morgan('dev'))
 app.use(cors())
