@@ -5,14 +5,14 @@
 #define echo 5
 #define trigger 6 // Instrucciones que generan el sonido para medir
 
-DHT HT(3, Type);
-DHT HT2(4, Type);
+DHT HT(4, Type);
+DHT HT2(3, Type);
 float tempC;  // Temperatura interna del invernadero
 float tempC2; // Temperatura externa del invernadero
 long duracion, distancia;
 int tiempoEncendidodeBomba = 0;
 int porcentaje = 0;   // Porcentaje de agua en el tanque
-int lecturaPorcentaje // Lectura de la humedad de la tierra
+int lecturaPorcentaje; // Lectura de la humedad de la tierra
 
 const int alturaTotal = 25; // altura total del tanque en cm
 
@@ -28,6 +28,7 @@ void setup()
   pinMode(trigger, OUTPUT);
   HT.begin();
   HT2.begin();
+  digitalWrite(2, HIGH);
 }
 
 void loop()
@@ -65,7 +66,7 @@ void leeApp()
       tiempoEncendidodeBomba = 0;
       while (c != ';')
       {
-        c = serial.read();
+        c = Serial.read();
         // Si el carácter no es un dígito, la entrada es inválida
         if (!isdigit(c) && c != ';')
         {
@@ -134,7 +135,7 @@ void alertaHumedadTierra()
   if (lecturaPorcentaje >= 80)
   {
     // se envia cadena w; indicando que la huemda es de 80% o mas
-    serial.println("w;");
+    Serial.println("w;");
   }
 }
 
