@@ -115,8 +115,8 @@ void establecerTiempodeRiego(int tiempo)
       return;
     }
     tiemporegado++;
-    // Llamar a la función "enviarInformacioApp()" cada 2 segundos
-    if (tiemporegado % 2 == 0)
+    // Llamar a la función "enviarInformacioApp()" cada 4 segundos
+    if (tiemporegado % 4 == 0)
     {
       enviarInformacioApp();
     }
