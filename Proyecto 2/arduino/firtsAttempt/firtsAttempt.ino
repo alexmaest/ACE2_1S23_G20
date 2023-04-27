@@ -37,6 +37,8 @@ void loop()
   if (tiempoEncendidodeBomba > 0)
   {
     establecerTiempodeRiego(tiempoEncendidodeBomba);
+    //se reestablece el tiempo de encendido de la bomba a 0
+    tiempoEncendidodeBomba = 0;
   }
   else
   {
