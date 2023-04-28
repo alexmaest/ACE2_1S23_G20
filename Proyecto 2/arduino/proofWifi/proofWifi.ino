@@ -4,7 +4,8 @@
 
 const char* ssid = "CLARO1_0FD07F";//Datos de la red local
 const char* password = "62525svoTH";
-const char* serverUrl = "http://192.168.1.14:3556";
+const char* postUrl = "http://192.168.1.14:3556/sensor";
+const char* getUrl = "http://192.168.1.14:3556/sensor";
 
 WiFiClient client;
 HTTPClient http;
@@ -25,14 +26,14 @@ void loop() {
      if (Serial.available() > 0) {
       String data = Serial.readStringUntil(';');
       delay(500);
-      http.begin(client, serverUrl);
+      http.begin(client, postUrl);
       http.addHeader("Content-Type", "application/x-www-form-urlencoded");
       http.POST(data);
       http.end();
     }
     if (currentTime - lastRequestTime >= 3000) {
       lastRequestTime = currentTime;
-      http.begin(client, serverUrl);
+      http.begin(client, getUrl);
       int httpCode = http.GET();
       if (httpCode > 0) {
         String payload = http.getString();
