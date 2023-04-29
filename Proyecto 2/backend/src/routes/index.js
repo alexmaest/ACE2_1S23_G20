@@ -3,8 +3,7 @@ const { Router } = require('express')
 const router = Router()
 const Setting = require('../models/Setting')
 const RealTimeData = require('../models/RealTimeData')
-
-const Dashboard = require('../models/Dashboard')
+const SensorsData = require('../models/SensorsData')
 
 router.get('/api/settings', async (req, res) => {
   const settings = await Setting.find()
@@ -30,55 +29,42 @@ router.post('/api/realTimeData/update', async (req, res) => {
 })
 
 router.get('/api/realTimeData', async (req, res) => {
-  const realTimeData = await Dashboard.find()
-  console.log(realTimeData)
+  const realTimeData = await RealTimeData.find()
   res.json({ realTimeData })
 })
 
-//javier-----------------
+// javier-----------------
 router.post('/api/setDashboard', async (req, res) => {
-  const data = req.body;
-  //console.log(data);
+  const data = req.body
+  // console.log(data);
+  // obtener datos de cadena recibida------------------------------------------------
+  // const regex = /h\$(\d+)\$\*\$p\$(\d+)\$\*\$ti\$([\d.]+)\$\*\$te\$([\d.]+)\$\*/
+  // const nuevaCadena = data.replace(regex, '$1,$2,$3,$4')
+  // console.log(nuevaCadena) // "52,28,23.00,24.10"
+  // const valores = nuevaCadena.split(',')
 
-  //conectar con mongoDB y la coleccion dashboards------------------------------------
-  let dashboard = await Dashboard.findOne();
-
-  // Si no existe, creamos uno nuevo y si ya existe lo sobre-escribimos
-  if (!dashboard) {
-    dashboard = new Dashboard();
+  let splittedData = data.split('$')
+  splittedData = splittedData.filter((item) => item !== '')
+  splittedData = splittedData.filter((item, index) => index % 2 !== 0)
+  const sensorsData = {
+    externalTemperature: Number(splittedData[3]),
+    internalTemperature: Number(splittedData[2]),
+    soilMoisture: Number(splittedData[0]),
+    waterLevel: Number(splittedData[1])
   }
 
-  //obtener datos de cadena recibida------------------------------------------------
-  const regex = /h\$(\d+)\$\*\$p\$(\d+)\$\*\$ti\$([\d.]+)\$\*\$te\$([\d.]+)\$\*/;
-  const nuevaCadena = data.replace(regex, '$1,$2,$3,$4');
-  console.log(nuevaCadena); // "52,28,23.00,24.10"
+  try {
+    await SensorsData.findOneAndUpdate({}, { $push: { data: sensorsData } }, { upsert: true })
+  } catch (error) {
+    res.json({ message: 'Error saving data' })
+  }
 
-  const valores = nuevaCadena.split(",");
-  console.log(valores); // ["52", "28", "23.00", "24.10"]
-
-
-  // Actualizamos los valores---------------------------------------------------
-  dashboard.Hume = parseFloat(valores[0])
-  dashboard.PAgua = parseFloat(valores[1])
-  dashboard.TempI = parseFloat(valores[2])
-  dashboard.TempE = parseFloat(valores[3])
-
-  /*
-  dashboard.TempE = 55
-  dashboard.TempI = 66;
-  dashboard.Hume = 45;
-  dashboard.PAgua = 69;
-  */
-
-  // Guardamos los cambios en la base de datos ---------------------------------------------------
-  await dashboard.save();
-  console.log('Dashboard actualizado:', dashboard);
-  res.send('POST request received and processed!!!.');
+  res.json({ message: 'Data Saved!' })
 })
 
-
-
-
-
+router.get('/api/sensorsData', async (req, res) => {
+  const sensorsData = await SensorsData.find()
+  res.json({ sensorsData })
+})
 
 module.exports = router
