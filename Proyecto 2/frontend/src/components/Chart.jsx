@@ -67,8 +67,8 @@ function Chart({ name }) {
     startDate: "",
     endDate: ""
   });
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+  const [startTime, setStartTime] = useState("00:00");
+  const [endTime, setEndTime] = useState("00:00");
   const [data, setData] = useState({
     labels: [],
     datasets: [
@@ -134,9 +134,21 @@ function Chart({ name }) {
     }
   }
 
+
+
+
+
   const getFilteredData = async () => {
+
+    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+    console.log(value.startDate+" "+value.endDate+" "+startTime+" "+endTime+" "+name)
+
     try {
-      let { data } = await axios.get(GET_FILTERED_DATA, {
+
+      const labels = []
+      const values = []
+
+      let { data } = await axios.post(GET_FILTERED_DATA, {
         data: {
           startDate: value.startDate,
           endDate: value.endDate,
@@ -147,6 +159,48 @@ function Chart({ name }) {
       });
 
       console.log(data);
+      //----------------------------------------------------------
+      if (name === "Temperatura Externa") {
+         data.map((item) => {
+          console.log(item)
+          labels.push(new Date(item.date).toLocaleString());
+          values.push(item.externalTemperature);
+        });
+      } else if (name === "Temperatura Interna") {
+        data.map((item) => {
+          console.log(item)
+          labels.push(new Date(item.date).toLocaleString());
+          values.push(item.internalTemperature);
+        });
+      } else if (name === "Humedad de Tierra") {
+        data.map((item) => {
+          console.log(item)
+          labels.push(new Date(item.date).toLocaleString());
+          values.push(item.soilMoisture);
+        });
+      } else if (name === "Porcentaje de Agua") {
+        data.map((item) => {
+          console.log(item)
+          labels.push(new Date(item.date).toLocaleString());
+          values.push(item.waterLevel/*+100*/);
+        });
+      } else {
+        labels.push("1")
+        values.push(1)
+        labels.push("2")
+        values.push(0)
+      }
+      setData({
+        labels,
+        datasets: [
+          {
+            data: values,
+            borderColor: 'rgb(0, 0, 0)',
+            backgroundColor: 'rgb(0, 0, 0)',
+          },
+        ],
+      });
+      //----------------------------------------------------------
     } catch (error) {
       console.log(error);
     }

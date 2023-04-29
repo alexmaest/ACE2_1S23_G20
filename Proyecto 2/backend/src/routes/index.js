@@ -67,4 +67,82 @@ router.get('/api/sensorsData', async (req, res) => {
   res.json({ sensorsData })
 })
 
+
+
+//filtrado de fechas------------------------------------------------
+router.post('/api/filteredData', async (req, res) => {
+
+  try {
+
+    console.log(req.body.data)
+    const { startDate, endDate, startTime, endTime, name } = req.body.data;
+    console.log("::::::::::::::::::::::")
+    console.log(startDate + " " + endDate + " " + startTime + " " + endTime + " " + name)
+    //----------------------------------
+
+    // Verifica si se proporcionó fecha de inicio
+    if (startDate !== "") {
+      const partesFecha = startDate.split('-');
+      fechaInicio = new Date(Date.UTC(partesFecha[0], partesFecha[1] - 1, partesFecha[2]));
+      fechaInicio.setHours(0, 0, 0, 0);//ojo
+      console.log(">>" + fechaInicio)
+    } else {
+      let info = await SensorsData.find({}, { _id: 0 }).limit(1);
+      fechaInicio = new Date(Date.UTC(info[0].date));
+      fechaInicio.setHours(0, 0, 0, 0);
+      console.log(fechaInicio)
+    }
+
+    // Verifica si se proporcionó fecha de fin
+    if (endDate !== "") {
+      const partesFecha = endDate.split('-');
+      fechaFin = new Date(Date.UTC(partesFecha[0], partesFecha[1] - 1, partesFecha[2]));
+      fechaFin.setHours(17, 59, 59, 999);//ojo
+      console.log(">>" + fechaFin)
+    } else {
+      fechaFin = new Date(Date.UTC());
+      fechaFin.setHours(23, 59, 59, 999);
+      console.log(fechaFin)
+    }
+
+    //------------------------------------------------------------------------
+    /*const fechaInicio = new Date(Date.UTC(2023, 3, 28, 0, 0, 0));
+    const fechaFin = new Date(Date.UTC(2023, 3, 29, 23, 59, 59, 999));*/
+
+    const data = await SensorsData.find({
+      "data.date": {
+        $gte: fechaInicio,
+        $lte: fechaFin
+      }
+    }, { _id: 0 });
+
+
+    console.log("..................");
+    console.log(data);
+    //console.log(data[0].data);
+
+    if (data.length === 0) {
+      return res.status(404).json({
+        mensaje: "No se encontraron datos para las fechas especificadas."
+      });
+    }
+
+    //res.json(data);
+    res.json(data[0].data);
+
+    //res.json({ message: 'filtrado ok' })
+
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      externalTemperature: 0,
+      internalTemperature: 0,
+      soilMoisture: 0,
+      waterLevel: 0,
+      date: Date.now
+    });
+  }
+})
+
 module.exports = router
