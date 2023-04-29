@@ -30,7 +30,8 @@ router.post('/api/realTimeData/update', async (req, res) => {
 })
 
 router.get('/api/realTimeData', async (req, res) => {
-  const realTimeData = await RealTimeData.find()
+  const realTimeData = await Dashboard.find()
+  console.log(realTimeData)
   res.json({ realTimeData })
 })
 

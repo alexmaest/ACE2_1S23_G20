@@ -17,20 +17,24 @@ function Dashboard() {
 
   const getRealTimeData = async () => {
     try {
-      let { data } = await axios.get(GET_REAL_TIME_DATA);
-      data = data.realTimeData[0];
+      let result = await axios.get(GET_REAL_TIME_DATA);
+      var data = result.data.realTimeData[0]
+      console.log("+++++++++++++++++++++++++++++++++++++++++++++")
       console.log(data);
-      setExternalTemperature(data.externalTemperature);
-      setInternalTemperature(data.internalTemperature);
-      setHumidity(data.soilMoisture);
-      setWaterPercentage(data.waterLevel);
+      setExternalTemperature(data.TempE);
+      setInternalTemperature(data.TempI);
+      setHumidity(data.Hume);
+      setWaterPercentage(data.PAgua);
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    getRealTimeData();
+    const interval = setInterval(() => {
+      getRealTimeData();
+    }, 2000);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
