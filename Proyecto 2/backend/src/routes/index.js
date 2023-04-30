@@ -44,19 +44,29 @@ router.post('/api/setDashboard', async (req, res) => {
   // const valores = nuevaCadena.split(',')
 
   let splittedData = data.split('$')
+  const values = []
   splittedData = splittedData.filter((item) => item !== '')
-  splittedData = splittedData.filter((item, index) => index % 2 !== 0)
+  let indiceValue = 0
+  for (let i = 0; i < splittedData.length; i++) {
+    const element = splittedData[i]
+    if (!isNaN(parseFloat(element))) {
+      values[indiceValue] = parseFloat(element)
+      indiceValue++
+    }
+  }
   const sensorsData = {
-    externalTemperature: Number(splittedData[3]),
-    internalTemperature: Number(splittedData[2]),
-    soilMoisture: Number(splittedData[0]),
-    waterLevel: Number(splittedData[1])
+    externalTemperature: Number(values[3]),
+    internalTemperature: Number(values[2]),
+    soilMoisture: Number(values[0]),
+    waterLevel: Number(values[1])
   }
 
   try {
     await SensorsData.findOneAndUpdate({}, { $push: { data: sensorsData } }, { upsert: true })
   } catch (error) {
+    console.log(error)
     res.json({ message: 'Error saving data' })
+    return
   }
 
   res.json({ message: 'Data Saved!' })
@@ -67,9 +77,20 @@ router.get('/api/sensorsData', async (req, res) => {
   res.json({ sensorsData })
 })
 
+router.get('/api/settings/arduino', async (req, res) => {
+  const settings = await Setting.find()
 
+  const { power, timeToWater } = settings[0]
+  let response
+  if (power) {
+    response = `E${timeToWater};`
+  } else {
+    response = 'A;'
+  }
+  res.status(200).send(response)
+})
 
-//filtrado de fechas------------------------------------------------
+/* //filtrado de fechas------------------------------------------------
 router.post('/api/filteredData', async (req, res) => {
 
   try {
@@ -106,8 +127,6 @@ router.post('/api/filteredData', async (req, res) => {
     }
 
     //------------------------------------------------------------------------
-    /*const fechaInicio = new Date(Date.UTC(2023, 3, 28, 0, 0, 0));
-    const fechaFin = new Date(Date.UTC(2023, 3, 29, 23, 59, 59, 999));*/
 
     const data = await SensorsData.find({
       "data.date": {
@@ -115,7 +134,6 @@ router.post('/api/filteredData', async (req, res) => {
         $lte: fechaFin
       }
     }, { _id: 0 });
-
 
     console.log("..................");
     console.log(data);
@@ -132,7 +150,6 @@ router.post('/api/filteredData', async (req, res) => {
 
     //res.json({ message: 'filtrado ok' })
 
-
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -143,6 +160,6 @@ router.post('/api/filteredData', async (req, res) => {
       date: Date.now
     });
   }
-})
+}) */
 
 module.exports = router
