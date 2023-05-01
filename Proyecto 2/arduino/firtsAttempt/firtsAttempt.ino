@@ -14,7 +14,7 @@ int tiempoEncendidodeBomba = 0;
 int porcentaje = 0;   // Porcentaje de agua en el tanque
 int lecturaPorcentaje; // Lectura de la humedad de la tierra
 
-const int alturaTotal = 23; // altura total del tanque en cm
+const int alturaTotal = 22; // altura total del tanque en cm
 
 unsigned long ultimoEnvio = 0; // Variable para almacenar el tiempo del último envío de datos
 void setup()
@@ -129,7 +129,7 @@ void alertaHumedadTierra()
   // Medir la humedad de la tierra
   int lectura = analogRead(A0);
   // Convertir la lectura a porcentaje
-  lecturaPorcentaje = map(lectura, 1023, 0, 0, 100);
+  lecturaPorcentaje = map(lectura, 1023, 400, 0, 100);
   // se enviara la cadena h+lecturaPorcentaje+; para indicar que la humedad es de x%
   // ejemplo: h50; -> la humedad es de 50%
   // Serial.println("h"+lecturaPorcentaje+";");
@@ -173,9 +173,12 @@ void nivelDeAguaEnTanque()
   digitalWrite(trigger, LOW);
   duracion = pulseIn(echo, HIGH);
   distancia = (duracion / 2) / 29;
-
   // Calcular el porcentaje de agua en el tanque
-  porcentaje = (alturaTotal - (distancia+5)) * 100 / alturaTotal;
+  float value = alturaTotal - distancia;
+  float value2 = alturaTotal - 5;
+  float value3 = value / value2;
+  float value4 = value3 * 100;
+  porcentaje = value4;
   if (porcentaje < 0)
   {
     porcentaje = 0;
