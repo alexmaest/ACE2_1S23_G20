@@ -69,6 +69,13 @@ router.post('/api/setDashboard', async (req, res) => {
     return
   }
 
+  try {
+    await RealTimeData.findOneAndUpdate({}, { externalTemperature: sensorsData.externalTemperature, internalTemperature: sensorsData.internalTemperature, soilMoisture: sensorsData.soilMoisture, waterLevel: sensorsData.waterLevel }, { upsert: true })
+  } catch (error) {
+    console.log(error)
+    res.json({ message: 'Error saving data' })
+  }
+
   res.json({ message: 'Data Saved!' })
 })
 
