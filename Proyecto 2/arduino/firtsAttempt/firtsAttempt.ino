@@ -130,15 +130,25 @@ void alertaHumedadTierra()
   int lectura = analogRead(A0);
   // Convertir la lectura a porcentaje
   lecturaPorcentaje = map(lectura, 1023, 400, 0, 100);
+  if (lecturaPorcentaje < 0)
+  {
+    lecturaPorcentaje = 0;
+  }
+  if (lecturaPorcentaje > 100)
+  {
+    lecturaPorcentaje = 100;
+  }
+
+  
   // se enviara la cadena h+lecturaPorcentaje+; para indicar que la humedad es de x%
   // ejemplo: h50; -> la humedad es de 50%
   // Serial.println("h"+lecturaPorcentaje+";");
   // Si la humedad es mayor o igual a 80%
-  if (lecturaPorcentaje >= 80)
-  {
-    // se envia cadena w; indicando que la huemda es de 80% o mas
-    Serial.println("w;");
-  }
+  //if (lecturaPorcentaje >= 80)
+  //{
+  //  // se envia cadena w; indicando que la huemda es de 80% o mas
+  //  //Serial.println("w;");
+  //}
 }
 
 // Metodo que se encarga de apagar la bomba de agua en cualquier momento
