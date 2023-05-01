@@ -13,6 +13,7 @@ long duracion, distancia;
 int tiempoEncendidodeBomba = 0;
 int porcentaje = 0;   // Porcentaje de agua en el tanque
 int lecturaPorcentaje; // Lectura de la humedad de la tierra
+int bomba = 0;        // Estado de la bomba de agua
 
 const int alturaTotal = 22; // altura total del tanque en cm
 
@@ -43,7 +44,7 @@ void loop()
   else
   {
     unsigned long tiempoActual = millis(); // Obtener el tiempo actual
-    if (tiempoActual - ultimoEnvio >= 4000)
+    if (tiempoActual - ultimoEnvio >= 2000)
     {
       enviarInformacioApp();
       ultimoEnvio = tiempoActual;
@@ -91,6 +92,8 @@ void encenderBombaAgua()
   digitalWrite(2, LOW);
   // Esperar 1 segundo
   delayMillis(100);
+  //estado de la bomba de agua
+  bomba = 1;
 }
 
 void apagarBombaAgua()
@@ -99,6 +102,8 @@ void apagarBombaAgua()
   digitalWrite(2, HIGH);
   // Esperar 1 segundo
   delayMillis(100);
+  //estado de la bomba de agua
+  bomba = 0;
 }
 
 void establecerTiempodeRiego(int tiempo)
@@ -116,7 +121,7 @@ void establecerTiempodeRiego(int tiempo)
     }
     tiemporegado++;
     // Llamar a la función "enviarInformacioApp()" cada 4 segundos
-    if (tiemporegado % 4 == 0)
+    if (tiemporegado % 2 == 0)
     {
       enviarInformacioApp();
     }
@@ -225,11 +230,12 @@ void enviarInformacioApp()
   cadena = "h$" + String(lecturaPorcentaje) + "$*$";   // cadena de humedad
   cadena = cadena + "p$" + String(porcentaje) + "$*$"; // cadena de porcentaje
   cadena = cadena + "ti$" + String(tempC) + "$*$";     // cadena de temperatura interna
-  cadena = cadena + "te$" + String(tempC2) + "$*$;";   // cadena de temperatura externa
+  cadena = cadena + "te$" + String(tempC2) + "$*$";   // cadena de temperatura externa
+  cadena = cadena + "b$" + String(bomba) + "$*$;";     // cadena de estado de la bomba
   Serial.println(cadena);
   delayMillis(400);
-  // h$[valor de lecturaPorcentaje]$*$p$[valor de porcentaje]$*$ti$[valor de tempC]$*$te$[valor de tempC2]$*$
-  // ejemplo: h$50$*$p$50$*$ti$30$*$te$40$*$;
+  // h$[valor de lecturaPorcentaje]$*$p$[valor de porcentaje]$*$ti$[valor de tempC]$*$te$[valor de tempC2]$*$b$[valor de bomba]$*$;
+  // ejemplo: h$50$*$p$50$*$ti$30$*$te$40$*$b$1$*$;
 }
 
 void delayMillis(int tiempo)
