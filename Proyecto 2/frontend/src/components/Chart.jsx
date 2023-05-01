@@ -12,6 +12,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import zoomPlugin from 'chartjs-plugin-zoom';
 
 import axios from "../api/axios";
 
@@ -22,7 +23,8 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  zoomPlugin
 );
 
 ChartJS.defaults.color = 'black';
@@ -45,6 +47,21 @@ const options = {
         size: 20,
       },
     },
+    zoom: {
+      pan: {
+        enabled: true,
+        mode: 'x'
+      },
+      zoom: {
+        pinch: {
+          enabled: true       // Enable pinch zooming
+        },
+        wheel: {
+          enabled: true       // Enable wheel zooming
+        },
+        mode: 'x',
+      }
+    }
   },
   scales: {
     x: {
@@ -134,14 +151,10 @@ function Chart({ name }) {
     }
   }
 
-
-
-
-
   const getFilteredData = async () => {
 
     console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-    console.log(value.startDate+" "+value.endDate+" "+startTime+" "+endTime+" "+name)
+    console.log(value.startDate + " " + value.endDate + " " + startTime + " " + endTime + " " + name)
 
     try {
 
@@ -161,7 +174,7 @@ function Chart({ name }) {
       console.log(data);
       //----------------------------------------------------------
       if (name === "Temperatura Externa") {
-         data.map((item) => {
+        data.map((item) => {
           console.log(item)
           labels.push(new Date(item.date).toLocaleString());
           values.push(item.externalTemperature);
@@ -233,7 +246,7 @@ function Chart({ name }) {
           >Regresar</button>
         </div>
         <div className="w-full flex justify-center">
-          <Line options={options} data={data} className="backdrop-blur-lg bg-white/30 rounded shadow-2xl p-4" />
+          <Line options={options} data={data} className="max-w-11/12 backdrop-blur-lg bg-white/30 rounded shadow-2xl p-4 overflow-x-auto" />
         </div>
         <div className="flex justify-evenly font-chivo-mono">
           <div className="basis-1/6">
