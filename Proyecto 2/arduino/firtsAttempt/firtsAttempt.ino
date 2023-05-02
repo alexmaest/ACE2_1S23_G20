@@ -1,5 +1,6 @@
 #include <DHT.h>
 #include <DHT_U.h>
+#include <math.h>
 
 #define Type DHT11
 #define echo 5
@@ -13,8 +14,9 @@ long duracion, distancia;
 int tiempoEncendidodeBomba = 0;
 int porcentaje = 0;   // Porcentaje de agua en el tanque
 int lecturaPorcentaje; // Lectura de la humedad de la tierra
+int bomba = 0;        // Estado de la bomba de agua
 
-const int alturaTotal = 25; // altura total del tanque en cm
+const int alturaTotal = 22; // altura total del tanque en cm
 
 unsigned long ultimoEnvio = 0; // Variable para almacenar el tiempo del último envío de datos
 void setup()
@@ -43,7 +45,7 @@ void loop()
   else
   {
     unsigned long tiempoActual = millis(); // Obtener el tiempo actual
-    if (tiempoActual - ultimoEnvio >= 4000)
+    if (tiempoActual - ultimoEnvio >= 2000)
     {
       enviarInformacioApp();
       ultimoEnvio = tiempoActual;
@@ -91,6 +93,8 @@ void encenderBombaAgua()
   digitalWrite(2, LOW);
   // Esperar 1 segundo
   delayMillis(100);
+  //estado de la bomba de agua
+  bomba = 1;
 }
 
 void apagarBombaAgua()
@@ -99,6 +103,8 @@ void apagarBombaAgua()
   digitalWrite(2, HIGH);
   // Esperar 1 segundo
   delayMillis(100);
+  //estado de la bomba de agua
+  bomba = 0;
 }
 
 void establecerTiempodeRiego(int tiempo)
@@ -116,7 +122,7 @@ void establecerTiempodeRiego(int tiempo)
     }
     tiemporegado++;
     // Llamar a la función "enviarInformacioApp()" cada 4 segundos
-    if (tiemporegado % 4 == 0)
+    if (tiemporegado % 2 == 0)
     {
       enviarInformacioApp();
     }
@@ -129,15 +135,22 @@ void alertaHumedadTierra()
   // Medir la humedad de la tierra
   int lectura = analogRead(A0);
   // Convertir la lectura a porcentaje
-  lecturaPorcentaje = map(lectura, 1023, 0, 0, 100);
-  // se enviara la cadena h+lecturaPorcentaje+; para indicar que la humedad es de x%
-  // ejemplo: h50; -> la humedad es de 50%
-  // Serial.println("h"+lecturaPorcentaje+";");
-  // Si la humedad es mayor o igual a 80%
-  if (lecturaPorcentaje >= 80)
+  int lecturaP = map(lectura, 1023, 400, 0, 100);
+  //validar que no sea NaN
+  if (isnan(lecturaP))
   {
-    // se envia cadena w; indicando que la huemda es de 80% o mas
-    Serial.println("w;");
+    return;
+  }else{
+    lecturaPorcentaje = lecturaP;
+  }
+
+  if (lecturaPorcentaje < 0)
+  {
+    lecturaPorcentaje = 0;
+  }
+  if (lecturaPorcentaje > 100)
+  {
+    lecturaPorcentaje = 100;
   }
 }
 
@@ -173,9 +186,20 @@ void nivelDeAguaEnTanque()
   digitalWrite(trigger, LOW);
   duracion = pulseIn(echo, HIGH);
   distancia = (duracion / 2) / 29;
-
   // Calcular el porcentaje de agua en el tanque
-  porcentaje = (alturaTotal - distancia) * 100 / alturaTotal;
+  float value = alturaTotal - distancia;
+  float value2 = alturaTotal - 5;
+  float value3 = value / value2;
+  float value4 = value3 * 100;
+  
+  //validar que no sea NaN
+  if (isnan(value4))
+  {
+    return;
+  }else{
+    porcentaje = value4;
+  }
+
   if (porcentaje < 0)
   {
     porcentaje = 0;
@@ -189,7 +213,14 @@ void nivelDeAguaEnTanque()
 void temperaturaInterna()
 {
   // Medir la temperatura interna
-  tempC = HT.readTemperature();
+  int tempCl = HT.readTemperature();
+  //validar que no sea NaN
+  if (isnan(tempCl))
+  {
+    return;
+  }else{
+    tempC = tempCl;
+  }
   // Enviar la temperatura interna por la comunicación serial
   // Serial.println("ti" + String(tempC) + ";");
 }
@@ -197,7 +228,15 @@ void temperaturaInterna()
 void temperaturaExterna()
 {
   // Medir la temperatura externa
-  tempC2 = HT2.readTemperature();
+  int tempC2l = HT2.readTemperature();
+  //validar que no sea NaN
+  if (isnan(tempC2l))
+  {
+    return;
+  }else{
+    tempC2 = tempC2l;
+  }
+
   // Enviar la temperatura externa por la comunicación serial
   // Serial.println("te" + String(tempC2) + ";");
 }
@@ -209,14 +248,15 @@ void enviarInformacioApp()
   temperaturaInterna();  // aca se esta enviando la temperatura interna
   temperaturaExterna();  // aca se esta enviando la temperatura externa
   String cadena = "";
-  cadena = "h$" + String(lecturaPorcentaje) + "$*$";   // cadena de humedad
-  cadena = cadena + "p$" + String(porcentaje) + "$*$"; // cadena de porcentaje
-  cadena = cadena + "ti$" + String(tempC) + "$*$";     // cadena de temperatura interna
-  cadena = cadena + "te$" + String(tempC2) + "$*$;";   // cadena de temperatura externa
+  cadena = String(lecturaPorcentaje) + "$";   // cadena de humedad
+  cadena = String(porcentaje) + "$"; // cadena de porcentaje
+  cadena = String(tempC) + "$";     // cadena de temperatura interna
+  cadena = String(tempC2) + "$";   // cadena de temperatura externa
+  cadena = String(bomba) + ";";     // cadena de estado de la bomba
   Serial.println(cadena);
   delayMillis(400);
-  // h$[valor de lecturaPorcentaje]$*$p$[valor de porcentaje]$*$ti$[valor de tempC]$*$te$[valor de tempC2]$*$
-  // ejemplo: h$50$*$p$50$*$ti$30$*$te$40$*$;
+  // porcentajehumedad$porcentajetanque$temperaturainterna$temperaturaexterna$estadoBomba;
+  //ejemplo: 50$50$25$30$1;
 }
 
 void delayMillis(int tiempo)

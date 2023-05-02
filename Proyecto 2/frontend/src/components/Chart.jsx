@@ -7,11 +7,13 @@ import {
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend,
 } from 'chart.js';
-import { Line } from 'react-chartjs-2';
+import { Line, Bar } from 'react-chartjs-2';
+import zoomPlugin from 'chartjs-plugin-zoom';
 
 import axios from "../api/axios";
 
@@ -20,9 +22,11 @@ ChartJS.register(
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  zoomPlugin
 );
 
 ChartJS.defaults.color = 'black';
@@ -45,6 +49,21 @@ const options = {
         size: 20,
       },
     },
+    zoom: {
+      pan: {
+        enabled: true,
+        mode: 'x'
+      },
+      zoom: {
+        pinch: {
+          enabled: true       // Enable pinch zooming
+        },
+        wheel: {
+          enabled: true       // Enable wheel zooming
+        },
+        mode: 'x',
+      }
+    }
   },
   scales: {
     x: {
@@ -114,18 +133,25 @@ function Chart({ name }) {
           values.push(item.waterLevel);
         });
       } else {
-        labels.push("1")
-        values.push(1)
-        labels.push("2")
-        values.push(0)
+        data.sensorsData[0].data.map((item) => {
+          labels.push(new Date(item.date).toLocaleString());
+          if (item.isPumpOn) {
+            values.push(1);
+          } else {
+            values.push(0.005);
+          }
+        });
       }
       setData({
         labels,
         datasets: [
           {
+            barPercentage: 1.0,
+            categoryPercentage: 1.0,
             data: values,
-            borderColor: 'rgb(0, 0, 0)',
-            backgroundColor: 'rgb(0, 0, 0)',
+            borderColor: 'rgb(0, 21, 36)',
+            borderWidth: 2,
+            backgroundColor: 'rgba(0, 21, 36, 0.2)',
           },
         ],
       });
@@ -134,14 +160,10 @@ function Chart({ name }) {
     }
   }
 
-
-
-
-
   const getFilteredData = async () => {
 
     console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-    console.log(value.startDate+" "+value.endDate+" "+startTime+" "+endTime+" "+name)
+    console.log(value.startDate + " " + value.endDate + " " + startTime + " " + endTime + " " + name)
 
     try {
 
@@ -161,34 +183,34 @@ function Chart({ name }) {
       console.log(data);
       //----------------------------------------------------------
       if (name === "Temperatura Externa") {
-         data.map((item) => {
-          console.log(item)
+        data.map((item) => {
           labels.push(new Date(item.date).toLocaleString());
           values.push(item.externalTemperature);
         });
       } else if (name === "Temperatura Interna") {
         data.map((item) => {
-          console.log(item)
           labels.push(new Date(item.date).toLocaleString());
           values.push(item.internalTemperature);
         });
       } else if (name === "Humedad de Tierra") {
         data.map((item) => {
-          console.log(item)
           labels.push(new Date(item.date).toLocaleString());
           values.push(item.soilMoisture);
         });
       } else if (name === "Porcentaje de Agua") {
         data.map((item) => {
-          console.log(item)
           labels.push(new Date(item.date).toLocaleString());
-          values.push(item.waterLevel/*+100*/);
+          values.push(item.waterLevel);
         });
       } else {
-        labels.push("1")
-        values.push(1)
-        labels.push("2")
-        values.push(0)
+        data.map((item) => {
+          labels.push(new Date(item.date).toLocaleString());
+          if (item.isPumpOn) {
+            values.push(1);
+          } else {
+            values.push(0.005);
+          }
+        });
       }
       setData({
         labels,
@@ -233,7 +255,10 @@ function Chart({ name }) {
           >Regresar</button>
         </div>
         <div className="w-full flex justify-center">
-          <Line options={options} data={data} className="backdrop-blur-lg bg-white/30 rounded shadow-2xl p-4" />
+          {name !== "Periodo de Activación de la Bomba"
+            ? <Line options={options} data={data} className="max-w-11/12 backdrop-blur-lg bg-white/30 rounded shadow-2xl p-4 overflow-x-auto" />
+            : <Bar options={options} data={data} className="max-w-11/12 backdrop-blur-lg bg-white/30 rounded shadow-2xl p-4 overflow-x-auto" />
+          }
         </div>
         <div className="flex justify-evenly font-chivo-mono">
           <div className="basis-1/6">

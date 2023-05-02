@@ -36,29 +36,13 @@ router.get('/api/realTimeData', async (req, res) => {
 // javier-----------------
 router.post('/api/setDashboard', async (req, res) => {
   const data = req.body
-  // console.log(data);
-  // obtener datos de cadena recibida------------------------------------------------
-  // const regex = /h\$(\d+)\$\*\$p\$(\d+)\$\*\$ti\$([\d.]+)\$\*\$te\$([\d.]+)\$\*/
-  // const nuevaCadena = data.replace(regex, '$1,$2,$3,$4')
-  // console.log(nuevaCadena) // "52,28,23.00,24.10"
-  // const valores = nuevaCadena.split(',')
-
-  let splittedData = data.split('$')
-  const values = []
-  splittedData = splittedData.filter((item) => item !== '')
-  let indiceValue = 0
-  for (let i = 0; i < splittedData.length; i++) {
-    const element = splittedData[i]
-    if (!isNaN(parseFloat(element))) {
-      values[indiceValue] = parseFloat(element)
-      indiceValue++
-    }
-  }
+  const splittedData = data.split('$')
   const sensorsData = {
-    externalTemperature: Number(values[3]),
-    internalTemperature: Number(values[2]),
-    soilMoisture: Number(values[0]),
-    waterLevel: Number(values[1])
+    externalTemperature: Number(splittedData[3]),
+    internalTemperature: Number(splittedData[2]),
+    soilMoisture: Number(splittedData[0]),
+    waterLevel: Number(splittedData[1]),
+    isPumpOn: Number(splittedData[4]) === 1
   }
 
   try {
@@ -69,6 +53,12 @@ router.post('/api/setDashboard', async (req, res) => {
     return
   }
 
+  try {
+    await RealTimeData.findOneAndUpdate({}, { externalTemperature: sensorsData.externalTemperature, internalTemperature: sensorsData.internalTemperature, soilMoisture: sensorsData.soilMoisture, waterLevel: sensorsData.waterLevel }, { upsert: true })
+  } catch (error) {
+    console.log(error)
+    res.json({ message: 'Error saving data' })
+  }
   res.json({ message: 'Data Saved!' })
 })
 
