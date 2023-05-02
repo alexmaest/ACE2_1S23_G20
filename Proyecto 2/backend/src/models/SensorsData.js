@@ -6,8 +6,9 @@ const sensorsDataSchema = new Schema({
     internalTemperature: { type: Number, default: 0 },
     soilMoisture: { type: Number, default: 0 },
     waterLevel: { type: Number, default: 0 },
+    isPumpOn: { type: Boolean, default: false },
     date: { type: Date, default: Date.now }
   }]
 })
 
-module.exports = model('dashboard', sensorsDataSchema)
+module.exports = model('sensorsData', sensorsDataSchema)
