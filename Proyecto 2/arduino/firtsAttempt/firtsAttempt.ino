@@ -1,5 +1,6 @@
 #include <DHT.h>
 #include <DHT_U.h>
+#include <math.h>
 
 #define Type DHT11
 #define echo 5
@@ -134,7 +135,15 @@ void alertaHumedadTierra()
   // Medir la humedad de la tierra
   int lectura = analogRead(A0);
   // Convertir la lectura a porcentaje
-  lecturaPorcentaje = map(lectura, 1023, 400, 0, 100);
+  int lecturaP = map(lectura, 1023, 400, 0, 100);
+  //validar que no sea NaN
+  if (isnan(lecturaP))
+  {
+    return;
+  }else{
+    lecturaPorcentaje = lecturaP;
+  }
+
   if (lecturaPorcentaje < 0)
   {
     lecturaPorcentaje = 0;
@@ -143,17 +152,6 @@ void alertaHumedadTierra()
   {
     lecturaPorcentaje = 100;
   }
-
-  
-  // se enviara la cadena h+lecturaPorcentaje+; para indicar que la humedad es de x%
-  // ejemplo: h50; -> la humedad es de 50%
-  // Serial.println("h"+lecturaPorcentaje+";");
-  // Si la humedad es mayor o igual a 80%
-  //if (lecturaPorcentaje >= 80)
-  //{
-  //  // se envia cadena w; indicando que la huemda es de 80% o mas
-  //  //Serial.println("w;");
-  //}
 }
 
 // Metodo que se encarga de apagar la bomba de agua en cualquier momento
@@ -193,7 +191,15 @@ void nivelDeAguaEnTanque()
   float value2 = alturaTotal - 5;
   float value3 = value / value2;
   float value4 = value3 * 100;
-  porcentaje = value4;
+  
+  //validar que no sea NaN
+  if (isnan(value4))
+  {
+    return;
+  }else{
+    porcentaje = value4;
+  }
+
   if (porcentaje < 0)
   {
     porcentaje = 0;
@@ -207,7 +213,14 @@ void nivelDeAguaEnTanque()
 void temperaturaInterna()
 {
   // Medir la temperatura interna
-  tempC = HT.readTemperature();
+  int tempCl = HT.readTemperature();
+  //validar que no sea NaN
+  if (isnan(tempCl))
+  {
+    return;
+  }else{
+    tempC = tempCl;
+  }
   // Enviar la temperatura interna por la comunicación serial
   // Serial.println("ti" + String(tempC) + ";");
 }
@@ -215,7 +228,15 @@ void temperaturaInterna()
 void temperaturaExterna()
 {
   // Medir la temperatura externa
-  tempC2 = HT2.readTemperature();
+  int tempC2l = HT2.readTemperature();
+  //validar que no sea NaN
+  if (isnan(tempC2l))
+  {
+    return;
+  }else{
+    tempC2 = tempC2l;
+  }
+
   // Enviar la temperatura externa por la comunicación serial
   // Serial.println("te" + String(tempC2) + ";");
 }
@@ -227,15 +248,15 @@ void enviarInformacioApp()
   temperaturaInterna();  // aca se esta enviando la temperatura interna
   temperaturaExterna();  // aca se esta enviando la temperatura externa
   String cadena = "";
-  cadena = "h$" + String(lecturaPorcentaje) + "$*$";   // cadena de humedad
-  cadena = cadena + "p$" + String(porcentaje) + "$*$"; // cadena de porcentaje
-  cadena = cadena + "ti$" + String(tempC) + "$*$";     // cadena de temperatura interna
-  cadena = cadena + "te$" + String(tempC2) + "$*$";   // cadena de temperatura externa
-  cadena = cadena + "b$" + String(bomba) + "$*$;";     // cadena de estado de la bomba
+  cadena = String(lecturaPorcentaje) + "$";   // cadena de humedad
+  cadena = String(porcentaje) + "$"; // cadena de porcentaje
+  cadena = String(tempC) + "$";     // cadena de temperatura interna
+  cadena = String(tempC2) + "$";   // cadena de temperatura externa
+  cadena = String(bomba) + ";";     // cadena de estado de la bomba
   Serial.println(cadena);
   delayMillis(400);
-  // h$[valor de lecturaPorcentaje]$*$p$[valor de porcentaje]$*$ti$[valor de tempC]$*$te$[valor de tempC2]$*$b$[valor de bomba]$*$;
-  // ejemplo: h$50$*$p$50$*$ti$30$*$te$40$*$b$1$*$;
+  // porcentajehumedad$porcentajetanque$temperaturainterna$temperaturaexterna$estadoBomba;
+  //ejemplo: 50$50$25$30$1;
 }
 
 void delayMillis(int tiempo)
