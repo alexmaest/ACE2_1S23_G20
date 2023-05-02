@@ -23,6 +23,7 @@ class _HomePageState extends State<HomePage> {
   final soilMoistureController = TextEditingController(text: '0');
   final waterLevelController = TextEditingController(text: '0');
   bool showAlert = false;
+  bool firstAlert = false;
 
   Map data = {};
   var settings = {
@@ -97,11 +98,19 @@ class _HomePageState extends State<HomePage> {
     socket.onConnectError((err) => debugPrint(err));
     socket.onError((err) => debugPrint(err));
     socket.on('soilMoisture', (data) {
-      if (data > 80) {
+      if (data > 80 && !firstAlert) {
         setState(() {
           showAlert = true;
+          firstAlert = true;
         });
       }
+
+      if (data < 80) {
+        setState(() {
+          firstAlert = false;
+        });
+      }
+
       setState(() {
         soilMoistureController.text = data.toString();
       });
@@ -124,6 +133,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     String powerStatus = settings['power'] == true ? 'Encendido' : 'Apagado';
     debugPrint('Alerta: $showAlert');
+    debugPrint('Primera alerta: $firstAlert');
 
     if (showAlert) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
