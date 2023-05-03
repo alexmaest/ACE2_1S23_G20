@@ -74,6 +74,7 @@ const options = {
       }
     },
     y: {
+      suggestedMax: 1,
       beginAtZero: true,
     }
   }
@@ -171,14 +172,8 @@ function Chart({ name }) {
       const endDateWithTime = new Date(value.endDate + " GMT-6");
       endDateWithTime.setHours(endTime.split(":")[0]);
 
-      const params = new URLSearchParams({
-        startDate: startDateWithTime,
-        endDate: endDateWithTime
-      })
-
       const { data } = await axios.get(GET_FILTERED_DATA + `/${startDateWithTime}/${endDateWithTime}`);
 
-      console.log(data);
       if (name === "Temperatura Externa") {
         data.filteredData.map((item) => {
           labels.push(new Date(item.date).toLocaleString());
