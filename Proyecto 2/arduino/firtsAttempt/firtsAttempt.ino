@@ -215,7 +215,7 @@ void temperaturaInterna()
   // Medir la temperatura interna
   int tempCl = HT.readTemperature();
   //validar que no sea NaN
-  if (isnan(tempCl))
+  if (isnan(tempCl)  || tempCl <= 0)
   {
     return;
   }else{
@@ -230,7 +230,7 @@ void temperaturaExterna()
   // Medir la temperatura externa
   int tempC2l = HT2.readTemperature();
   //validar que no sea NaN
-  if (isnan(tempC2l))
+  if (isnan(tempC2l) || tempC2l <= 0)
   {
     return;
   }else{
