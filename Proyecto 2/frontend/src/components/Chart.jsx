@@ -151,7 +151,7 @@ function Chart({ name }) {
             data: values,
             borderColor: 'rgb(0, 21, 36)',
             borderWidth: 2,
-            backgroundColor: 'rgba(0, 21, 36, 0.2)',
+            backgroundColor: 'rgba(0, 21, 36)',
           },
         ],
       });
@@ -160,50 +160,47 @@ function Chart({ name }) {
     }
   }
 
+
   const getFilteredData = async () => {
-
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-    console.log(value.startDate + " " + value.endDate + " " + startTime + " " + endTime + " " + name)
-
     try {
-
       const labels = []
       const values = []
 
-      let { data } = await axios.post(GET_FILTERED_DATA, {
-        data: {
-          startDate: value.startDate,
-          endDate: value.endDate,
-          startTime,
-          endTime,
-          name
-        }
-      });
+      const startDateWithTime = new Date(value.startDate + " GMT-6");
+      startDateWithTime.setHours(startTime.split(":")[0]);
+      const endDateWithTime = new Date(value.endDate + " GMT-6");
+      endDateWithTime.setHours(endTime.split(":")[0]);
+
+      const params = new URLSearchParams({
+        startDate: startDateWithTime,
+        endDate: endDateWithTime
+      })
+
+      const { data } = await axios.get(GET_FILTERED_DATA + `/${startDateWithTime}/${endDateWithTime}`);
 
       console.log(data);
-      //----------------------------------------------------------
       if (name === "Temperatura Externa") {
-        data.map((item) => {
+        data.filteredData.map((item) => {
           labels.push(new Date(item.date).toLocaleString());
           values.push(item.externalTemperature);
         });
       } else if (name === "Temperatura Interna") {
-        data.map((item) => {
+        data.filteredData.map((item) => {
           labels.push(new Date(item.date).toLocaleString());
           values.push(item.internalTemperature);
         });
       } else if (name === "Humedad de Tierra") {
-        data.map((item) => {
+        data.filteredData.map((item) => {
           labels.push(new Date(item.date).toLocaleString());
           values.push(item.soilMoisture);
         });
       } else if (name === "Porcentaje de Agua") {
-        data.map((item) => {
+        data.filteredData.map((item) => {
           labels.push(new Date(item.date).toLocaleString());
           values.push(item.waterLevel);
         });
       } else {
-        data.map((item) => {
+        data.filteredData.map((item) => {
           labels.push(new Date(item.date).toLocaleString());
           if (item.isPumpOn) {
             values.push(1);
@@ -216,27 +213,17 @@ function Chart({ name }) {
         labels,
         datasets: [
           {
+            barPercentage: 1.0,
+            categoryPercentage: 1.0,
             data: values,
-            borderColor: 'rgb(0, 0, 0)',
-            backgroundColor: 'rgb(0, 0, 0)',
+            borderColor: 'rgb(0, 21, 36)',
+            borderWidth: 2,
+            backgroundColor: 'rgba(0, 21, 36)',
           },
         ],
       });
-      //----------------------------------------------------------
     } catch (error) {
       console.log(error);
-    }
-  }
-
-  const handleDateChange = () => {
-    const startDateWithTime = new Date(value.startDate + " GMT-6");
-    startDateWithTime.setHours(startTime.split(":")[0]);
-    const endDateWithTime = new Date(value.endDate + " GMT-6");
-    endDateWithTime.setHours(endTime.split(":")[0]);
-    if (value.startDate === "" || value.endDate === "") {
-      getAllData();
-    } else {
-      getFilteredData();
     }
   }
 
@@ -295,7 +282,7 @@ function Chart({ name }) {
           </div>
           <button
             className="rounded-full bg-green-400 hover:hover:brightness-105 px-8 py-2 basis-1/6"
-            onClick={handleDateChange}
+            onClick={() => getFilteredData()}
           >Escoger</button>
         </div>
       </div>
