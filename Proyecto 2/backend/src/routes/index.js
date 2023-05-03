@@ -12,7 +12,28 @@ router.get('/api/settings', async (req, res) => {
 
 router.put('/api/settings/modifyPower', async (req, res) => {
   const { power } = req.body
+
+  const [settings] = await Setting.find()
+
+  if (power === settings.power) {
+    console.log('Power already set')
+    res.json({ message: 'Power already set' })
+    return
+  }
   await Setting.findOneAndUpdate({}, { power })
+
+  if (power) {
+    const [settings] = await Setting.find()
+
+    const turnOffPump = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve()
+      }, settings.timeToWater * 1000)
+    })
+    await turnOffPump
+    await Setting.findOneAndUpdate({}, { power: false })
+    console.log('Pump turned off')
+  }
   res.json({ message: 'Power updated' })
 })
 

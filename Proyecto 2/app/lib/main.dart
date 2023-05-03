@@ -24,6 +24,7 @@ class _HomePageState extends State<HomePage> {
   final waterLevelController = TextEditingController(text: '0');
   bool showAlert = false;
   bool firstAlert = false;
+  bool powerStatus = false;
 
   Map data = {};
   var settings = {
@@ -121,6 +122,14 @@ class _HomePageState extends State<HomePage> {
         waterLevelController.text = data.toString();
       });
     });
+
+    socket.on(
+        'power',
+        (data) => {
+              setState(() {
+                powerStatus = data;
+              })
+            });
   }
 
   void dismissAlert() {
@@ -131,7 +140,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    String powerStatus = settings['power'] == true ? 'Encendido' : 'Apagado';
     debugPrint('Alerta: $showAlert');
     debugPrint('Primera alerta: $firstAlert');
 
@@ -180,7 +188,7 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                     padding: const EdgeInsets.only(left: 2, top: 12),
                     child: Text(
-                      powerStatus,
+                      powerStatus ? 'Encendido' : 'Apagado',
                       style: const TextStyle(
                           fontSize: 20.0, fontWeight: FontWeight.bold),
                     )),
@@ -253,7 +261,7 @@ class _HomePageState extends State<HomePage> {
                     debugPrint(response.body);
                   },
                   style: ButtonStyle(
-                      backgroundColor: settings['power'] == true
+                      backgroundColor: powerStatus == true
                           ? MaterialStateProperty.all<Color>(
                               const Color.fromARGB(255, 2, 167, 151))
                           : MaterialStateProperty.all<Color>(
@@ -271,7 +279,7 @@ class _HomePageState extends State<HomePage> {
                     debugPrint(response.body);
                   },
                   style: ButtonStyle(
-                      backgroundColor: settings['power'] == true
+                      backgroundColor: powerStatus == true
                           ? MaterialStateProperty.all<Color>(
                               const Color.fromARGB(255, 186, 11, 2))
                           : MaterialStateProperty.all<Color>(
