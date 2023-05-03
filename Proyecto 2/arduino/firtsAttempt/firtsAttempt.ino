@@ -249,10 +249,10 @@ void enviarInformacioApp()
   temperaturaExterna();  // aca se esta enviando la temperatura externa
   String cadena = "";
   cadena = String(lecturaPorcentaje) + "$";   // cadena de humedad
-  cadena = String(porcentaje) + "$"; // cadena de porcentaje
-  cadena = String(tempC) + "$";     // cadena de temperatura interna
-  cadena = String(tempC2) + "$";   // cadena de temperatura externa
-  cadena = String(bomba) + ";";     // cadena de estado de la bomba
+  cadena = cadena + String(porcentaje) + "$"; // cadena de porcentaje
+  cadena = cadena + String(tempC) + "$";     // cadena de temperatura interna
+  cadena = cadena + String(tempC2) + "$";   // cadena de temperatura externa
+  cadena = cadena + String(bomba) + ";";     // cadena de estado de la bomba
   Serial.println(cadena);
   delayMillis(400);
   // porcentajehumedad$porcentajetanque$temperaturainterna$temperaturaexterna$estadoBomba;
